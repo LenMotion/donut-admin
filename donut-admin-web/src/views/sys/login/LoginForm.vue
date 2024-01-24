@@ -136,8 +136,8 @@
   jsEncrypt.setPublicKey(publicKey);
 
   const formData = reactive({
-    account: 'admin',
-    password: 'admin123',
+    account: '',
+    password: '',
     uuid: '',
     code: '',
     captchaOnOff: false,
@@ -174,6 +174,7 @@
         content: (error as unknown as Error).message || t('sys.api.networkExceptionMsg'),
         getContainer: () => document.body.querySelector(`.${prefixCls}`) || document.body,
       });
+      getCaptchaImage();
     } finally {
       loading.value = false;
     }
