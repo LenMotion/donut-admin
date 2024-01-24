@@ -44,6 +44,14 @@
 * Vite
 * Ant-Design4
 
+### 项目预览：
+
+http://139.155.69.83:10222/
+
+账号：admin
+
+密码：123456
+
 ### 项目启动：
 如果您熟悉docker可能部署较为简单，可以直接使用docker-compose启动项目（mysql、redis）服务
 
