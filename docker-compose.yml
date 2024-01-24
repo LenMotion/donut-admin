@@ -1,0 +1,88 @@
+version: '3'
+services:
+  minio:
+    image: minio/minio
+    container_name: donut-minio
+    hostname: "minio"
+    ports:
+      - 9000:9000 # api 端口
+      - 9001:9001 # 控制台端口
+    environment:
+      MINIO_ACCESS_KEY: admin    #管理后台用户名
+      MINIO_SECRET_KEY: 123456qwe #管理后台密码，最小8个字符
+    volumes:
+      - ./data/minio:/data               #映射当前目录下的data目录至容器内/data目录
+      - ./docker-config/minio/:/root/.minio/     #映射配置目录
+    command: server --console-address ':9001' /data  #指定容器中的目录 /data
+    privileged: true
+    restart: always
+    networks:
+      - donut-net
+  redis:
+    image: redis:latest
+    hostname: "redis"
+    ports:
+      - 16379:6379
+    container_name: donut-redis
+    restart: always
+    volumes:
+      - ./data/redis:/data
+      - ./data/redis/logs:/logs
+      - ./docker-config/redis/redis.conf:/usr/local/etc/redis/redis.conf
+    command:
+      #      两个写入操作 只是为了解决启动后警告 可以去掉
+      /bin/bash -c "redis-server /usr/local/etc/redis/redis.conf"
+    networks:
+      - donut-net
+  mysql:
+    image: mysql:8.0.29
+    hostname: mysql8
+    # 指定容器的名称
+    container_name: donut-mysql8
+    ports:
+      - 13306:3306
+    environment:
+      MYSQL_DATABASE: donut
+      # 配置root密码
+      MYSQL_ROOT_PASSWORD: "root@123,./"
+      TZ: Asia/Shanghai
+    restart: always
+    volumes:
+      # 挂载数据目录
+      - ./data/mysql/:/var/lib/mysql/
+      # 挂载配置文件目录
+      - ./docker-config/mysql:/etc/mysql/conf.d
+      - ./db:/docker-entrypoint-initdb.d
+    networks:
+      - donut-net
+  donut-api:
+    container_name: donut-api
+    image: donut-api:1.0.0
+    hostname: donut-api
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - 10001:10001
+    depends_on:
+      - minio
+      - mysql
+      - redis
+    networks:
+      - donut-net
+  donut-web:
+    container_name: donut-web
+    image: donut-web:1.0.0
+    build:
+      context: ./donut-admin-web
+      dockerfile: Dockerfile
+    ports:
+      - 80:80
+    depends_on:
+      - donut-api
+    networks:
+      - donut-net
+
+networks:
+  donut-net:
+    driver: bridge

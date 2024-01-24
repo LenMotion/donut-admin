@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.lenmotion.donut.system.mapper.SysUserMapper">
+
+    <select id="selectUserPage" resultType="cn.lenmotion.donut.system.entity.vo.UserResponseVO">
+        <include refid="selectUserSql" />
+    </select>
+
+    <select id="selectUserExportList" resultType="cn.lenmotion.donut.system.entity.vo.export.UserExportVO">
+        <include refid="selectUserSql" />
+    </select>
+
+    <sql id="selectUserSql">
+        select distinct u.id,u.dept_id,u.user_code,u.username,u.nick_name,u.email,u.phone_number,u.sex,u.age,u.avatar,u.nation,
+            u.id_type,u.id_card,u.culture_type,u.address,u.entry_date,u.`status`,u.login_ip,u.login_date,u.create_by,u.create_time,
+            u.update_by,u.update_time, u.remark, u.political_outlook, d.dept_name, p.post_name, r.role_ids role_id_str  from sys_user u
+            left join sys_user_dept ud on u.id = ud.user_id
+            left join sys_dept d on u.dept_id = d.id
+            left join sys_post p on u.post_id = p.id
+            left join (
+                select user_id, group_concat(role_id) as role_ids from sys_user_role
+                group by user_id
+            ) r on r.user_id = u.id
+        where u.deleted = 0
+        <if test="query.username != null and query.username != ''">
+            and u.username like concat('%', #{query.username}, '%')
+        </if>
+        <if test="query.deptId != null">
+            and ud.dept_id = #{query.deptId}
+        </if>
+        <if test="query.status != null and query.status != ''">
+            and u.status = #{query.status}
+        </if>
+
+    </sql>
+</mapper>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.lenmotion.donut.system.mapper.SysUserDeptMapper">
+
+    <select id="getOtherUserDeptListByUserId" resultType="cn.lenmotion.donut.system.entity.vo.UserDeptVO">
+        select ud.post_id, p.post_name, ud.dept_id, d.dept_name from sys_user_dept ud
+            inner join sys_dept d on ud.dept_id = d.id
+            inner join sys_post p on ud.post_id = p.id
+        where ud.default_dept = 0
+        and ud.user_id = #{userId}
+        and d.deleted = 0
+    </select>
+
+    <select id="getDeptAncestorsByUserId" resultType="java.lang.String">
+        select d.ancestors from sys_user_dept ud
+            inner join sys_dept d on ud.dept_id = d.id
+            where ud.user_id = #{userId}
+            and d.deleted = 0
+    </select>
+</mapper>

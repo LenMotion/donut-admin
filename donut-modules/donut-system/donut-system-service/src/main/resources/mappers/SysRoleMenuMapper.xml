@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.lenmotion.donut.system.mapper.SysRoleMenuMapper">
+
+    <select id="getPermsByUserId" resultType="java.lang.String">
+        select m.perms from sys_role_menu rm
+            inner join sys_menu m on rm.menu_id = m.id
+            inner join sys_user_role ur on rm.role_id = ur.role_id
+            inner join sys_role r  on ur.role_id = r.id
+        where ur.user_id = #{userId} and m.perms is not null and m.perms != ''
+        and m.status = '0' and r.status = '0' and r.deleted = 0
+    </select>
+
+    <select id="getMenuListByUserId" resultType="cn.lenmotion.donut.system.entity.po.SysMenu">
+        select distinct m.id,m.title,m.`name`,m.parent_id,m.menu_type,m.`path`,m.current_active_menu,m.redirect,m.component,m.ignore_keep_alive,
+        m.hide_menu,m.hide_children_in_menu,m.`status`,m.perms,m.icon,m.order_no,m.query,m.frame,m.create_by,m.create_time,
+        m.update_by,m.update_time,m.remark
+        from sys_menu m
+            left join sys_role_menu rm on m.id = rm.menu_id
+            left join sys_user_role ur on rm.role_id = ur.role_id
+            left join sys_role ro on ur.role_id = ro.id
+            left join sys_user u on ur.user_id = u.id
+        where u.id = #{userId} and m.menu_type in ('0', '1')
+        and m.status = '0' AND ro.status = '0'
+        and m.deleted = 0 and u.deleted = 0 and ro.deleted = 0
+        order by m.parent_id, m.order_no
+    </select>
+
+</mapper>

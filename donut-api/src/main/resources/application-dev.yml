@@ -1,0 +1,38 @@
+spring:
+  datasource:
+    url: jdbc:p6spy:mysql://localhost:13306/donut?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+    username: root
+    password: root@123,./
+  data:
+    # redis 配置
+    redis:
+      # 地址
+      host: localhost
+      # 端口，默认为6379
+      port: 16379
+      # 数据库索引
+      database: 0
+      # 密码
+      password: "donut@123,./"
+
+dromara:
+  x-file-storage: #文件存储配置
+    default-platform: minio-1 #默认使用的存储平台
+    local-plus:
+      - platform: local-plus-1 # 存储平台标识
+        enable-storage: true  #启用存储
+        enable-access: true #启用访问（线上请使用 Nginx 配置，效率更高）
+        domain: http://localhost:8080/upload/file/ # 访问域名，例如：“http://127.0.0.1:8030/local-plus/”，注意后面要和 path-patterns 保持一致，“/”结尾，本地存储建议使用相对路径，方便后期更换域名
+        base-path: local-plus/ # 基础路径
+        path-patterns: /upload/file/** # 访问路径
+        storage-path: upload/ # 存储路径
+    minio:
+      - platform: minio-1 # 存储平台标识
+        enable-storage: true  # 启用存储
+        access-key: admin
+        secret-key: 123456qwe
+        end-point: http://127.0.0.1:9000
+        bucket-name: donut
+        domain: http://localhost:9000/ # 访问域名，注意“/”结尾，例如：http://minio.abc.com/abc/
+        attr:
+          expire: 30

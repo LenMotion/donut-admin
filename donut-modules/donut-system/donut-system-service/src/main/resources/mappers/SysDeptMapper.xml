@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.lenmotion.donut.system.mapper.SysDeptMapper">
+
+    <update id="updateDeptAncestors">
+        UPDATE sys_dept
+        SET ancestors = REPLACE(ancestors, #{oldAncestors}, #{newAncestors})
+        WHERE ancestors LIKE concat(#{oldAncestors}, '%');
+    </update>
+
+    <update id="updateDeptLevel">
+        UPDATE sys_dept
+        SET level = level + #{reduceLevel}
+        WHERE ancestors LIKE concat(#{oldAncestors}, '%');
+    </update>
+
+    <select id="maxChildLevel" resultType="java.lang.Integer">
+        select max(level) from sys_dept
+        where ancestors LIKE concat(#{ancestors}, '%');
+    </select>
+
+    <select id="hasDeptIdByUserId" resultType="java.lang.Integer">
+        select 1
+        from sys_dept d
+                 inner join (select d.id
+                             from sys_dept d
+                                      inner join sys_user_dept ud on d.id = ud.dept_id
+                             where ud.user_id = #{userId}) ud on find_in_set(ud.id, ancestors)
+        where d.id = #{deptId}
+        limit 1
+    </select>
+</mapper>

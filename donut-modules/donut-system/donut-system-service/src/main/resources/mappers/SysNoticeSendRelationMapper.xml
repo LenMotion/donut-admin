@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.lenmotion.donut.system.mapper.SysNoticeSendRelationMapper">
+
+    <select id="getSendUserByNoticeId" resultType="java.lang.Long">
+        select distinct u.id from sys_user u
+        inner join sys_user_dept ud on ud.user_id = u.id
+        inner join sys_dept d on d.id = ud.dept_id
+        inner join (
+            select n.notice_send_type, nsr.user_id, nsr.dept_id, nsr.dept_ancestors from sys_notice n
+            left join sys_notice_send_relation nsr on nsr.notice_id = n.id
+            where n.id = #{noticeId}
+        ) n on (
+            n.notice_send_type = '0' or
+            (n.notice_send_type = '1' and d.id = n.dept_id) or
+            (n.notice_send_type = '2' and d.ancestors like concat(n.dept_ancestors, '%')) or
+            (n.notice_send_type = '3' and u.id = n.user_id)
+        )
+        where u.deleted = 0 and u.status = '0' and d.status = '0' and d.deleted = 0
+    </select>
+
+    <select id="getUserNotice" resultType="cn.lenmotion.donut.system.entity.vo.UserNoticeVO">
+        select distinct n.id, n.notice_title, n.notice_content, n.publish_time,
+        if(nr.id is not null, 1, 0) is_read, nr.create_time read_time
+        from sys_notice n
+        left join sys_notice_send_relation nsr on nsr.notice_id = n.id
+        left join sys_notice_read nr on nr.notice_id = n.id and nr.user_id = #{query.userId}
+        where n.status = '0'
+        <if test="query.noticeType != null and query.noticeType != ''">
+            and n.notice_type = #{query.noticeType}
+        </if>
+        and (
+            n.notice_send_type = '0' or
+            (n.notice_send_type = '1' and nsr.dept_id in
+                ( select dept_id from sys_user_dept where user_id = #{query.userId} )
+            ) or
+            (n.notice_send_type = '2' and nsr.dept_id in
+                (select dept_id from sys_user_dept where user_id = #{query.userId}
+                                and dept_id in (select id from sys_dept where ancestors like concat(nsr.dept_ancestors, '%'))
+                )
+            ) or
+            (n.notice_send_type = '3' and nsr.user_id = #{query.userId})
+        )
+        <if test="query.read != null and query.read">
+            and nr.id is not null
+        </if>
+        <if test="query.read != null and !query.read">
+            and nr.id is null
+        </if>
+        order by n.publish_time desc
+    </select>
+</mapper>

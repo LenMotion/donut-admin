@@ -1,0 +1,48 @@
+# 常用的文件扩展名，用于文件上传过滤
+project:
+  fileExt:
+    # 图片
+    - jpeg
+    - jpg
+    - png
+    - gif
+    - bmp
+    - tiff
+    - webp
+    - svg
+    - ico
+    - heic
+    - heif
+    - psd
+    - raw
+    # 视频
+    - mp4
+    - avi
+    - mkv
+    - mov
+    - flv
+    - wmv
+    - webm
+    - mpeg
+    - 3gp
+    - ogg
+    # 音频
+    - mp3
+    - wav
+    - flac
+    - aac
+    - wma
+    - ogg
+    - m4a
+    # 文档
+    - pdf
+    - doc
+    - docx
+    - xls
+    - xlsx
+    - ppt
+    - pptx
+    - txt
+    - rtf
+    - csv
+

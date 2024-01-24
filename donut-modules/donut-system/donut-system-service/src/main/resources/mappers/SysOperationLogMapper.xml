@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.lenmotion.donut.system.mapper.SysOperationLogMapper">
+
+    <select id="selectPage" resultType="cn.lenmotion.donut.system.entity.vo.OperationLogVO">
+        select ol.*, u.username, u.nick_name from sys_operation_log ol
+            inner join sys_user u on ol.user_id = u.id
+        <where>
+            u.deleted = 0
+            <if test="query.createEndTime != null and query.createEndTime != ''">
+                and ol.create_time <![CDATA[ <= ]]> #{query.createEndTime}
+            </if>
+            <if test="query.createEndTime != null and query.createEndTime != ''">
+                and ol.create_time <![CDATA[ >= ]]> #{query.createStartTime}
+            </if>
+            <if test="query.ip != null and query.ip != ''">
+                and ol.ip like concat('%', #{query.ip}, '%')
+            </if>
+            <if test="query.status != null and query.status != ''">
+                and ol.status = #{query.status}
+            </if>
+            <if test="query.requestMethod != null and query.requestMethod != ''">
+                and ol.request_method = #{query.requestMethod}
+            </if>
+            <if test="query.title!= null and query.title != ''">
+                and ol.title like concat('%', #{query.title}, '%')
+            </if>
+            <if test="query.url!= null and query.url != ''">
+                and ol.url like concat('%', #{query.url}, '%')
+            </if>
+            <if test="query.username!= null and query.username != ''">
+                and u.username like concat('%', #{query.username}, '%')
+            </if>
+            <if test="query.userId != null">
+                and ol.user_id = #{query.userId}
+            </if>
+        </where>
+        order by ol.create_time desc
+    </select>
+</mapper>

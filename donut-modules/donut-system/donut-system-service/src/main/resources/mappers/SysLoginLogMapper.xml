@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.lenmotion.donut.system.mapper.SysLoginLogMapper">
+
+    <select id="selectPage" resultType="cn.lenmotion.donut.system.entity.po.SysLoginLog">
+        <include refid="selctSql" />
+    </select>
+
+    <select id="selectListByQuery" resultType="cn.lenmotion.donut.system.entity.po.SysLoginLog">
+        <include refid="selctSql" />
+    </select>
+
+    <sql id="selctSql">
+        select ll.* from sys_login_log ll
+        inner join sys_user u on ll.username = u.username
+        <where>
+            u.deleted = 0
+            <if test="query.userId != null">
+                and u.id = #{query.userId}
+            </if>
+            <if test="query.username != null and query.username != ''">
+                and u.username like concat('%', #{query.username}, '%')
+            </if>
+            <if test="query.createEndTime != null and query.createEndTime != ''">
+                and ll.login_time <![CDATA[ <= ]]> #{query.createEndTime}
+            </if>
+            <if test="query.createEndTime != null and query.createEndTime != ''">
+                and ll.login_time <![CDATA[ >= ]]> #{query.createStartTime}
+            </if>
+            <if test="query.ip != null and query.ip != ''">
+                and ll.ip like concat('%', #{query.ip}, '%')
+            </if>
+            <if test="query.status != null and query.status != ''">
+                and ll.status = #{query.status}
+            </if>
+        </where>
+        order by ll.id desc
+    </sql>
+
+</mapper>
