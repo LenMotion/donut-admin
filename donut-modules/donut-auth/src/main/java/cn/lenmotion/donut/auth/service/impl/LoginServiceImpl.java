@@ -24,10 +24,7 @@ import cn.lenmotion.donut.framework.redis.RedisService;
 import cn.lenmotion.donut.system.entity.enums.LoginStatusEnum;
 import cn.lenmotion.donut.system.entity.po.SysLoginLog;
 import cn.lenmotion.donut.system.entity.po.SysUser;
-import cn.lenmotion.donut.system.remote.SysConfigRemoteService;
-import cn.lenmotion.donut.system.remote.SysLoginLogRemoteService;
-import cn.lenmotion.donut.system.remote.SysPermissionRemoteService;
-import cn.lenmotion.donut.system.remote.SysUserRemoteService;
+import cn.lenmotion.donut.system.remote.*;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -51,6 +48,7 @@ public class LoginServiceImpl implements LoginService {
     private final SysConfigRemoteService configRemoteService;
     private final SysLoginLogRemoteService loginLogRemoteService;
     private final SysPermissionRemoteService permissionRemoteService;
+    private final SysNoticeRemoteService noticeRemoteService;
     private final TaskExecutor taskExecutor;
 
     @Override
@@ -88,6 +86,17 @@ public class LoginServiceImpl implements LoginService {
         } finally {
             // 保存登陆信息
             loginLog(loginBody, request, exception);
+        }
+    }
+
+    @Override
+    public void logout() {
+        try {
+            noticeRemoteService.closeNoticeWebsocket(StpUtil.getTokenInfo());
+        } catch (Exception e) {
+            log.error("关闭通知websocket异常", e);
+        } finally {
+            StpUtil.logout();
         }
     }
 

@@ -1,5 +1,6 @@
 package cn.lenmotion.donut.system.websocket;
 
+import cn.dev33.satoken.stp.SaTokenInfo;
 import cn.lenmotion.donut.core.constants.BaseConstants;
 import cn.lenmotion.donut.system.entity.po.SysNotice;
 import lombok.RequiredArgsConstructor;
@@ -23,5 +24,12 @@ public class NoticePublisher {
         RTopic topic = redissonClient.getTopic(BaseConstants.NOTICE_REDIS_TOPIC);
         topic.publish(notice);
     }
+
+    public void publishClose(SaTokenInfo saTokenInfo) {
+        log.info("publish close notice: {}", saTokenInfo);
+        RTopic topic = redissonClient.getTopic(BaseConstants.NOTICE_CLOSE_REDIS_TOPIC);
+        topic.publish(saTokenInfo);
+    }
+
 
 }

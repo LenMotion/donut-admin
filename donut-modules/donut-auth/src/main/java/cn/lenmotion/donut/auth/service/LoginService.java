@@ -15,4 +15,9 @@ public interface LoginService {
      */
     void login(LoginBody loginBody, HttpServletRequest request);
 
+    /**
+     * 退出登录
+     */
+    void logout();
+
 }

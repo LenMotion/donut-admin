@@ -36,7 +36,7 @@ public class LoginController {
     @GetMapping("logout")
     @Operation(summary = "退出登陆")
     public ResponseResult<Boolean> logout() {
-        StpUtil.logout();
+        loginService.logout();
         return ResponseResult.success();
     }
 
