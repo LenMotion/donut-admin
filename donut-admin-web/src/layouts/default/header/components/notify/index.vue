@@ -50,7 +50,13 @@
 
   console.log('start websocket');
   const { status, data, close, open } = useWebSocket(wsUrl + '/ws/notice/' + getToken(), {
-    autoReconnect: true,
+    autoReconnect: {
+      retries: () => {
+        const token = getToken();
+        return token != undefined && token != '';
+      },
+    },
+    immediate: false,
     heartbeat: {
       message: 'heartbeat',
       interval: 10000,

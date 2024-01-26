@@ -1,6 +1,7 @@
 package cn.lenmotion.donut.system.websocket;
 
 import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.core.util.ObjUtil;
 import cn.lenmotion.donut.core.entity.ResponseResult;
 import cn.lenmotion.donut.core.enums.ResponseCodeEnum;
 import cn.lenmotion.donut.system.entity.po.SysNotice;
@@ -36,6 +37,7 @@ public class NoticeWebsocketEndpoint {
 
     @OnOpen
     public void onOpen(Session session, @PathParam("token") String token) throws IOException {
+        log.info("open token: {}", token);
         var loginId = StpUtil.getLoginIdByToken(token);
         if (loginId == null) {
             var result = ResponseResult.unLogin();
@@ -49,7 +51,7 @@ public class NoticeWebsocketEndpoint {
             websocketBean.setUserId(loginId.toString());
             websocketBean.setToken(token);
             // 获取对应用户有多少个session，如果没有责创建
-            ConcurrentHashMap<String, WebsocketBean> websocketBeanMap = WEB_SOCKET_MAP.getOrDefault(loginId.toString(), new ConcurrentHashMap<>());
+            var websocketBeanMap = WEB_SOCKET_MAP.getOrDefault(loginId.toString(), new ConcurrentHashMap<>());
             // 添加信息
             websocketBeanMap.put(token, websocketBean);
             // 更新用户的在线token
@@ -59,14 +61,19 @@ public class NoticeWebsocketEndpoint {
     }
 
     @OnClose
-    public void onClose(@PathParam("token") String token) {
+    public void onClose(@PathParam("token") String token, Session session) {
         var loginId = StpUtil.getLoginIdByToken(token);
         if (loginId != null && WEB_SOCKET_MAP.containsKey(loginId.toString())) {
             ConcurrentHashMap<String, WebsocketBean> websocketBeanMap = WEB_SOCKET_MAP.get(loginId.toString());
             websocketBeanMap.remove(token);
             WEB_SOCKET_MAP.put(loginId.toString(), websocketBeanMap);
+            log.info("用户：[{}] 断开连接", loginId);
         }
-        log.info("用户：[{}] 断开连接", loginId);
+        try {
+            session.close();
+        } catch (IOException e) {
+            log.error("关闭websocket连接异常！", e);
+        }
     }
 
     @OnMessage
@@ -77,6 +84,23 @@ public class NoticeWebsocketEndpoint {
             this.sendMessage(ResponseResult.custom(ResponseCodeEnum.HEARTBEAT), session);
         } else {
             log.info("接收用户[{}]消息： {}", loginId, message);
+        }
+    }
+
+    public void closeByUser(String userId, String token) {
+        if (!WEB_SOCKET_MAP.containsKey(userId)) {
+            return;
+        }
+
+        Map<String, WebsocketBean> websocketBeanMap = WEB_SOCKET_MAP.get(userId);
+
+        WebsocketBean websocketBean = websocketBeanMap.get(token);
+        if (ObjUtil.isNotNull(websocketBean)) {
+            try {
+                websocketBean.getSession().close();
+            } catch (IOException e) {
+                log.error("关闭websocket连接异常！", e);
+            }
         }
     }
 

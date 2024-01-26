@@ -23,4 +23,6 @@ public interface BaseConstants {
 
     String NOTICE_REDIS_TOPIC = "redis-topic.notice";
 
+    String NOTICE_CLOSE_REDIS_TOPIC = "redis-topic.notice-close";
+
 }
