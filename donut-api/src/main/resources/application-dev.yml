@@ -9,11 +9,11 @@ spring:
       # 地址
       host: localhost
       # 端口，默认为6379
-      port: 6379
+      port: 16379
       # 数据库索引
       database: 1
       # 密码
-      password: "123456"
+      password: "donut@123,./"
 
 dromara:
   x-file-storage: #文件存储配置

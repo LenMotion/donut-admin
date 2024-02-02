@@ -37,7 +37,6 @@ public class NoticeWebsocketEndpoint {
 
     @OnOpen
     public void onOpen(Session session, @PathParam("token") String token) throws IOException {
-        log.info("open token: {}", token);
         var loginId = StpUtil.getLoginIdByToken(token);
         if (loginId == null) {
             var result = ResponseResult.unLogin();

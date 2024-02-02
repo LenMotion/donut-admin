@@ -9,11 +9,11 @@ import cn.lenmotion.donut.core.constants.ConfigConstants;
 import cn.lenmotion.donut.core.constants.RedisConstants;
 import cn.lenmotion.donut.core.entity.ResponseResult;
 import cn.lenmotion.donut.framework.config.ProjectProperties;
+import cn.lenmotion.donut.framework.template.JacksonRedisTemplate;
 import cn.lenmotion.donut.system.remote.SysConfigRemoteService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -29,7 +29,7 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 public class CaptchaController {
 
-    private final RedisTemplate<String, String> redisTemplate;
+    private final JacksonRedisTemplate redisTemplate;
     private final ProjectProperties projectProperties;
     private final SysConfigRemoteService configRemoteService;
 

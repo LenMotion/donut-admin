@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.1.7</version>
+        <version>3.2.1</version>
         <relativePath />
     </parent>
 
@@ -14,12 +14,12 @@
     <artifactId>donut</artifactId>
     <version>1.0.0</version>
     <name>donut-admin</name>
-    <description>donut通用管理系统 - 基于ruoyi</description>
+    <description>donut通用管理系统</description>
     <packaging>pom</packaging>
 
     <properties>
         <java.version>17</java.version>
-        <spring-boot.version>3.1.7</spring-boot.version>
+        <spring-boot.version>3.2.1</spring-boot.version>
         <druid.version>1.2.20</druid.version>
         <mysql.version>8.2.0</mysql.version>
         <p6spy.version>3.9.1</p6spy.version>
@@ -118,7 +118,7 @@
 
             <dependency>
                 <groupId>com.baomidou</groupId>
-                <artifactId>mybatis-plus-boot-starter</artifactId>
+                <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
                 <version>${mybatis-plus.version}</version>
             </dependency>
 

@@ -62,7 +62,9 @@ spring:
     multipart:
       max-request-size: 30MB
       max-file-size: 20MB
-
+  threads:
+    virtual:
+      enabled: true
 # MyBatis Plus配置
 mybatis-plus:
   # 搜索指定包别名

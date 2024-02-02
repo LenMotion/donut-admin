@@ -20,6 +20,7 @@ import cn.lenmotion.donut.core.enums.ResponseCodeEnum;
 import cn.lenmotion.donut.core.exception.BusinessException;
 import cn.lenmotion.donut.core.utils.AssertUtils;
 import cn.lenmotion.donut.core.utils.IpUtils;
+import cn.lenmotion.donut.framework.template.JacksonRedisTemplate;
 import cn.lenmotion.donut.system.entity.enums.LoginStatusEnum;
 import cn.lenmotion.donut.system.entity.po.SysLoginLog;
 import cn.lenmotion.donut.system.entity.po.SysUser;
@@ -28,7 +29,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.task.TaskExecutor;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -49,7 +49,7 @@ public class LoginServiceImpl implements LoginService {
     private final SysPermissionRemoteService permissionRemoteService;
     private final SysNoticeRemoteService noticeRemoteService;
     private final TaskExecutor taskExecutor;
-    private final RedisTemplate<String, String> redisTemplate;
+    private final JacksonRedisTemplate redisTemplate;
 
     @Override
     public void login(LoginBody loginBody, HttpServletRequest request) {
