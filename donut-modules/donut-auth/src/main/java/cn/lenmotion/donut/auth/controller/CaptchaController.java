@@ -9,13 +9,15 @@ import cn.lenmotion.donut.core.constants.ConfigConstants;
 import cn.lenmotion.donut.core.constants.RedisConstants;
 import cn.lenmotion.donut.core.entity.ResponseResult;
 import cn.lenmotion.donut.framework.config.ProjectProperties;
-import cn.lenmotion.donut.framework.redis.RedisService;
 import cn.lenmotion.donut.system.remote.SysConfigRemoteService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * 验证码操作处理
@@ -27,13 +29,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class CaptchaController {
 
-    private final RedisService redisService;
+    private final RedisTemplate<String, String> redisTemplate;
     private final ProjectProperties projectProperties;
     private final SysConfigRemoteService configRemoteService;
 
     @Operation(summary = "验证码图片", description = "base64格式")
     @GetMapping("/captchaImage")
-    @RateLimiter(count = 2, time = 5)
+    @RateLimiter(count = 2, time = 5, message = "验证码获取过于频繁，请稍后再试！")
     public ResponseResult<CaptchaVo> getCode() {
         CaptchaVo captchaVo = new CaptchaVo();
         // 判断是否开启验证码登陆
@@ -46,7 +48,7 @@ public class CaptchaController {
         // 保存验证码信息
         String uuid = IdUtil.simpleUUID();
         String verifyKey = RedisConstants.CAPTCHA_CODE_KEY + uuid;
-        redisService.set(verifyKey, lineCaptcha.getCode(), projectProperties.getCaptchaExpire());
+        redisTemplate.opsForValue().set(verifyKey, lineCaptcha.getCode(), projectProperties.getCaptchaExpire(), TimeUnit.SECONDS);
 
         captchaVo.setUuid(uuid);
         captchaVo.setImg(lineCaptcha.getImageBase64());

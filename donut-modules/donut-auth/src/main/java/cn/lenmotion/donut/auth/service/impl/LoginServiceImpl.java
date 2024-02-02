@@ -20,7 +20,6 @@ import cn.lenmotion.donut.core.enums.ResponseCodeEnum;
 import cn.lenmotion.donut.core.exception.BusinessException;
 import cn.lenmotion.donut.core.utils.AssertUtils;
 import cn.lenmotion.donut.core.utils.IpUtils;
-import cn.lenmotion.donut.framework.redis.RedisService;
 import cn.lenmotion.donut.system.entity.enums.LoginStatusEnum;
 import cn.lenmotion.donut.system.entity.po.SysLoginLog;
 import cn.lenmotion.donut.system.entity.po.SysUser;
@@ -29,6 +28,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.task.TaskExecutor;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -43,13 +43,13 @@ import java.util.Optional;
 public class LoginServiceImpl implements LoginService {
 
     private final RSA loginRsa;
-    private final RedisService redisService;
     private final SysUserRemoteService userRemoteService;
     private final SysConfigRemoteService configRemoteService;
     private final SysLoginLogRemoteService loginLogRemoteService;
     private final SysPermissionRemoteService permissionRemoteService;
     private final SysNoticeRemoteService noticeRemoteService;
     private final TaskExecutor taskExecutor;
+    private final RedisTemplate<String, String> redisTemplate;
 
     @Override
     public void login(LoginBody loginBody, HttpServletRequest request) {
@@ -108,8 +108,8 @@ public class LoginServiceImpl implements LoginService {
     private void checkCaptcha(LoginBody loginBody) {
         AssertUtils.isTrue(StrUtil.isAllNotBlank(loginBody.getCode(), loginBody.getUuid()), "验证码信息不能为空");
         String verifyKey = RedisConstants.CAPTCHA_CODE_KEY + loginBody.getUuid();
-        String captcha = redisService.get(verifyKey);
-        redisService.del(verifyKey);
+        String captcha = redisTemplate.opsForValue().get(verifyKey);
+        redisTemplate.delete(verifyKey);
         AssertUtils.notBlank(captcha, "验证码已失效");
         AssertUtils.isTrue(loginBody.getCode().equalsIgnoreCase(captcha), "验证码错误");
     }

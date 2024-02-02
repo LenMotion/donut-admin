@@ -44,22 +44,19 @@ export function getUserInfo() {
 }
 
 export function updateUserInfo(data) {
-  return defHttp.put<boolean>({ url: Api.UpdateUserInfo , data});
+  return defHttp.put<boolean>({ url: Api.UpdateUserInfo, data });
 }
 
 export function updateUserAvatar(data) {
-  return defHttp.put<boolean>({ url: Api.UpdateUserAvatar , data});
+  return defHttp.put<boolean>({ url: Api.UpdateUserAvatar, data });
 }
 
 export function updateUserPassword(data) {
-  return defHttp.put<boolean>({ url: Api.UpdateUserPassword , data});
+  return defHttp.put<boolean>({ url: Api.UpdateUserPassword, data });
 }
 
 export function captchaImageApi() {
-  return defHttp.get<CaptchaImageResultModel>(
-    { url: Api.CaptchaImage },
-    { errorMessageMode: 'none', withToken: false },
-  );
+  return defHttp.get<CaptchaImageResultModel>({ url: Api.CaptchaImage }, { withToken: false });
 }
 
 export function getPermCode() {
