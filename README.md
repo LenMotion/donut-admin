@@ -50,31 +50,18 @@ http://139.155.69.83:10222/
 
 账号：admin
 
-密码：123456
+密码：admin123
 
 ### 项目启动：
 如果您熟悉docker可能部署较为简单，可以直接使用docker-compose启动项目（mysql、redis）服务
 
-您可以在项目根目录下执行 docker-compose up -d mysql redis minio
+您可以在项目根目录下执行 ``docker-compose up -d mysql redis minio``
 
 mysql会自动创建数据库并执行初始化sql
 
 当然您可以自己使用您已经启动好的数据库和redis，修改对应application-dev.yml的配置即可
 
 如果您不使用minio或者使用其他的文件存储服务，请修改application.yml中的配置即可
-
-### 项目部署：
-
-进入项目根目录
-
- ``mvn clean package -DskipTests`` 打包api的jar包
-
-``docker-compose build`` 构建web、api的命令
-
-``docker-compose up -d`` 启动项目
-
-
-### 项目运行：
 #### 后端：
 * 启动类：``donut-api/src/mainDonutApiApplication.java``
 
@@ -83,12 +70,21 @@ mysql会自动创建数据库并执行初始化sql
 
 您需要使用node 16.x，并且建议您使用pnpm
 
-pnpm install
+``pnpm install``
 
-pnpm dev
+``pnpm dev``
 
-默认账户密码：admin/admin123
+默认账户密码：``admin/admin1231``
 
+### 项目部署：
+
+进入项目根目录
+
+``mvn clean package -DskipTests`` 打包api的jar包，也可以修改Dockerfile自动打包
+
+``docker-compose build`` 构建web、api的命令
+
+``docker-compose up -d`` 启动项目
 
 ### 演示画面
 
