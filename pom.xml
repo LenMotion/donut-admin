@@ -11,7 +11,7 @@
     </parent>
 
     <groupId>cn.lenmotion</groupId>
-    <artifactId>donut</artifactId>
+    <artifactId>donut-admin</artifactId>
     <version>1.0.0</version>
     <name>donut-admin</name>
     <description>donut通用管理系统</description>

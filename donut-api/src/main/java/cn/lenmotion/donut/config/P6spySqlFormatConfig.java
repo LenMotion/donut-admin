@@ -5,7 +5,6 @@ import com.p6spy.engine.spy.appender.MessageFormattingStrategy;
 
 /**
  * @author LenMotion
- * @datetime 2023/3/19 19:02
  */
 public class P6spySqlFormatConfig implements MessageFormattingStrategy {
 
