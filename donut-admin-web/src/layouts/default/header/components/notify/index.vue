@@ -43,8 +43,10 @@
   import { userNoticeListApi } from '@/api/system/notice';
   import NoticeDetailModal from '@/components/Donut/NoticeDetailModal/index.vue';
   import { useModal } from '@/components/Modal';
+  import { useUserStore } from '@/store/modules/user';
 
   const { wsUrl } = useGlobSetting();
+  const userStore = useUserStore();
   const { createMessage, notification } = useMessage();
   const [registerModal, { openModal }] = useModal();
 
@@ -131,6 +133,9 @@
           getNoticeList(1);
         } else if (code === 1000) {
           // 心跳响应，不做处理
+        } else if (code === 1401) {
+          userStore.logout();
+          createMessage.error(msg);
         } else {
           createMessage.error(msg);
         }
