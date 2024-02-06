@@ -26,7 +26,6 @@ public class SysFileStorageController {
     private final SysFileStorageService sysFileStorageService;
 
     @SaCheckPermission("system:fileStorage:list")
-    @OperationLog("文件记录列表")
     @GetMapping("/list")
     public ResponseResult<PageResult<SysFileStorage>> list(FileStorageQuery fileStorageQuery) {
         var page = sysFileStorageService.selectPage(fileStorageQuery);
