@@ -34,5 +34,3 @@ dromara:
         end-point: http://minio:9000
         bucket-name: donut
         domain: http://localhost:9000/ # 访问域名，注意“/”结尾，例如：http://minio.abc.com/abc/
-        attr:
-          expire: 30
