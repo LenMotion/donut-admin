@@ -1,0 +1,49 @@
+import { BasicColumn, FormSchema } from '@/components/Table';
+import { dictSelectProps } from '@/api/system/dictData';
+
+export const columns: BasicColumn[] = [
+    <% for(column in tableColumns) { %>
+  {
+    title: '${column.columnRemark}',
+    dataIndex: '${column.fieldName}',
+<% if (isNotEmpty(column.dictKey)) { %>
+    customRender: ({ record }) => record.transMap?.${column.fieldName}Name,
+<% } %>
+  },
+<% } %>
+];
+
+export const searchFormSchema: FormSchema[] = [
+    <% for(column in searchColumns) { %>
+  {
+    field: '${column.fieldName}',
+    label: '${column.columnRemark}',
+<% if (isNotEmpty(column.dictKey)) { %>
+    component: '${column.searchFieldType}',
+<% } %>
+<% if (isNotEmpty(column.dictKey)) { %>
+    component: 'Select',
+    componentProps: dictSelectProps('${column.dictKey}'),
+<% } %>
+  },
+<% } %>
+];
+
+export const formSchema: FormSchema[] = [
+    <% for(column in editColumns) { %>
+  {
+    field: '${column.fieldName}',
+    label: '${column.columnRemark}',
+<% if (column.fieldName=='id') { %>
+    show: false,
+<% } %>
+<% if (isNotEmpty(column.dictKey)) { %>
+    component: '${column.editFieldType}',
+<% } %>
+<% if (isNotEmpty(column.dictKey)) { %>
+    component: 'Select',
+    componentProps: dictSelectProps('${column.dictKey}'),
+<% } %>
+  },
+<% } %>
+];

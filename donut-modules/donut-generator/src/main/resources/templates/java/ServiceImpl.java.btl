@@ -1,0 +1,38 @@
+package ${packageName}.${moduleName}.service.impl;
+
+import cn.hutool.core.util.ObjUtil;
+import cn.lenmotion.donut.core.service.impl.DonutServiceImpl;
+import ${packageName}.${moduleName}.entity.covert.${className}Converter;
+import ${packageName}.${moduleName}.entity.po.${className};
+import ${packageName}.${moduleName}.entity.query.${className}Query;
+import ${packageName}.${moduleName}.mapper.${className}Mapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+/**
+ * @author ${author}
+ */
+@Service
+@RequiredArgsConstructor
+public class ${className}ServiceImpl extends DonutServiceImpl<${className}Mapper, ${className}> implements ${className}Service {
+
+    @Override
+    public IPage<${className}> selectPageList(${className}Query query) {
+        var queryWrapper = Wrappers.<${className}>lambdaQuery();
+        queryWrapper
+        <% for(column in searchColumns) { %>
+                .eq(ObjUtil.isNotEmpty(query.get${column.upperFieldName}()), ${className}::get${column.upperFieldName}, query.get${column.upperFieldName}())
+        <% } %>
+                .orderByDesc(${className}::getCreateTime);
+        return this.page(query.toPage(), queryWrapper);
+    }
+
+    @Override
+    public Boolean saveOrUpdate(${className}Request request) {
+        var ${lowClassName} = ${className}Converter.INSTANCE.toPo(request);
+        return super.saveOrUpdate(${lowClassName});
+    }
+
+}

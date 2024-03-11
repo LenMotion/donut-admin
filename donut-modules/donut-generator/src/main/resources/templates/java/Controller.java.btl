@@ -1,0 +1,67 @@
+package ${packageName}.${moduleName}.controller;
+
+import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.lenmotion.donut.core.annotation.OperationLog;
+import cn.lenmotion.donut.core.entity.PageResult;
+import cn.lenmotion.donut.core.entity.ResponseResult;
+import cn.lenmotion.donut.core.utils.PageUtils;
+import ${packageName}.${moduleName}.entity.po.${className};
+import ${packageName}.${moduleName}.entity.query.${className}Query;
+import cn.lenmotion.donut.core.entity.BaseUpdateStatus;
+import ${packageName}.${moduleName}.entity.request.${className}Request;
+import ${packageName}.${moduleName}.service.${className}Service;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+/**
+ * @author ${author}
+ */
+@Tag(name = "${featureName}")
+@RestController
+@RequestMapping("/${moduleName}/${lowClassName}")
+@RequiredArgsConstructor
+public class ${className}Controller {
+
+    private final ${className}Service ${lowClassName}Service;
+
+    @SaCheckPermission("${moduleName}:${lowClassName}:list")
+    @Operation(summary = "${featureName}列表")
+    @GetMapping("/list")
+    public ResponseResult<PageResult<${className}>> list(${className}Query query) {
+        IPage<${className}> list = ${lowClassName}Service.selectPagePage(query);
+        return ResponseResult.success(PageUtils.getPageResult(list));
+    }
+
+    @SaCheckPermission("${moduleName}:${lowClassName}:save")
+    @Operation(summary = "新增或修改${featureName}")
+    @OperationLog("新增或修改${featureName}")
+    @PostMapping
+    public ResponseResult<Boolean> saveOrUpdate(@Validated @RequestBody ${className}Request ${lowClassName}) {
+        return ResponseResult.success(${lowClassName}Service.saveOrUpdate(${lowClassName}));
+    }
+
+    @SaCheckPermission("${moduleName}:${lowClassName}:remove")
+    @Operation(summary = "删除${featureName}")
+    @OperationLog("删除${featureName}")
+    @DeleteMapping("/{ids}")
+    public ResponseResult<Boolean> remove(@PathVariable List<Long> ids) {
+        return ResponseResult.success(${lowClassName}Service.removeByIds(ids));
+    }
+
+<% if (statusApi==true) { %>
+    @SaCheckPermission("${moduleName}:${lowClassName}:status")
+    @Operation(summary = "更新${featureName}状态")
+    @OperationLog("更新${featureName}状态")
+    @PutMapping("status")
+    public ResponseResult<Boolean> updateStatus(@Validated @RequestBody BaseUpdateStatus request) {
+        return ResponseResult.success(${lowClassName}Service.updateStatus(request));
+    }
+
+<% } %>
+}

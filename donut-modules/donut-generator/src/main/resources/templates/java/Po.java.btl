@@ -1,0 +1,53 @@
+package ${packageName}.${moduleName}.entity.po;
+
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableName;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
+<%
+for(item in columnClasses) {
+%>
+import ${item};
+<%
+	}
+%>
+<% if (isEmpty(superClass)) { %>
+
+import java.io.Serial;
+import java.io.Serializable;
+<% } else { %>
+import ${superClass};
+import lombok.EqualsAndHashCode;
+<% } %>
+
+/**
+ * @author ${author}
+ * ${featureName}
+ */
+@Schema(description = "${featureName}")
+@Data
+@TableName(value = "${tableName}")
+<% if (isEmpty(superClass)) { %>
+public class ${className} implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
+
+<% } else { %>
+@EqualsAndHashCode(callSuper = true)
+public class ${className} extends ${superClassName} {
+<% } %>
+<%
+    for(column in columns) {
+%>
+    @TableField(value = "`${column.columnName}`")
+    @Schema(description = "${column.columnRemark}")
+<% if (isNotEmpty(column.dictKey)) { %>
+    @Trans(type = TransType.DICTIONARY, key = "${column.dictKey}")
+<% } %>
+    private ${column.javaType} ${column.fieldName};
+
+    <%
+    	}
+    %>
+}

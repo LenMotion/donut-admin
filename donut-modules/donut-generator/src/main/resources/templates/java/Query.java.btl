@@ -1,0 +1,24 @@
+package ${packageName}.${moduleName}.entity.query;
+
+import cn.lenmotion.donut.core.entity.BasePageQuery;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+<% for(item in searchColumnClasses) { %>
+import ${item};
+<% } %>
+
+/**
+ * @author ${author}
+ */
+@EqualsAndHashCode(callSuper = true)
+@Data
+@Schema(description = "${featureName}查询")
+public class ${className}Query extends BasePageQuery {
+
+    <% for(column in searchColumns) { %>
+    @Schema(description = "${column.columnRemark}")
+    private ${column.javaType} ${column.fieldName};
+
+<% } %>
+}

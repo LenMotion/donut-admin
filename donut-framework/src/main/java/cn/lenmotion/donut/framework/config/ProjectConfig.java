@@ -3,6 +3,7 @@ package cn.lenmotion.donut.framework.config;
 import cn.dev33.satoken.config.SaTokenConfig;
 import cn.hutool.core.date.DatePattern;
 import cn.hutool.crypto.asymmetric.RSA;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
@@ -24,6 +25,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Primary;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -68,6 +70,15 @@ public class ProjectConfig implements WebMvcConfigurer {
         objectMapper.registerModule(simpleModule);
 
         return objectMapper;
+    }
+
+    @Bean
+    public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter(ObjectMapper objectMapper){
+        MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
+        //添加此配置
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        converter.setObjectMapper(objectMapper);
+        return converter;
     }
 
     @Bean

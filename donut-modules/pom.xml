@@ -17,5 +17,6 @@
         <module>donut-auth</module>
         <module>donut-system</module>
         <module>donut-monitor</module>
+        <module>donut-generator</module>
     </modules>
 </project>

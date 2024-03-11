@@ -69,6 +69,11 @@
             <artifactId>donut-auth</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>cn.lenmotion</groupId>
+            <artifactId>donut-generator</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>

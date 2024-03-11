@@ -122,14 +122,16 @@ public class LoginServiceImpl implements LoginService {
      * @param e
      */
     private void loginLog(LoginBody loginBody, HttpServletRequest request, Exception e) {
+        String userAgent = request.getHeader(BaseConstants.USER_AGENT_HEADER);
+        String ipAddr = IpUtils.getIpAddr(request);
+
         taskExecutor.execute(() -> {
             try {
                 SysLoginLog loginLog = new SysLoginLog();
                 loginLog.setStatus(e == null ? LoginStatusEnum.SUCCESS.getCode() : LoginStatusEnum.FAILED.getCode());
                 loginLog.setUsername(loginBody.getUsername());
-                loginLog.setIp(IpUtils.getIpAddr(request));
+                loginLog.setIp(ipAddr);
 
-                String userAgent = request.getHeader(BaseConstants.USER_AGENT_HEADER);
                 UserAgent agent = UserAgentUtil.parse(userAgent);
                 loginLog.setBrowser(agent.getBrowser().getName());
                 loginLog.setOs(agent.getOs().getName());

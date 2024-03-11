@@ -1,0 +1,24 @@
+package ${packageName}.${moduleName}.entity.request;
+
+import cn.lenmotion.donut.core.entity.BasePo;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+    <%  for(column in editColumnClasses) {%>
+import ${column};
+<% } %>
+
+/**
+ * @author ${author}
+ */
+@Data
+@EqualsAndHashCode(callSuper = true)
+@Schema(description = "${featureName}请求对象")
+public class ${className}Request extends BasePo {
+
+    <%  for(column in editColumns) {%>
+    @Schema(description = "${column.columnRemark}")
+    private ${column.javaType} ${column.fieldName};
+
+<% } %>
+}

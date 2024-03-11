@@ -1,0 +1,21 @@
+package ${packageName}.${moduleName}.entity.covert;
+
+import ${packageName}.${moduleName}.entity.po.${className};
+import ${packageName}.${moduleName}.entity.request.${className}Request;
+import org.mapstruct.Mapper;
+import org.mapstruct.ReportingPolicy;
+import org.mapstruct.factory.Mappers;
+
+import java.util.List;
+
+/**
+ * @author ${author}
+ */
+@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE)
+public interface ${className}Converter {
+
+    ${className}Converter INSTANCE = Mappers.getMapper(${className}Converter.class);
+
+    ${className} toPo(${className}Request request);
+
+}

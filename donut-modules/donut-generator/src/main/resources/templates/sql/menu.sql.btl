@@ -1,0 +1,5 @@
+INSERT INTO `sys_menu` (`id`, `title`, `name`, `parent_id`, `menu_type`, `path`, `current_active_menu`, `redirect`, `component`, `ignore_keep_alive`, `hide_menu`, `hide_children_in_menu`, `status`, `perms`, `icon`, `order_no`, `query`, `frame`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `deleted`) VALUES
+(${genMenuId}, '${featureName}', '${className}', ${menuId}, '1', 'code', NULL, NULL, '/${moduleName}/${lowClassName}/index', 1, 0, 0, '0', '${moduleName}:${lowClassName}:list', NULL, 1, NULL, 0, '1', now(), '1', NULL, NULL, 0),
+(${saveMenuId}, '保存信息', NULL, ${genMenuId}, '2', '', NULL, NULL, '', 1, 0, 0, '0', '${moduleName}:${lowClassName}:save', '', 0, NULL, 0, '1', now(), '', NULL, '', 0),
+(${removeMenuId}, '删除信息', NULL, ${genMenuId}, '2', '', NULL, NULL, '', 1, 0, 0, '0', '${moduleName}:${lowClassName}:remove', '', 1, NULL, 0, '1', now(), '', NULL, '', 0)<% if (statusApi == true) { %>,
+(${statusMenuId}, '更新状态', NULL, ${genMenuId}, '2', '', NULL, NULL, '', 1, 0, 0, '0', '${moduleName}:${lowClassName}:status', '', 2, NULL, 0, '1', now(), '', NULL, '', 0)<% } %>;
