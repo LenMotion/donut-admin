@@ -47,11 +47,11 @@
 
 ### 项目预览：
 
-http://139.155.69.83:10222/
+https://donut.lenmotion.cn/
 
 账号：admin
 
-密码：admin123
+密码：123qwe
 
 ### 项目启动：
 如果您熟悉docker可能部署较为简单，可以直接使用docker-compose启动项目（mysql、redis）服务
@@ -75,7 +75,7 @@ mysql会自动创建数据库并执行初始化sql
 
 ``pnpm dev``
 
-默认账户密码：``admin/admin1231``
+默认账户密码：``admin/123qwe``
 
 ### 项目部署：
 

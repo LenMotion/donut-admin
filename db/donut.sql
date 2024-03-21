@@ -613,7 +613,7 @@ CREATE TABLE `sys_user`  (
 -- ----------------------------
 -- Records of sys_user
 -- ----------------------------
-INSERT INTO `sys_user` VALUES (1, 2, 'U01', 'admin', '超级管理员', NULL, 11, 'lenmotion@sina.com', '18001010101', '0', 25, 'http://localhost:9000/2024-01-20/65abd255db9add95652a070a.jpeg', '1d590d9e4930d16c7cdb93a74746ee36adc6e6b19deccd07f932a3e73d140a09', '1', NULL, NULL, '4', 'ces', NULL, NULL, '0', '127.0.0.1', '2024-01-22 22:17:29', '', '', NULL, '1', '2024-01-22 22:22:19', NULL, '0');
+INSERT INTO `sys_user` VALUES (1, 2, 'U01', 'admin', '超级管理员', NULL, 11, 'lenmotion@sina.com', '18001010101', '0', 25, 'http://localhost:9000/2024-01-20/65abd255db9add95652a070a.jpeg', 'c7084fa75f5d32685e89f7490f04efb160511c652c72a692135077b1c9092ec1', '1', NULL, NULL, '4', 'ces', NULL, NULL, '0', '127.0.0.1', '2024-01-22 22:17:29', '', '', NULL, '1', '2024-01-22 22:22:19', NULL, '0');
 
 -- ----------------------------
 -- Table structure for sys_user_dept

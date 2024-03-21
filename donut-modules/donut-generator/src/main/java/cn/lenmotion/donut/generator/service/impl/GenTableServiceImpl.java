@@ -62,7 +62,7 @@ public class GenTableServiceImpl extends ServiceImpl<GenTableMapper, GenTable> i
                     dataSourceProperties.getUsername(),
                     dataSourceProperties.getPassword());
             DatabaseMetaData metaData = conn.getMetaData();
-            rs = metaData.getTables(null, null, "%", new String[]{"TABLE"});
+            rs = metaData.getTables(conn.getCatalog(), conn.getSchema(), "%", new String[]{"TABLE"});
             List<GenTable> tables = new ArrayList<>();
             while (rs.next()) {
                 String tableName = rs.getString("TABLE_NAME");
