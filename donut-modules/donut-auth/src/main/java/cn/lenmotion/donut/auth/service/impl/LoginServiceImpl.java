@@ -2,6 +2,7 @@ package cn.lenmotion.donut.auth.service.impl;
 
 import cn.dev33.satoken.secure.SaSecureUtil;
 import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.core.util.ObjUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.CryptoException;
 import cn.hutool.crypto.asymmetric.KeyType;
@@ -28,9 +29,12 @@ import cn.lenmotion.donut.system.remote.*;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.redisson.api.RAtomicLong;
+import org.redisson.api.RedissonClient;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -50,43 +54,72 @@ public class LoginServiceImpl implements LoginService {
     private final SysNoticeRemoteService noticeRemoteService;
     private final TaskExecutor taskExecutor;
     private final JacksonRedisTemplate redisTemplate;
+    private final RedissonClient redissonClient;
 
     @Override
     public void login(LoginBody loginBody, HttpServletRequest request) {
         Exception exception = null;
+        String userAgent = request.getHeader(BaseConstants.USER_AGENT_HEADER);
+        String ipAddr = IpUtils.getIpAddr(request);
         try {
+
             log.info("start login: {}", JSONUtil.toJsonStr(loginBody));
+            // 获取登录失败
+            RAtomicLong atomicLong = this.validAccountPwdFailedLock(loginBody.getUsername());
             // 验证验证码是否正确
-            if (configRemoteService.getConfigBoolValue(ConfigConstants.CAPTCHA_ON_OFF)) {
-                checkCaptcha(loginBody);
-            }
+            this.checkCaptcha(loginBody);
             // 解密密码
-            String realPassword = loginRsa.decryptStr(loginBody.getPassword(), KeyType.PrivateKey);
+            String realPassword;
+            try {
+                realPassword = loginRsa.decryptStr(loginBody.getPassword(), KeyType.PrivateKey);
+            } catch (CryptoException e) {
+                throw new BusinessException(ResponseCodeEnum.USERNAME_OR_PWD_ERROR);
+            }
             // 使用用户名和密码进行sha256加密
             String password = SaSecureUtil.sha256BySalt(realPassword, loginBody.getUsername());
             // 查询用户
             SysUser user = userRemoteService.getByUsername(loginBody.getUsername());
             // 判断用户存在与否
-            AssertUtils.notNull(user, ResponseCodeEnum.USER_NOT_EXITS);
+            AssertUtils.notNull(user, ResponseCodeEnum.USERNAME_OR_PWD_ERROR);
             // 是否被禁用
             AssertUtils.notEquals(BaseStatusEnum.DISABLE.getCode(), user.getStatus(), ResponseCodeEnum.USER_DISABLED);
             // 判断密码
-            AssertUtils.equals(password, user.getPassword(), ResponseCodeEnum.USER_NOT_EXITS);
+            if (ObjUtil.notEqual(password, user.getPassword())) {
+                Optional.ofNullable(atomicLong).ifPresent(RAtomicLong::incrementAndGet);
+                throw new BusinessException(ResponseCodeEnum.USERNAME_OR_PWD_ERROR);
+            }
             // 登录
             StpUtil.login(user.getId());
             // 登陆成功
-            this.handleLoginSuccess(user, request);
+            this.handleLoginSuccess(user, ipAddr, atomicLong);
         } catch (Exception e) {
-            if (e instanceof CryptoException) {
-                exception = new BusinessException(ResponseCodeEnum.USER_NOT_EXITS);
-                throw new BusinessException(ResponseCodeEnum.USER_NOT_EXITS);
-            }
             exception = e;
             throw e;
         } finally {
             // 保存登陆信息
-            loginLog(loginBody, request, exception);
+            this.loginLog(loginBody, ipAddr, userAgent, exception);
         }
+    }
+
+    /**
+     * 校验密码输入错误的次数
+     *
+     * @param username
+     * @return
+     */
+    private RAtomicLong validAccountPwdFailedLock(String username) {
+        Integer accountLockCount = configRemoteService.getConfigIntValue(ConfigConstants.ACCOUNT_LOCK_COUNT);
+        Integer accountLockTime = configRemoteService.getConfigIntValue(ConfigConstants.ACCOUNT_LOCK_TIME);
+        // 如果未设置或者设置为0，都不做锁定
+        if (accountLockCount == null || accountLockCount == 0 || accountLockTime == null || accountLockTime == 0) {
+            return null;
+        }
+
+        RAtomicLong atomicLong = redissonClient.getAtomicLong(RedisConstants.ACCOUNT_LOCK_KEY + username);
+        atomicLong.expire(Duration.ofMinutes(accountLockTime));
+        // 获取锁定次数，校验是否超过限制
+        AssertUtils.isFalse(atomicLong.get() >= accountLockCount, "输入密码次数过多，账号已锁定!");
+        return atomicLong;
     }
 
     @Override
@@ -106,25 +139,20 @@ public class LoginServiceImpl implements LoginService {
      * @param loginBody 登陆信息
      */
     private void checkCaptcha(LoginBody loginBody) {
-        AssertUtils.isTrue(StrUtil.isAllNotBlank(loginBody.getCode(), loginBody.getUuid()), "验证码信息不能为空");
-        String verifyKey = RedisConstants.CAPTCHA_CODE_KEY + loginBody.getUuid();
-        String captcha = redisTemplate.opsForValue().get(verifyKey);
-        redisTemplate.delete(verifyKey);
-        AssertUtils.notBlank(captcha, "验证码已失效");
-        AssertUtils.isTrue(loginBody.getCode().equalsIgnoreCase(captcha), "验证码错误");
+        if (configRemoteService.getConfigBoolValue(ConfigConstants.CAPTCHA_ON_OFF)) {
+            AssertUtils.isTrue(StrUtil.isAllNotBlank(loginBody.getCode(), loginBody.getUuid()), "验证码信息不能为空");
+            String verifyKey = RedisConstants.CAPTCHA_CODE_KEY + loginBody.getUuid();
+            String captcha = redisTemplate.opsForValue().get(verifyKey);
+            redisTemplate.delete(verifyKey);
+            AssertUtils.notBlank(captcha, "验证码已失效");
+            AssertUtils.isTrue(loginBody.getCode().equalsIgnoreCase(captcha), "验证码错误");
+        }
     }
 
     /**
      * 记录登陆日志
-     *
-     * @param loginBody
-     * @param request
-     * @param e
      */
-    private void loginLog(LoginBody loginBody, HttpServletRequest request, Exception e) {
-        String userAgent = request.getHeader(BaseConstants.USER_AGENT_HEADER);
-        String ipAddr = IpUtils.getIpAddr(request);
-
+    private void loginLog(LoginBody loginBody, String ipAddr, String userAgent, Exception e) {
         taskExecutor.execute(() -> {
             try {
                 SysLoginLog loginLog = new SysLoginLog();
@@ -146,14 +174,11 @@ public class LoginServiceImpl implements LoginService {
 
     /**
      * 登陆成功
-     *
-     * @param user
-     * @param request
      */
-    private void handleLoginSuccess(SysUser user, HttpServletRequest request) {
+    private void handleLoginSuccess(SysUser user, String ip, RAtomicLong atomicLong) {
         SysUser sysUser = new SysUser();
         sysUser.setId(user.getId());
-        sysUser.setLoginIp(IpUtils.getIpAddr(request));
+        sysUser.setLoginIp(ip);
         sysUser.setLoginDate(LocalDateTime.now());
         userRemoteService.updateUser(sysUser);
 
@@ -164,6 +189,8 @@ public class LoginServiceImpl implements LoginService {
         loginInfo.setRoleDataScopes(permissionRemoteService.getRoleDataScope(user.getId()));
 
         StpUtil.getSession().set(BaseConstants.SESSION_LOGIN_INFO, loginInfo);
+        // 删除登录失败信息
+        Optional.ofNullable(atomicLong).ifPresent(RAtomicLong::delete);
     }
 
 }

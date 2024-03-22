@@ -26,8 +26,7 @@ public class LoginController {
 
     @Operation(summary = "根据用户名和密码登陆")
     @PostMapping("/login")
-    public ResponseResult<SaTokenInfo> login(@RequestBody LoginBody loginBody,
-                                             HttpServletRequest request) {
+    public ResponseResult<SaTokenInfo> login(@RequestBody LoginBody loginBody, HttpServletRequest request) {
         // 授权登录
         loginService.login(loginBody, request);
         return ResponseResult.success(StpUtil.getTokenInfo());

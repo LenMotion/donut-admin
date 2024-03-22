@@ -14,4 +14,9 @@ public interface RedisConstants {
 
     String USER_READ_NOTICE_LOCK_KEY = "user_read_notice_lock:";
 
+    /**
+     * 账号锁定key
+     */
+    String ACCOUNT_LOCK_KEY = "account_lock:";
+
 }

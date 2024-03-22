@@ -12,8 +12,8 @@
   "license": "MIT",
   "author": {
     "name": "vben",
-    "email": "anncwb@126.com",
-    "url": "https://github.com/anncwb"
+    "email": "lenmotion@sina.com",
+    "url": "https://github.com/lenmotion"
   },
   "scripts": {
     "bootstrap": "pnpm install",

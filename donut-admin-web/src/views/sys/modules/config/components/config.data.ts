@@ -47,6 +47,7 @@ export const formSchema: FormSchema[] = [
     field: 'MAX_DEPT_LEVEL',
     label: '最大部门层级',
     required: true,
+    rules: [{ pattern: /^(0|[1-9]\d*)$/, message: '不能小于0' }],
     component: 'InputNumber',
     helpMessage: '小于等于0表示不限制',
   },
@@ -63,6 +64,22 @@ export const formSchema: FormSchema[] = [
       valueField: 'id',
       labelField: 'title',
     },
+  },
+  {
+    field: 'ACCOUNT_LOCK_COUNT',
+    label: '密码错误次数',
+    required: true,
+    rules: [{ pattern: /^(0|[1-9]\d*)$/, message: '不能小于0' }],
+    component: 'InputNumber',
+    helpMessage: '密码连续输入错误次数，为0不做处理',
+  },
+  {
+    field: 'ACCOUNT_LOCK_TIME',
+    label: '锁定时长(分钟)',
+    required: true,
+    rules: [{ pattern: /^(0|[1-9]\d*)$/, message: '不能小于0' }],
+    component: 'InputNumber',
+    helpMessage: '密码连续输入错误次数，账号锁定时间，为0不做处理',
   },
 ];
 

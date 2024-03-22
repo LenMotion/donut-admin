@@ -21,7 +21,7 @@
     try {
       const values = await validate();
       setProps({ submitButtonOptions: { loading: true } });
-      values.DEFAULT_MENU = values.DEFAULT_MENU.join(',');
+      values.DEFAULT_MENU = values.DEFAULT_MENU ? values.DEFAULT_MENU.join(',') : '';
       await systemConfigSaveApi(values);
       createMessage.success('保存成功');
     } finally {
@@ -31,7 +31,7 @@
 
   const [registerForm, { setFieldsValue, validate, setProps }] = useForm({
     schemas: formSchema,
-    labelWidth: 120,
+    labelWidth: 140,
     rowProps: { gutter: 50 },
     baseColProps: { span: 12 },
     showResetButton: false,

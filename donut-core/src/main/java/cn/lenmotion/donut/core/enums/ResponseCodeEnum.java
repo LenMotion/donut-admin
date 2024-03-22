@@ -14,7 +14,7 @@ public enum ResponseCodeEnum implements BaseEnum<Integer> {
     UN_LOGIN(1401, "登陆已失效，请重新授权"),
     USER_DISABLED(1402, "用户已禁用，请联系管理员"),
     UN_AUTH(1403, "无访问权限，请联系管理员"),
-    USER_NOT_EXITS(1404, "用户名或密码错误"),
+    USERNAME_OR_PWD_ERROR(1404, "用户名或密码错误"),
     ELSEWHERE_LOGIN(1405, "账号已在其他地方登录"),
     BAD_ARGUMENT_VALUE(1601, "请求参数错误"),
     METHOD_NOT_SUPPORT(1602, "请求方式错误"),
@@ -25,6 +25,7 @@ public enum ResponseCodeEnum implements BaseEnum<Integer> {
      * 编码
      */
     private final Integer code;
+
     /**
      * 备注
      */

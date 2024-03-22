@@ -97,6 +97,7 @@ public class SysConfigServiceImpl extends DonutServiceImpl<SysConfigMapper, SysC
     @Override
     public Integer getConfigIntValue(String configKey) {
         return Optional.ofNullable(AopUtils.getAopProxy(this).getConfigByKey(configKey))
+                .filter(StrUtil::isNotBlank)
                 .map(Integer::valueOf)
                 .orElse(null);
     }
@@ -104,6 +105,7 @@ public class SysConfigServiceImpl extends DonutServiceImpl<SysConfigMapper, SysC
     @Override
     public Boolean getConfigBoolValue(String configKey) {
         return Optional.ofNullable(AopUtils.getAopProxy(this).getConfigByKey(configKey))
+                .filter(StrUtil::isNotBlank)
                 .map(Boolean::valueOf)
                 .orElse(null);
     }
