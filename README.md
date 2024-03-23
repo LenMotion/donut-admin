@@ -11,14 +11,14 @@
 * 用户管理：基础的用户管理、用户登录等功能
 * 部门管理：提供基于mybatis-plus的数据权限过滤
 * 岗位管理：用户关联岗位、岗位与部门关联
-* 角色管理：用户关联角色
+* 角色管理：用户关联角色，赋予权限角色菜单权限
 * 菜单管理：结合前端的router配置，实现动态路由
 * 数据字典：存放字典信息，并且结合easy-trans使用作为数据字典转换
 * 操作日志：对于新增、修改与删除等操作存储操作日志
 * 登录日志：登录日志存放
 * 定时任务：基于Hutool的Cron表达式，支持动态修改
 * 服务监控：查看服务器相关信息
-* 文件管理：使用X-File-Storage实现文件上传与下载，并实现文件与数据库的关联，结合easy-trans自动生成加密的访问链接
+* 文件管理：使用X-File-Storage实现文件上传与下载，并实现文件与数据库的关联，结合easy-trans自动生成加密的访问链接。可以支持多个存储平台，详细支持列表可以查询[X-File-Storage](https://x-file-storage.xuyanwu.cn/#/)
 * 系统设置：配置信息信息、验证码开关、默认密码与默认菜单等相关信息
 * 代码生成：可以动态生成代码，前后端代码一键生成
 
@@ -30,14 +30,14 @@
 * JDK 17
 * Mysql 8
 * Redis
-* Sa-Token
-* MyBatis-Plus
-* Easy-Trans
-* Hutool
-* Knife4j
-* EasyExcel
-* X-File-Storage
-* MapStruct
+* [Sa-Token](https://sa-token.cc/doc.html#/)
+* [MyBatis-Plus](https://baomidou.com/)
+* [Easy-Trans](http://easy-trans.fhs-opensource.top/)
+* [Hutool](https://hutool.cn/docs/)
+* [Knife4j](https://doc.xiaominfo.com/)
+* [EasyExcel](https://easyexcel.opensource.alibaba.com/)
+* [X-File-Storage](https://x-file-storage.xuyanwu.cn/#/)
+* [MapStruct](https://mapstruct.org/)
 
 #### 前端：
 前端基于开源项目[Vben](http://vben.vvbin.cn)
@@ -64,7 +64,7 @@ mysql会自动创建数据库并执行初始化sql
 
 如果您不使用minio或者使用其他的文件存储服务，请修改application.yml中的配置即可
 #### 后端：
-* 启动类：``donut-api/src/mainDonutApiApplication.java``
+* 启动类：``donut-api/src/main/DonutApiApplication.java``
 
 #### 前端：
 ``cd donut-admin-web/``
@@ -91,7 +91,6 @@ mysql会自动创建数据库并执行初始化sql
 
 <p align="center">
     <img alt="Donut admin" width="100%" src="./images/preview1.jpg">
-    <img alt="Donut admin" width="100%" src="./images/preview2.jpg">
     <img alt="Donut admin" width="100%" src="./images/preview3.jpg">
     <img alt="Donut admin" width="100%" src="./images/preview4.jpg">
 </p>
