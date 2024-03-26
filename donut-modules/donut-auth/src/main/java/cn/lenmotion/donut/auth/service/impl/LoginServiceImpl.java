@@ -61,8 +61,8 @@ public class LoginServiceImpl implements LoginService {
         Exception exception = null;
         String userAgent = request.getHeader(BaseConstants.USER_AGENT_HEADER);
         String ipAddr = IpUtils.getIpAddr(request);
+        String tokenValue = null;
         try {
-
             log.info("start login: {}", JSONUtil.toJsonStr(loginBody));
             // 获取登录失败
             RAtomicLong atomicLong = this.validAccountPwdFailedLock(loginBody.getUsername());
@@ -90,6 +90,7 @@ public class LoginServiceImpl implements LoginService {
             }
             // 登录
             StpUtil.login(user.getId());
+            tokenValue = StpUtil.getTokenValue();
             // 登陆成功
             this.handleLoginSuccess(user, ipAddr, atomicLong);
         } catch (Exception e) {
@@ -97,7 +98,7 @@ public class LoginServiceImpl implements LoginService {
             throw e;
         } finally {
             // 保存登陆信息
-            this.loginLog(loginBody, ipAddr, userAgent, exception);
+            this.loginLog(loginBody, ipAddr, userAgent, tokenValue, exception);
         }
     }
 
@@ -152,7 +153,7 @@ public class LoginServiceImpl implements LoginService {
     /**
      * 记录登陆日志
      */
-    private void loginLog(LoginBody loginBody, String ipAddr, String userAgent, Exception e) {
+    private void loginLog(LoginBody loginBody, String ipAddr, String userAgent, String tokenValue, Exception e) {
         taskExecutor.execute(() -> {
             try {
                 SysLoginLog loginLog = new SysLoginLog();
@@ -165,6 +166,7 @@ public class LoginServiceImpl implements LoginService {
                 loginLog.setOs(agent.getOs().getName());
                 loginLog.setLoginTime(LocalDateTime.now());
                 loginLog.setMsg(Optional.ofNullable(e).map(Exception::getMessage).orElse("登录成功"));
+                loginLog.setTokenValue(loginRsa.encryptBase64(tokenValue, KeyType.PrivateKey));
                 loginLogRemoteService.saveLoginLog(loginLog);
             } catch (Exception e1) {
                 log.error("登录日志记录异常", e1);

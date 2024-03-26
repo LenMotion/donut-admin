@@ -61,4 +61,10 @@ public class SysLoginLog extends BasePo {
     @Schema(description = "登录时间")
     private LocalDateTime loginTime;
 
+    /**
+     * token值
+     */
+    @Schema(description = "token值")
+    private String tokenValue;
+
 }

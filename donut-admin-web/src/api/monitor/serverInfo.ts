@@ -3,7 +3,6 @@ import { defHttp } from '@/utils/http/axios';
 const basic = '/monitor';
 
 enum Api {
-  Basic = basic,
   Redis = basic + '/redis',
   Server = basic + '/server',
 }

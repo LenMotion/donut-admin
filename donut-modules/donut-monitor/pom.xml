@@ -21,6 +21,11 @@
             <groupId>com.github.oshi</groupId>
             <artifactId>oshi-core</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>cn.lenmotion</groupId>
+            <artifactId>donut-system-remote</artifactId>
+        </dependency>
     </dependencies>
 
 </project>
