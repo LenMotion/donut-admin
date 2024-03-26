@@ -164,6 +164,7 @@ export const fieldColumns: BasicColumn[] = [
   {
     dataIndex: 'columnRemark',
     title: '备注',
+    fixed: 'left',
     editRow: true,
   },
   {
@@ -195,7 +196,7 @@ export const fieldColumns: BasicColumn[] = [
   },
   {
     dataIndex: 'idField',
-    title: '是否主键',
+    title: '主键',
     editRow: true,
     editComponent: 'Checkbox',
     editValueMap: (value) => {
@@ -204,7 +205,7 @@ export const fieldColumns: BasicColumn[] = [
   },
   {
     dataIndex: 'searchField',
-    title: '是否查询列',
+    title: '查询列',
     editRow: true,
     editComponent: 'Checkbox',
     editValueMap: (value) => {
@@ -213,7 +214,7 @@ export const fieldColumns: BasicColumn[] = [
   },
   {
     dataIndex: 'searchFieldType',
-    title: '查询列前端组件',
+    title: '查询列组件',
     editRow: true,
     editComponent: 'Select',
     editComponentProps: () => {
@@ -234,7 +235,7 @@ export const fieldColumns: BasicColumn[] = [
   },
   {
     dataIndex: 'editField',
-    title: '是否编辑列',
+    title: '编辑列',
     editRow: true,
     editComponent: 'Checkbox',
     editValueMap: (value) => {
@@ -243,7 +244,7 @@ export const fieldColumns: BasicColumn[] = [
   },
   {
     dataIndex: 'editFieldType',
-    title: '查询列前端组件',
+    title: '编辑列组件',
     editRow: true,
     editComponent: 'Select',
     editComponentProps: () => {
@@ -263,7 +264,7 @@ export const fieldColumns: BasicColumn[] = [
   },
   {
     dataIndex: 'tableField',
-    title: '是否列表列',
+    title: '列表列',
     editRow: true,
     editComponent: 'Checkbox',
     editValueMap: (value) => {

@@ -46,6 +46,7 @@
       setFieldsValue({ ...data.record });
       tableColumnsByTableApi(data.record.id).then((res) => {
         setTableData(res);
+        currentEditKeyRef.value = '';
       });
     }
   });

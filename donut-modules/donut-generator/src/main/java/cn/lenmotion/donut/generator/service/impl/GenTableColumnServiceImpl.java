@@ -24,6 +24,7 @@ import java.lang.reflect.Field;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author lenmotion
@@ -54,6 +55,7 @@ public class GenTableColumnServiceImpl extends ServiceImpl<GenTableColumnMapper,
             // 查询表列信息
             rs = metaData.getColumns(conn.getCatalog(), conn.getSchema(), tableName, "%");
             List<GenTableColumn> columns = new ArrayList<>();
+            AtomicInteger atomicInteger = new AtomicInteger(0);
             while (rs.next()) {
                 String columnName = rs.getString("COLUMN_NAME").toUpperCase();
                 GenTableColumn tableColumn = new GenTableColumn();
@@ -82,7 +84,7 @@ public class GenTableColumnServiceImpl extends ServiceImpl<GenTableColumnMapper,
                 tableColumn.setSearchField(!tableColumn.getIdField());
                 tableColumn.setSearchFieldType("Input");
                 tableColumn.setTableField(!tableColumn.getIdField());
-                tableColumn.setSortIndex(1);
+                tableColumn.setSortIndex(atomicInteger.incrementAndGet());
 
                 columns.add(tableColumn);
             }

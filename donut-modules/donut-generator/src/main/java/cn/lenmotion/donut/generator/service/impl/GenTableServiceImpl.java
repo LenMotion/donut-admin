@@ -66,15 +66,13 @@ public class GenTableServiceImpl extends ServiceImpl<GenTableMapper, GenTable> i
             List<GenTable> tables = new ArrayList<>();
             while (rs.next()) {
                 String tableName = rs.getString("TABLE_NAME");
-                if (!StrUtil.startWithIgnoreCase(tableName, "ACT_")) {
-                    GenTable genTable = new GenTable();
-                    genTable.setTableName(tableName);
-                    String remarks = rs.getString("REMARKS");
-                    genTable.setFeatureName(ObjUtil.isEmpty(remarks) ? tableName : remarks);
-                    // 生成类名
-                    genTable.setClassName(StrUtil.upperFirst(StrUtil.toCamelCase(tableName)));
-                    tables.add(genTable);
-                }
+                GenTable genTable = new GenTable();
+                genTable.setTableName(tableName);
+                String remarks = rs.getString("REMARKS");
+                genTable.setFeatureName(ObjUtil.isEmpty(remarks) ? tableName : remarks);
+                // 生成类名
+                genTable.setClassName(StrUtil.upperFirst(StrUtil.toCamelCase(tableName)));
+                tables.add(genTable);
             }
             return tables;
         } catch (SQLException e) {
