@@ -172,6 +172,10 @@ public class GenTableColumnServiceImpl extends ServiceImpl<GenTableColumnMapper,
         for (Field supportedField : supportedFields) {
             ignoreColumns.add(supportedField.getName());
         }
+        Class<?> superclass = clz.getSuperclass();
+        if (superclass != null) {
+            ignoreColumns.addAll(this.getFieldsByClass(superclass));
+        }
         return ignoreColumns;
     }
 
