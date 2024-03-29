@@ -1,13 +1,14 @@
 package cn.lenmotion.donut.monitor.service;
 
+import cn.dev33.satoken.stp.StpLogic;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.asymmetric.KeyType;
 import cn.hutool.crypto.asymmetric.RSA;
 import cn.lenmotion.donut.core.entity.BasePageQuery;
-import cn.lenmotion.donut.core.entity.BaseQuery;
 import cn.lenmotion.donut.core.entity.PageResult;
+import cn.lenmotion.donut.framework.template.JacksonRedisTemplate;
 import cn.lenmotion.donut.monitor.entity.OnlineUserVO;
 import cn.lenmotion.donut.monitor.entity.converter.LoginLogConverter;
 import cn.lenmotion.donut.system.entity.po.SysLoginLog;
@@ -30,6 +31,7 @@ public class OnlineUserService {
 
     private final SysLoginLogRemoteService loginLogRemoteService;
     private final RSA loginRsa;
+    private final JacksonRedisTemplate redisTemplate;
 
     /**
      * 获取在线用户信息
@@ -76,6 +78,9 @@ public class OnlineUserService {
         if (loginLog != null) {
             var tokenVal = loginRsa.decryptStr(loginLog.getTokenValue(), KeyType.PublicKey);
             StpUtil.kickoutByTokenValue(tokenVal);
+            // 直接移除token，避免列表中展示
+            StpLogic stpLogic = new StpLogic(StpUtil.TYPE);
+            redisTemplate.delete(stpLogic.splicingKeyTokenValue(tokenVal));
         }
         return true;
     }
