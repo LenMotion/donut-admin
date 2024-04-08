@@ -60,7 +60,7 @@ services:
     image: donut-api:1.0.0
     hostname: donut-api
     build:
-      context: ./
+      context: ./donut-api
       dockerfile: Dockerfile
     ports:
       - 10001:10001
