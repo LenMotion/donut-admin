@@ -59,7 +59,7 @@ public class SysPostServiceImpl extends DonutServiceImpl<SysPostMapper, SysPost>
         if (Objects.isNull(entity.getId())) {
             entity.setStatus(BaseStatusEnum.DISABLE.getCode());
         }
-        return super.save(entity);
+        return super.saveOrUpdate(entity);
     }
 
 }
