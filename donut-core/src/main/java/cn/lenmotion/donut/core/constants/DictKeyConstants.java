@@ -31,4 +31,6 @@ public interface DictKeyConstants {
 
     String SYS_OPERATION_STATUS = "sys_operation_status";
 
+    String SYS_DATA_SCOPE = "sys_data_scope";
+
 }

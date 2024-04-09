@@ -45,6 +45,7 @@ public class SysRole extends BaseCreatePo {
      */
     @TableField(value = "data_scope")
     @Schema(description = "数据范围（1：全部数据权限 2：自定数据权限 3：本部门数据权限 4：本部门及以下数据权限）")
+    @Trans(type = TransType.DICTIONARY, key = DictKeyConstants.SYS_DATA_SCOPE)
     private String dataScope;
 
     /**
