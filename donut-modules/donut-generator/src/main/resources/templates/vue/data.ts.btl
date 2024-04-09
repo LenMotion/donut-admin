@@ -37,7 +37,7 @@ export const formSchema: FormSchema[] = [
 <% if (column.fieldName=='id') { %>
     show: false,
 <% } %>
-<% if (isNotEmpty(column.dictKey)) { %>
+<% if (isEmpty(column.dictKey)) { %>
     component: '${column.editFieldType}',
 <% } %>
 <% if (isNotEmpty(column.dictKey)) { %>

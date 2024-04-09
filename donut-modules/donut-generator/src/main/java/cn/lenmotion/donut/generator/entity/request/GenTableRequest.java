@@ -41,6 +41,9 @@ public class GenTableRequest extends BasePo {
     @Schema(description = "备注")
     private String remark;
 
+    @Schema(description = "是否开启状态接口")
+    private Boolean statusApi;
+
     @Schema(description = "字段信息")
     private List<GenTableColumnRequest> columns;
 
