@@ -25,10 +25,8 @@ export const formSchema: FormSchema[] = [
     componentProps: ({ formModel }) => {
       return {
         api: (file) => {
-          console.log(file);
           return new Promise((resolve) => {
             getBase64WithFile(file.file).then((res) => {
-              console.log(res);
               formModel.SYSTEM_LOGO = res.result;
               resolve({});
             });
