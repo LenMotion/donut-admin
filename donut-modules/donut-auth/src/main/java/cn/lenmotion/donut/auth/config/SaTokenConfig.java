@@ -21,6 +21,7 @@ public class SaTokenConfig implements WebMvcConfigurer {
                 .excludePathPatterns(
                         "/login",
                         "/captchaImage",
+                        "/system/config/loginPage",
                         "/doc.html",
                         "/v3/api-docs/**",
                         "/webjars/**",

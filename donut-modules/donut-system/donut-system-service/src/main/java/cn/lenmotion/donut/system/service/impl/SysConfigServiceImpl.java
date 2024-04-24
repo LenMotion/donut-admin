@@ -3,6 +3,7 @@ package cn.lenmotion.donut.system.service.impl;
 import cn.hutool.core.util.ObjUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.lenmotion.donut.core.constants.BaseConstants;
+import cn.lenmotion.donut.core.constants.ConfigConstants;
 import cn.lenmotion.donut.core.constants.RedisConstants;
 import cn.lenmotion.donut.core.exception.BusinessException;
 import cn.lenmotion.donut.core.utils.AopUtils;
@@ -10,6 +11,7 @@ import cn.lenmotion.donut.core.utils.AssertUtils;
 import cn.lenmotion.donut.core.service.impl.DonutServiceImpl;
 import cn.lenmotion.donut.system.entity.po.SysConfig;
 import cn.lenmotion.donut.system.entity.query.ConfigQuery;
+import cn.lenmotion.donut.system.entity.vo.LoginPageVO;
 import cn.lenmotion.donut.system.mapper.SysConfigMapper;
 import cn.lenmotion.donut.system.service.SysConfigService;
 import com.alibaba.fastjson.JSONObject;
@@ -108,6 +110,18 @@ public class SysConfigServiceImpl extends DonutServiceImpl<SysConfigMapper, SysC
                 .filter(StrUtil::isNotBlank)
                 .map(Boolean::valueOf)
                 .orElse(null);
+    }
+
+    @Override
+    public LoginPageVO getLoginPageConfig() {
+        var vo = new LoginPageVO();
+
+        vo.setName(AopUtils.getAopProxy(this).getConfigByKey(ConfigConstants.SYSTEM_NAME));
+        vo.setTitle(AopUtils.getAopProxy(this).getConfigByKey(ConfigConstants.SYSTEM_TITLE));
+        vo.setDescription(AopUtils.getAopProxy(this).getConfigByKey(ConfigConstants.SYS_DESCRIPTION));
+        vo.setLogo(AopUtils.getAopProxy(this).getConfigByKey(ConfigConstants.SYSTEM_LOGO));
+
+        return vo;
     }
 
     @Override

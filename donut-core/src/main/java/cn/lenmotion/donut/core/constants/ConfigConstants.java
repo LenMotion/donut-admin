@@ -35,4 +35,24 @@ public interface ConfigConstants {
      */
     String ACCOUNT_LOCK_TIME = "ACCOUNT_LOCK_TIME";
 
+    /**
+     * 系统名称
+     */
+    String SYSTEM_NAME = "SYSTEM_NAME";
+
+    /**
+     * 系统标题
+     */
+    String SYSTEM_TITLE = "SYSTEM_TITLE";
+
+    /**
+     * 系统描述
+     */
+    String SYS_DESCRIPTION = "SYSTEM_DESCRIPTION";
+
+    /**
+     * 系统logo
+     */
+    String SYSTEM_LOGO = "SYSTEM_LOGO";
+
 }

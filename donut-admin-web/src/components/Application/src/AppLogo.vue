@@ -4,20 +4,21 @@
 -->
 <template>
   <div class="anticon" :class="getAppLogoClass" @click="goHome">
-    <img src="../../../assets/images/logo.png" />
+    <img :src="systemInfo.logo" />
     <div class="ml-2 truncate md:opacity-100" :class="getTitleClass" v-show="showTitle">
-      {{ title }}
+      {{ systemInfo.name }}
     </div>
   </div>
 </template>
 <script lang="ts" setup>
-  import { computed, unref } from 'vue';
-  import { useGlobSetting } from '@/hooks/setting';
+  import { computed, ref, unref } from 'vue';
   import { useGo } from '@/hooks/web/usePage';
   import { useMenuSetting } from '@/hooks/setting/useMenuSetting';
   import { useDesign } from '@/hooks/web/useDesign';
   import { PageEnum } from '@/enums/pageEnum';
   import { useUserStore } from '@/store/modules/user';
+  import { loginPageApi } from '@/api/system/config';
+  import logo from '@/assets/images/logo.png';
 
   const props = defineProps({
     /**
@@ -37,7 +38,6 @@
   const { prefixCls } = useDesign('app-logo');
   const { getCollapsedShowTitle } = useMenuSetting();
   const userStore = useUserStore();
-  const { title } = useGlobSetting();
   const go = useGo();
 
   const getAppLogoClass = computed(() => [
@@ -56,6 +56,12 @@
   function goHome() {
     go(userStore.getUserInfo.homePath || PageEnum.BASE_HOME);
   }
+
+  const systemInfo = ref<any>({
+    name: 'Donut-Admin',
+    logo,
+  });
+  loginPageApi().then((res) => (systemInfo.value = res));
 </script>
 <style lang="less" scoped>
   @prefix-cls: ~'@{namespace}-app-logo';

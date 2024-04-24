@@ -1,4 +1,5 @@
 import { defHttp } from '@/utils/http/axios';
+import { PageResult } from '../model/baseModel';
 
 const basic = '/system/config';
 
@@ -7,6 +8,7 @@ enum Api {
   List = basic + '/list',
   Detail = basic + '/',
   SystemConfig = basic + '/systemConfig',
+  LoginPage = basic + '/loginPage',
 }
 
 export const systemConfigGetApi = () => {
@@ -17,8 +19,12 @@ export const systemConfigSaveApi = (data) => {
   return defHttp.put<boolean>({ url: Api.SystemConfig, data });
 };
 
+export const loginPageApi = () => {
+  return defHttp.get<Recordable>({ url: Api.LoginPage });
+};
+
 export const listApi = (params) => {
-  return defHttp.get<Recordable[]>({ url: Api.List, params });
+  return defHttp.get<PageResult<Recordable>>({ url: Api.List, params });
 };
 
 export const configByKeyApi = (key) => {

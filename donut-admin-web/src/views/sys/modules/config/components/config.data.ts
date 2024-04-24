@@ -1,5 +1,6 @@
 import { BasicColumn, FormSchema } from '@/components/Table';
 import { menuTreeApi } from '@/api/system/menu';
+import { getBase64WithFile } from '@/components/Upload/src/helper';
 
 export const settingList = [
   {
@@ -16,8 +17,43 @@ export const settingList = [
 
 export const formSchema: FormSchema[] = [
   {
+    field: 'SYSTEM_LOGO',
+    label: '系统LOGO',
+    required: true,
+    component: 'ImageUpload',
+    colProps: { span: 24 },
+    componentProps: ({ formModel }) => {
+      return {
+        api: (file) => {
+          console.log(file);
+          return new Promise((resolve) => {
+            getBase64WithFile(file.file).then((res) => {
+              console.log(res);
+              formModel.SYSTEM_LOGO = res.result;
+              resolve({});
+            });
+          });
+        },
+      };
+    },
+    // @ts-ignore
+    // slot: 'logo',
+  },
+  {
     field: 'SYSTEM_NAME',
     label: '系统名称',
+    required: true,
+    component: 'Input',
+  },
+  {
+    field: 'SYSTEM_TITLE',
+    label: '系统标题',
+    required: true,
+    component: 'Input',
+  },
+  {
+    field: 'SYSTEM_DESCRIPTION',
+    label: '系统描述',
     required: true,
     component: 'Input',
   },
@@ -36,12 +72,7 @@ export const formSchema: FormSchema[] = [
       checkedValue: 'true',
       unCheckedValue: 'false',
     },
-  },
-  {
-    field: 'USER_DEFAULT_PASSWORD',
-    label: '用户默认密码',
-    required: true,
-    component: 'InputPassword',
+    colProps: { span: 6 },
   },
   {
     field: 'MAX_DEPT_LEVEL',
@@ -50,6 +81,7 @@ export const formSchema: FormSchema[] = [
     rules: [{ pattern: /^(0|[1-9]\d*)$/, message: '不能小于0' }],
     component: 'InputNumber',
     helpMessage: '小于等于0表示不限制',
+    colProps: { span: 6 },
   },
   {
     field: 'DEFAULT_MENU',
@@ -64,6 +96,7 @@ export const formSchema: FormSchema[] = [
       valueField: 'id',
       labelField: 'title',
     },
+    colProps: { span: 12 },
   },
   {
     field: 'ACCOUNT_LOCK_COUNT',
@@ -72,6 +105,7 @@ export const formSchema: FormSchema[] = [
     rules: [{ pattern: /^(0|[1-9]\d*)$/, message: '不能小于0' }],
     component: 'InputNumber',
     helpMessage: '密码连续输入错误次数，为0不做处理',
+    colProps: { span: 6 },
   },
   {
     field: 'ACCOUNT_LOCK_TIME',
@@ -80,6 +114,14 @@ export const formSchema: FormSchema[] = [
     rules: [{ pattern: /^(0|[1-9]\d*)$/, message: '不能小于0' }],
     component: 'InputNumber',
     helpMessage: '密码连续输入错误次数，账号锁定时间，为0不做处理',
+    colProps: { span: 6 },
+  },
+  {
+    field: 'USER_DEFAULT_PASSWORD',
+    label: '用户默认密码',
+    required: true,
+    component: 'InputPassword',
+    colProps: { span: 12 },
   },
 ];
 

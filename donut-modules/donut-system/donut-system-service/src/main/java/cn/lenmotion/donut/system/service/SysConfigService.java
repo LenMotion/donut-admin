@@ -3,6 +3,7 @@ package cn.lenmotion.donut.system.service;
 import cn.lenmotion.donut.core.service.DonutService;
 import cn.lenmotion.donut.system.entity.po.SysConfig;
 import cn.lenmotion.donut.system.entity.query.ConfigQuery;
+import cn.lenmotion.donut.system.entity.vo.LoginPageVO;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 
@@ -58,5 +59,11 @@ public interface SysConfigService extends DonutService<SysConfig> {
      * @return
      */
     Boolean getConfigBoolValue(String configKey);
+
+    /**
+     * 获取登录页的配置信息
+     * @return
+     */
+    LoginPageVO getLoginPageConfig();
 
 }

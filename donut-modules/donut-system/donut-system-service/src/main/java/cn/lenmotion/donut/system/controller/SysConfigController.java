@@ -7,6 +7,7 @@ import cn.lenmotion.donut.core.entity.ResponseResult;
 import cn.lenmotion.donut.core.utils.PageUtils;
 import cn.lenmotion.donut.system.entity.po.SysConfig;
 import cn.lenmotion.donut.system.entity.query.ConfigQuery;
+import cn.lenmotion.donut.system.entity.vo.LoginPageVO;
 import cn.lenmotion.donut.system.service.SysConfigService;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -34,6 +35,12 @@ public class SysConfigController {
     @SaCheckPermission("system:config:list")
     public ResponseResult<JSONObject> systemConfig() {
         return ResponseResult.success(configService.selectSystemConfigList());
+    }
+
+    @Operation(summary = "登录首页配置")
+    @GetMapping("loginPage")
+    public ResponseResult<LoginPageVO> loginConfig() {
+        return ResponseResult.success(configService.getLoginPageConfig());
     }
 
     @Operation(summary = "获取参数配置列表")
