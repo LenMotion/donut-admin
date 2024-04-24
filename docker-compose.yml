@@ -18,6 +18,23 @@ services:
     restart: always
     networks:
       - donut-net
+  # 初始化脚本服务 创建桶,并设置open目录位开放目录
+  init-bucket:
+    image: minio/mc
+    depends_on:
+      - minio
+    volumes:
+      - ./logo.png:/root/minio/logo.png
+    entrypoint: >
+      /bin/sh -c "
+      /usr/bin/mc alias set donut-minio http://minio:9000 admin 123456qwe;
+      /usr/bin/mc mb donut-minio/donut;
+      /usr/bin/mc cp /root/minio/logo.png donut-minio/donut/open/logo.png;
+      /usr/bin/mc anonymous set download donut-minio/donut/open/;
+      exit 0;
+      "
+    networks:
+      - donut-net
   redis:
     image: redis:latest
     hostname: "redis"
