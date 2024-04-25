@@ -57,8 +57,8 @@ public class UserResponseVO extends BaseCreatePo {
     @Trans(type = TransType.DICTIONARY, key = DictKeyConstants.SYS_BASE_SEX)
     private String sex;
 
-    @Schema(description = "年龄")
-    private Integer age;
+    @Schema(description = "生日")
+    private LocalDate birthday;
 
     @Schema(description = "头像")
     @Trans(type = TransType.AUTO_TRANS, key = BaseConstants.STORAGE_NAMESPACE, alias = "avatar")

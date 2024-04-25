@@ -1,9 +1,11 @@
 package cn.lenmotion.donut.system.entity.request;
 
+import com.alibaba.excel.annotation.ExcelProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -35,11 +37,9 @@ public class UserProfileRequest {
     @NotBlank(message = "用户性别不能为空")
     private String sex;
 
-    @Schema(description = "年龄")
+    @ExcelProperty(value = "生日")
     @NotNull(message = "用户年龄不能为空")
-    @Min(value = 0, message = "用户年龄不能小于0")
-    @Max(value = 150, message = "用户年龄不能大于150")
-    private Integer age;
+    private LocalDate birthday;
 
     @Schema(description = "住址")
     private String address;

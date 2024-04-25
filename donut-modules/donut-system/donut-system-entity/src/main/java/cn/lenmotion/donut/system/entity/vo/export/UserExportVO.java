@@ -57,8 +57,9 @@ public class UserExportVO implements VO {
     @ExcelProperty(value = "性别")
     private String sexName;
 
-    @ExcelProperty(value = "年龄")
-    private Integer age;
+    @ExcelProperty(value = "生日")
+    @ColumnWidth(10)
+    private LocalDate birthday;
 
     @ExcelIgnore
     @Trans(type = TransType.DICTIONARY, key = DictKeyConstants.SYS_BASE_NATION, ref = "nationName")

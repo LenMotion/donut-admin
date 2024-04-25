@@ -88,11 +88,11 @@ public class SysUser extends BaseCreatePo {
     private String sex;
 
     /**
-     * 年龄
+     * 生日
      */
-    @TableField(value = "age")
-    @Schema(description = "年龄")
-    private Integer age;
+    @TableField(value = "birthday")
+    @Schema(description = "生日")
+    private LocalDate birthday;
 
     /**
      * 用户头像

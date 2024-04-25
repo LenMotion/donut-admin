@@ -40,9 +40,9 @@ export const columns: BasicColumn[] = [
     customRender: ({ record }) => record.transMap.sexName,
   },
   {
-    title: '年龄',
-    width: 60,
-    dataIndex: 'age',
+    title: '生日',
+    width: 100,
+    dataIndex: 'birthday',
   },
   {
     title: '状态',
@@ -104,7 +104,7 @@ export const formSchema: FormSchema[] = [
     component: 'Input',
     required: true,
     rules: [{ pattern: /^[a-zA-Z][a-zA-Z0-9_]{3,19}$/, message: '请输入字母开头4-20位的用户名' }],
-    dynamicDisabled: ({values}) => values.id != '' && values.id != undefined,
+    dynamicDisabled: ({ values }) => values.id != '' && values.id != undefined,
   },
   {
     field: 'userCode',
@@ -133,10 +133,13 @@ export const formSchema: FormSchema[] = [
     componentProps: dictSelectProps('sys_base_sex'),
   },
   {
-    field: 'age',
-    label: '年龄',
-    component: 'InputNumber',
+    field: 'birthday',
+    label: '生日',
+    component: 'DatePicker',
     required: true,
+    componentProps: {
+      valueFormat: 'YYYY-MM-DD',
+    },
   },
   {
     field: 'deptId',

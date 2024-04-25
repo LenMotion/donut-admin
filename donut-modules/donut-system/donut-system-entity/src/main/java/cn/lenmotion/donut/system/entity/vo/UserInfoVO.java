@@ -6,6 +6,7 @@ import cn.lenmotion.donut.core.entity.BaseCreatePo;
 import cn.lenmotion.donut.system.entity.po.SysDept;
 import cn.lenmotion.donut.system.entity.po.SysMenu;
 import cn.lenmotion.donut.system.entity.po.SysPost;
+import com.alibaba.excel.annotation.ExcelProperty;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fhs.core.trans.anno.Trans;
 import com.fhs.core.trans.constant.TransType;
@@ -14,6 +15,7 @@ import jakarta.validation.constraints.Email;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -56,8 +58,8 @@ public class UserInfoVO extends BaseCreatePo {
     @Trans(type = TransType.DICTIONARY, key = DictKeyConstants.SYS_BASE_SEX)
     private String sex;
 
-    @Schema(description = "年龄")
-    private Integer age;
+    @ExcelProperty(value = "生日")
+    private LocalDate birthday;
 
     @Schema(description = "用户头像", hidden = true)
     @JsonIgnore

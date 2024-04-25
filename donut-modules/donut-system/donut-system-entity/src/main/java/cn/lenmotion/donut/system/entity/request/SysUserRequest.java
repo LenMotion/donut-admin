@@ -2,6 +2,7 @@ package cn.lenmotion.donut.system.entity.request;
 
 import cn.lenmotion.donut.core.entity.BasePo;
 import cn.lenmotion.donut.system.entity.po.SysUserDept;
+import com.alibaba.excel.annotation.ExcelProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -57,8 +58,8 @@ public class SysUserRequest extends BasePo {
     @Schema(description = "用户性别")
     private String sex;
 
-    @Schema(description = "年龄")
-    private Integer age;
+    @ExcelProperty(value = "生日")
+    private LocalDate birthday;
 
     @Schema(description = "用户头像")
     private String avatar;

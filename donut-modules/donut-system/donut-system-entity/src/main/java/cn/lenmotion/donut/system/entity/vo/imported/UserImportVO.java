@@ -67,9 +67,9 @@ public class UserImportVO {
     @ExcelProperty(value = "性别")
     private String sexName;
 
-    @ExcelProperty(value = "年龄")
-    @NotNull(message = "年龄不能为空")
-    private Integer age;
+    @ExcelProperty(value = "生日")
+    @NotNull(message = "生日不能为空")
+    private LocalDate birthday;
 
     @ExcelIgnore
     @UnTrans(type = TransType.DICTIONARY, dict = DictKeyConstants.SYS_BASE_NATION, refs = "nationName")

@@ -11,7 +11,7 @@
     </select>
 
     <sql id="selectUserSql">
-        select distinct u.id,u.dept_id,u.user_code,u.username,u.nick_name,u.email,u.phone_number,u.sex,u.age,u.avatar,u.nation,
+        select distinct u.id,u.dept_id,u.user_code,u.username,u.nick_name,u.email,u.phone_number,u.sex,u.birthday,u.avatar,u.nation,
             u.id_type,u.id_card,u.culture_type,u.address,u.entry_date,u.`status`,u.login_ip,u.login_date,u.create_by,u.create_time,
             u.update_by,u.update_time, u.remark, u.political_outlook, d.dept_name, p.post_name, r.role_ids role_id_str  from sys_user u
             left join sys_user_dept ud on u.id = ud.user_id

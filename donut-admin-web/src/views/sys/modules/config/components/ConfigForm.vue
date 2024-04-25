@@ -1,10 +1,6 @@
 <template>
   <div>
-    <BasicForm @register="registerForm" @submit="handleSubmit">
-      <template #logo="{ model, field }">
-        {{ field }}
-      </template>
-    </BasicForm>
+    <BasicForm @register="registerForm" @submit="handleSubmit" />
   </div>
 </template>
 
