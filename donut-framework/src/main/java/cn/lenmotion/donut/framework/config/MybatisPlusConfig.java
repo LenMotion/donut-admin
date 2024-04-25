@@ -10,9 +10,7 @@ import cn.lenmotion.donut.core.enums.DataScopeEnum;
 import cn.lenmotion.donut.core.enums.DataScopeTypeEnum;
 import cn.lenmotion.donut.core.utils.AssertUtils;
 import com.baomidou.mybatisplus.annotation.DbType;
-import com.baomidou.mybatisplus.autoconfigure.DdlApplicationRunner;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
-import com.baomidou.mybatisplus.extension.ddl.IDdl;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.handler.DataPermissionHandler;
 import com.baomidou.mybatisplus.extension.plugins.inner.BlockAttackInnerInterceptor;
@@ -25,13 +23,15 @@ import net.sf.jsqlparser.expression.operators.conditional.AndExpression;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import org.apache.ibatis.reflection.MetaObject;
 import org.mybatis.spring.annotation.MapperScan;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author LenMotion
@@ -39,18 +39,6 @@ import java.util.*;
 @Configuration
 @MapperScan("cn.lenmotion.donut.**.mapper")
 public class MybatisPlusConfig {
-
-    /**
-     * springboot3版本报错
-     * https://github.com/baomidou/mybatis-plus/issues/5867
-     *
-     * @param ddlList
-     * @return
-     */
-    @Bean
-    public DdlApplicationRunner ddlApplicationRunner(@Autowired(required = false) List<IDdl> ddlList) {
-        return new DdlApplicationRunner(ddlList);
-    }
 
     @Bean
     public MybatisPlusInterceptor mybatisPlusInterceptor() {

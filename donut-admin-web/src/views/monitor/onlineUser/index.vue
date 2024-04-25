@@ -9,7 +9,7 @@
               color: 'error',
               auth: 'monitor:onlineUser:kickOut',
               popConfirm: {
-                title: '是否确认强制退出？因sa-token的设定，踢人后在线列表还是会展示该token！',
+                title: '是否确认强制退出?',
                 confirm: handleLogout.bind(null, record),
               },
             },

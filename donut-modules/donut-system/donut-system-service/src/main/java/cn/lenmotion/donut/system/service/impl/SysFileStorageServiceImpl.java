@@ -14,6 +14,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.dromara.x.file.storage.core.FileInfo;
 import org.dromara.x.file.storage.core.recorder.FileRecorder;
+import org.dromara.x.file.storage.core.upload.FilePartInfo;
 import org.springframework.stereotype.Service;
 
 /**
@@ -38,6 +39,12 @@ public class SysFileStorageServiceImpl extends ServiceImpl<SysFileStorageMapper,
     }
 
     @Override
+    public void update(FileInfo fileInfo) {
+        var fileStorage = FileStorageConverter.INSTANCE.toModel(fileInfo);
+        this.updateById(fileStorage);
+    }
+
+    @Override
     public FileInfo getByUrl(String url) {
         LambdaQueryWrapper<SysFileStorage> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(SysFileStorage::getUrl, url)
@@ -50,5 +57,15 @@ public class SysFileStorageServiceImpl extends ServiceImpl<SysFileStorageMapper,
         LambdaQueryWrapper<SysFileStorage> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(SysFileStorage::getUrl, url);
         return remove(queryWrapper);
+    }
+
+    @Override
+    public void saveFilePart(FilePartInfo filePartInfo) {
+        log.warn("file part storage is not implemented");
+    }
+
+    @Override
+    public void deleteFilePartByUploadId(String s) {
+        log.warn("delete file part storage is not implemented");
     }
 }
