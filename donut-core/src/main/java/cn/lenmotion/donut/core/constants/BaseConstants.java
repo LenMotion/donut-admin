@@ -21,4 +21,9 @@ public interface BaseConstants {
 
     String NOTICE_CLOSE_REDIS_TOPIC = "redis-topic.notice-close";
 
+    /**
+     * Excel文件类型
+     */
+    String EXCEL_CONTEXT_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
 }

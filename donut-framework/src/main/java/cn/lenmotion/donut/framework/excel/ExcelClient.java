@@ -2,12 +2,12 @@ package cn.lenmotion.donut.framework.excel;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.URLUtil;
+import cn.lenmotion.donut.core.constants.BaseConstants;
 import cn.lenmotion.donut.core.exception.BusinessException;
-import cn.lenmotion.donut.framework.config.ProjectProperties;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.excel.write.metadata.style.WriteCellStyle;
@@ -19,7 +19,6 @@ import com.fhs.trans.service.impl.TransService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.IndexedColors;
-import org.dromara.x.file.storage.core.FileInfo;
 import org.dromara.x.file.storage.core.FileStorageService;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.BeanPropertyBindingResult;
@@ -27,7 +26,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.Validator;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
@@ -42,9 +42,11 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class ExcelClient {
     private final FileStorageService fileStorageService;
-    private final ProjectProperties projectProperties;
     private final TransService transService;
 
+    /**
+     * 导出需要easy-trans转换的数据
+     */
     public <T extends VO> String exportTrans(List<T> list, Class<T> clz, String fileName) {
         if (CollUtil.isNotEmpty(list)) {
             transService.transBatch(list);
@@ -52,38 +54,75 @@ public class ExcelClient {
         return this.export(list, clz, fileName);
     }
 
+    /**
+     * 导出excel
+     */
     public <T> String export(List<T> list, Class<T> clz, String fileName) {
+        var out = new ByteArrayOutputStream();
         try {
-            // 生成文件地址，加入随机数，避免重复
-            String percentEncodedFileName = fileName + "_" + IdUtil.getSnowflakeNextId() + ExcelTypeEnum.XLSX.getValue();
-            var filePath = projectProperties.getTemplatePath() + percentEncodedFileName;
-            // 创建文件
-            var file = new File(filePath);
-            boolean result = file.createNewFile();
-            log.info("创建文件: {}", result);
             // 写数据到文件中
-            EasyExcel.write(FileUtil.getOutputStream(file), clz)
+            EasyExcel.write(out, clz)
                     .excelType(ExcelTypeEnum.XLSX)
                     .registerWriteHandler(cellStyleStrategy())
                     .sheet(fileName)
                     .doWrite(list);
+            // 上传流至文件服务器
+            return this.uploadStream(out, fileName);
+        } catch (Exception e) {
+            log.error("导出失败", e);
+            throw new BusinessException("导出失败");
+        } finally {
+            IoUtil.close(out);
+        }
+    }
+
+    /**
+     * 自定义head导出
+     */
+    public <T> String export(List<List<String>> head, List<T> dataList, String fileName) {
+        var out = new ByteArrayOutputStream();
+        try {
+            EasyExcel.write(out)
+                    .head(head)
+                    .excelType(ExcelTypeEnum.XLSX)
+                    .registerWriteHandler(cellStyleStrategy())
+                    .sheet(fileName)
+                    .doWrite(dataList);
+            // 上传流至文件服务器
+            return this.uploadStream(out, fileName);
+        } catch (Exception e) {
+            log.error("导出失败", e);
+            throw new BusinessException("导出失败");
+        } finally {
+            IoUtil.close(out);
+        }
+    }
+
+    /**
+     * 上传流至文件服务器
+     */
+    private String uploadStream(ByteArrayOutputStream out, String fileName) {
+        ByteArrayInputStream in = null;
+        try {
+            // 生成文件地址，加入随机数，避免重复
+            var upFileName = fileName + "_" + IdUtil.getSnowflakeNextId() + ExcelTypeEnum.XLSX.getValue();
             // 设置请求头
             Map<String, String> metadata = new HashMap<>();
-            String contentDispositionValue = StrUtil.format("attachment; filename={}", URLUtil.encode(percentEncodedFileName));
+            var contentDispositionValue = StrUtil.format("attachment; filename={}", URLUtil.encode(upFileName));
             metadata.put("Content-disposition", contentDispositionValue);
             // 上传文件信息
-            FileInfo fileInfo = fileStorageService.of(file)
+            in = IoUtil.toStream(out);
+            var fileInfo = fileStorageService.of(in, upFileName, BaseConstants.EXCEL_CONTEXT_TYPE)
                     .setPath("excel/")
                     .setMetadata(metadata)
                     .setObjectType("excel")
                     .upload();
-            // 删除文件，本地不需要存放
-            log.info("delete file: {}", file.delete());
             // 生成访问链接
             return fileStorageService.generatePresignedUrl(fileInfo, DateUtil.offsetMinute(new Date(), 30));
         } catch (Exception e) {
-            log.error("导出失败", e);
-            throw new BusinessException("导出失败");
+            throw e;
+        } finally {
+            IoUtil.close(in);
         }
     }
 
