@@ -1,17 +1,17 @@
 {
   "name": "Donut-Admin",
-  "version": "1.1.2",
-  "homepage": "https://github.com/vbenjs/vue-vben-admin",
+  "version": "1.1.4",
+  "homepage": "https://github.com/LenMotion/donut-admin",
   "bugs": {
-    "url": "https://github.com/vbenjs/vue-vben-admin/issues"
+    "url": "https://github.com/LenMotion/donut-admin/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/vbenjs/vue-vben-admin.git"
+    "url": "git+https://github.com/LenMotion/donut-admin.git"
   },
   "license": "MIT",
   "author": {
-    "name": "vben",
+    "name": "lenmotion",
     "email": "lenmotion@sina.com",
     "url": "https://github.com/lenmotion"
   },
