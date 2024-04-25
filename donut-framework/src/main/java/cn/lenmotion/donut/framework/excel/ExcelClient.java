@@ -8,6 +8,7 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.URLUtil;
 import cn.lenmotion.donut.core.constants.BaseConstants;
 import cn.lenmotion.donut.core.exception.BusinessException;
+import cn.lenmotion.donut.core.utils.AssertUtils;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.excel.write.metadata.style.WriteCellStyle;
@@ -164,9 +165,7 @@ public class ExcelClient {
         try {
             List<T> list = EasyExcel.read(file.getInputStream()).head(clz).sheet().doReadSync();
 
-            if (CollUtil.isEmpty(list)) {
-                throw new BusinessException("导入数据为空");
-            }
+            AssertUtils.notEmpty(list, "导入数据为空");
 
             TransService transService = SpringContextUtil.getBeanByClass(TransService.class);
             transService.unTransMore(list);
@@ -175,7 +174,7 @@ public class ExcelClient {
                 Validator validator = SpringContextUtil.getBeanByClass(Validator.class);
 
                 for (int i = 0; i < list.size(); i++) {
-                    T importVO = list.get(0);
+                    T importVO = list.get(i);
                     BindingResult result = new BeanPropertyBindingResult(importVO, "importVO" + i);
                     validator.validate(importVO, result);
 
