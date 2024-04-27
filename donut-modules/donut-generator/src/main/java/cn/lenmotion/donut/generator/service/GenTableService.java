@@ -24,7 +24,7 @@ public interface GenTableService extends IService<GenTable> {
      * 查询所有的表
      * @return
      */
-    List<GenTable> tables();
+    List<GenTable> tables(Long datasourceId);
 
     /**
      * 保存或更新表

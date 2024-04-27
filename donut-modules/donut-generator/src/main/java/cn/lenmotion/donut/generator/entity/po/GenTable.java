@@ -27,6 +27,13 @@ public class GenTable extends BaseCreatePo {
     private String tableName;
 
     /**
+     * 数据源id
+     */
+    @TableField(value = "datasource_id")
+    @Schema(description = "数据源id")
+    private Long datasourceId;
+
+    /**
      * 模块名称
      */
     @TableField(value = "module_name")

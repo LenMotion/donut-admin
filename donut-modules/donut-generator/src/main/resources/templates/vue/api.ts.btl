@@ -1,4 +1,5 @@
 import { defHttp } from '@/utils/http/axios';
+import { PageResult } from '../model/baseModel';
 
 const basic = '/${moduleName}/${lowClassName}';
 
@@ -12,7 +13,7 @@ enum Api {
 }
 
 export const listApi = (params) => {
-  return defHttp.get<Recordable[]>({ url: Api.List, params });
+  return defHttp.get<PageResult<Recordable>>({ url: Api.List, params });
 };
 
 export const saveApi = (data) => {

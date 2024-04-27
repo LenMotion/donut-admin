@@ -6,8 +6,11 @@ export const columns: BasicColumn[] = [
   {
     title: '${column.columnRemark}',
     dataIndex: '${column.fieldName}',
-<% if (isNotEmpty(column.dictKey)) { %>
+<% if (isNotEmpty(column.dictKey) && statusApi==false) { %>
     customRender: ({ record }) => record.transMap?.${column.fieldName}Name,
+<% } %>
+<% if (statusApi==true) { %>
+    slots: { customRender: '${column.fieldName}' },
 <% } %>
   },
 <% } %>
@@ -18,11 +21,11 @@ export const searchFormSchema: FormSchema[] = [
   {
     field: '${column.fieldName}',
     label: '${column.columnRemark}',
-<% if (isNotEmpty(column.dictKey)) { %>
+<% if (isEmpty(column.dictKey)) { %>
     component: '${column.searchFieldType}',
 <% } %>
 <% if (isNotEmpty(column.dictKey)) { %>
-    component: 'Select',
+    component: 'ApiSelect',
     componentProps: dictSelectProps('${column.dictKey}'),
 <% } %>
   },
@@ -41,7 +44,7 @@ export const formSchema: FormSchema[] = [
     component: '${column.editFieldType}',
 <% } %>
 <% if (isNotEmpty(column.dictKey)) { %>
-    component: 'Select',
+    component: 'ApiSelect',
     componentProps: dictSelectProps('${column.dictKey}'),
 <% } %>
   },

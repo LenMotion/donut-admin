@@ -2,7 +2,7 @@ package ${packageName}.${moduleName}.service.impl;
 
 import cn.hutool.core.util.ObjUtil;
 import cn.lenmotion.donut.core.service.impl.DonutServiceImpl;
-import ${packageName}.${moduleName}.entity.covert.${className}Converter;
+import ${packageName}.${moduleName}.entity.converter.${className}Converter;
 import ${packageName}.${moduleName}.entity.po.${className};
 import ${packageName}.${moduleName}.entity.query.${className}Query;
 import ${packageName}.${moduleName}.entity.request.${className}Request;

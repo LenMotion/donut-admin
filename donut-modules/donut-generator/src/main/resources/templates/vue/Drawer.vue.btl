@@ -19,7 +19,7 @@
   import { saveApi } from '@/api/${moduleName}/${lowClassName}';
   import { useMessage } from '@/hooks/web/useMessage';
 
-  defineOptions({ name: '${className}Management' });
+  defineOptions({ name: '${className}Drawer' });
 
   const emit = defineEmits(['success', 'register']);
   const isUpdate = ref(true);

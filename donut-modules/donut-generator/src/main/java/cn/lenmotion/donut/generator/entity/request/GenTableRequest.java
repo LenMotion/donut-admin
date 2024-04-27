@@ -14,6 +14,10 @@ import java.util.List;
 @Data
 @Schema(description = "表信息")
 public class GenTableRequest extends BasePo {
+
+    @Schema(description = "数据源")
+    private Long datasourceId;
+
     @Schema(description = "表名")
     private String tableName;
 

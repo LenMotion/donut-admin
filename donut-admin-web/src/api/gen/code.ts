@@ -24,8 +24,8 @@ export const saveApi = (data) => {
   return defHttp.post<boolean>({ url: Api.Basic, data });
 };
 
-export const tableListApi = (data) => {
-  return defHttp.get<Recordable[]>({ url: Api.TableList, data });
+export const tableListApi = (params) => {
+  return defHttp.get<Recordable[]>({ url: Api.TableList, params });
 };
 
 export const tableColumnsApi = (tableName: string) => {

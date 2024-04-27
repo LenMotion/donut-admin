@@ -58,8 +58,8 @@ public class GenTableController {
     @SaCheckPermission("gen:code:save")
     @Operation(summary = "查询数据库列表")
     @GetMapping("tableList")
-    public ResponseResult<List<GenTable>> tableList() {
-        return ResponseResult.success(genTableService.tables());
+    public ResponseResult<List<GenTable>> tableList(@RequestParam(required = false) Long datasourceId) {
+        return ResponseResult.success(genTableService.tables(datasourceId));
     }
 
     @SaCheckPermission("gen:code:save")

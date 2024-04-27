@@ -34,7 +34,7 @@ public class ${className}Controller {
     @Operation(summary = "${featureName}列表")
     @GetMapping("/list")
     public ResponseResult<PageResult<${className}>> list(${className}Query query) {
-        IPage<${className}> list = ${lowClassName}Service.selectPagePage(query);
+        IPage<${className}> list = ${lowClassName}Service.selectPageList(query);
         return ResponseResult.success(PageUtils.getPageResult(list));
     }
 

@@ -1,4 +1,4 @@
-package ${packageName}.${moduleName}.entity.covert;
+package ${packageName}.${moduleName}.entity.converter;
 
 import ${packageName}.${moduleName}.entity.po.${className};
 import ${packageName}.${moduleName}.entity.request.${className}Request;

@@ -1,5 +1,6 @@
 import { BasicColumn, FormSchema } from '@/components/Table';
 import { tableListApi } from '@/api/gen/code';
+import { enableListApi } from '@/api/gen/datasource';
 import { listApi } from '@/api/system/dictType';
 
 export const columns: BasicColumn[] = [
@@ -60,12 +61,27 @@ export const formSchema = (callback: Function): FormSchema[] => {
       component: 'Input',
     },
     {
+      field: 'datasrouceId',
+      label: '数据源',
+      required: true,
+      component: 'ApiSelect',
+      componentProps: () => {
+        return {
+          api: enableListApi,
+          labelField: 'name',
+          valueField: 'id',
+        };
+      },
+    },
+    {
       field: 'tableName',
       label: '表名',
       required: true,
       component: 'ApiSelect',
-      componentProps: ({ formActionType }) => {
+      componentProps: ({ formModel, formActionType }) => {
         return {
+          immediate: false,
+          params: { datasourceId: formModel.datasrouceId },
           api: tableListApi,
           labelField: 'tableName',
           valueField: 'tableName',

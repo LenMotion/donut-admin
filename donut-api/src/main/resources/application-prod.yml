@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:p6spy:mysql://mysql8:3306/donut?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8&useInformationSchema=true
+    url: jdbc:p6spy:mysql://mysql8:13306/donut?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8&useInformationSchema=true
     username: root
     password: root@123,./
   data:

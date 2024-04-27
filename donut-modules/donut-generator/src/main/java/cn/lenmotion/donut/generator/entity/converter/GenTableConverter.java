@@ -1,4 +1,4 @@
-package cn.lenmotion.donut.generator.entity.convert;
+package cn.lenmotion.donut.generator.entity.converter;
 
 import cn.lenmotion.donut.generator.entity.po.GenTable;
 import cn.lenmotion.donut.generator.entity.po.GenTableColumn;
