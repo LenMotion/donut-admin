@@ -57,7 +57,7 @@ https://donut.lenmotion.cn/
 ### 项目启动：
 如果您熟悉docker可能部署较为简单，可以直接使用docker-compose启动项目（mysql、redis）服务
 
-您可以在项目根目录下执行 ``docker-compose up -d mysql redis minio``
+您可以在项目根目录下执行 ``docker-compose up -d mysql redis minio init-bucket``
 
 mysql会自动创建数据库并执行初始化sql
 
