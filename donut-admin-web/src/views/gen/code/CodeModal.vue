@@ -6,130 +6,83 @@
     :mask-closable="false"
     width="80%"
     @ok="handleSubmit"
+    :showOkBtn="stepCurrent === 1"
+    :keyboard="false"
   >
-    <BasicForm @register="registerForm" />
-    <BasicTable @register="registerTable">
-      <template #action="{ record }">
-        <TableAction :actions="createActions(record)" />
-      </template>
-    </BasicTable>
+    <template #footer>
+      <Space wrap>
+        <a-button @click="closeModal">取消</a-button>
+        <a-button v-if="stepCurrent === 1" type="warning" @click="stepCurrent = 0">上一步</a-button>
+        <a-button v-if="stepCurrent === 1" type="primary" @click="handleSubmit">保存</a-button>
+      </Space>
+    </template>
+    <div class="w-550px my-10px mx-auto">
+      <Steps :current="stepCurrent" :items="[{ title: '基本信息' }, { title: '字段信息' }]" />
+    </div>
+    <div class="mt-30px">
+      <ColumnForm v-show="stepCurrent === 0" ref="columnFormRef" @next-step="handleNextStep" />
+      <ColumnTable v-show="stepCurrent === 1" ref="columnTableRef" />
+    </div>
   </BasicModal>
 </template>
 
 <script setup lang="ts">
   import { ref } from 'vue';
   import { BasicModal, useModalInner } from '@/components/Modal';
-  import { BasicForm, useForm } from '@/components/Form';
-  import { formSchema, fieldColumns } from './code.data';
-  import { BasicTable, useTable, TableAction, EditRecordRow, ActionItem } from '@/components/Table';
-  import { tableColumnsApi, tableColumnsByTableApi, saveApi } from '@/api/gen/code';
+  import { tableColumnsByTableApi, saveApi, tableColumnsApi } from '@/api/gen/code';
   import { useMessage } from '@/hooks/web/useMessage';
-  import { menuTreeApi } from '@/api/system/menu';
+  import { Steps } from 'ant-design-vue';
+  import ColumnTable from './components/ColumnTable.vue';
+  import ColumnForm from './components/ColumnForm.vue';
+  import { Space } from 'ant-design-vue';
 
   const { createMessage: msg } = useMessage();
   const isUpdate = ref(true);
   const emit = defineEmits(['success', 'register']);
 
-  const menuTree = ref<any[]>([]);
-
-  menuTreeApi().then((res) => {
-    menuTree.value = res;
-  });
+  const stepCurrent = ref(0);
+  const columnTableRef = ref<any>(null);
+  const columnFormRef = ref<any>(null);
+  const record = ref<Recordable>({});
 
   const [registerModal, { setModalProps, closeModal }] = useModalInner((data) => {
     isUpdate.value = data?.isUpdate;
-    resetFields();
-    setTableData([]);
-    currentEditKeyRef.value = '';
-    updateSchema([{ field: 'menuId', componentProps: { treeData: menuTree.value } }]);
+    stepCurrent.value = 0;
+    columnFormRef.value?.resetFields();
+    columnTableRef.value?.resetTable([]);
     if (data?.isUpdate) {
-      setFieldsValue({ ...data.record });
-      tableColumnsByTableApi(data.record.id).then((res) => {
-        setTableData(res);
-        currentEditKeyRef.value = '';
-      });
+      columnFormRef.value?.setFieldsValue({ ...data.record });
     }
   });
-  const [registerForm, { validate, resetFields, updateSchema, setFieldsValue }] = useForm({
-    showActionButtonGroup: false,
-    baseColProps: { lg: 8, md: 12, sm: 24 },
-    labelWidth: 120,
-    schemas: formSchema((tableName) => {
-      tableColumnsApi(tableName).then((res) => {
-        setTableData(res);
-      });
-    }),
-  });
-  const [registerTable, { setTableData, getDataSource }] = useTable({
-    columns: fieldColumns,
-    pagination: false,
-    canResize: true,
-    actionColumn: {
-      width: 120,
-      title: 'Action',
-      dataIndex: 'action',
-      slots: { customRender: 'action' },
-    },
-  });
 
-  const currentEditKeyRef = ref('');
+  /**
+   * 下一步
+   */
+  const handleNextStep = (values: Recordable) => {
+    record.value = values;
+    stepCurrent.value = 1;
+    const columns = columnTableRef.value?.getDataSource();
 
-  function handleEdit(record: EditRecordRow) {
-    currentEditKeyRef.value = record.key;
-    record.onEdit?.(true);
-  }
-
-  function handleCancel(record: EditRecordRow) {
-    currentEditKeyRef.value = '';
-    record.onEdit?.(false, false);
-  }
-
-  async function handleSave(record: EditRecordRow) {
-    // 校验
-    const valid = await record.onValid?.();
-    if (valid) {
-      try {
-        // 保存之后提交编辑状态
-        const pass = await record.onEdit?.(false, true);
-        if (pass) {
-          currentEditKeyRef.value = '';
-        }
-      } catch (error) {
-        msg.error({ content: '保存失败', key: 'saving' });
+    if (columns == undefined || columns.length === 0) {
+      if (isUpdate.value) {
+        tableColumnsByTableApi(values.id).then((res) => {
+          columnTableRef.value?.resetTable(res);
+        });
+      } else {
+        tableColumnsApi(values.tableName).then((res) => {
+          columnTableRef.value?.setTableData(res);
+        });
       }
-    } else {
-      msg.error({ content: '请填写正确的数据', key: 'saving' });
     }
-  }
-  function createActions(record: EditRecordRow): ActionItem[] {
-    if (!record.editable) {
-      return [
-        {
-          label: '编辑',
-          disabled: currentEditKeyRef.value ? currentEditKeyRef.value !== record.key : false,
-          onClick: handleEdit.bind(null, record),
-        },
-      ];
-    }
-    return [
-      {
-        label: '保存',
-        onClick: handleSave.bind(null, record),
-      },
-      {
-        label: '取消',
-        popConfirm: {
-          title: '是否取消编辑',
-          confirm: handleCancel.bind(null, record),
-        },
-      },
-    ];
-  }
+  };
 
+  /**
+   * 保存
+   */
   const handleSubmit = async () => {
     try {
-      const values = await validate();
-      values.columns = getDataSource();
+      const values = record.value;
+      values.columns = columnTableRef.value?.getDataSource();
       setModalProps({ confirmLoading: true });
       await saveApi(values);
       msg.success('保存成功');
