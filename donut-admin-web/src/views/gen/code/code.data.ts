@@ -61,7 +61,7 @@ export const formSchema = (callback: Function): FormSchema[] => {
       component: 'Input',
     },
     {
-      field: 'datasrouceId',
+      field: 'datasourceId',
       label: '数据源',
       required: true,
       component: 'ApiSelect',
