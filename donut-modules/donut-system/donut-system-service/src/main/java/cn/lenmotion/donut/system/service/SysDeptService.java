@@ -34,4 +34,11 @@ public interface SysDeptService extends DonutService<SysDept> {
      */
     void checkEditPermission(Long deptId, Long userId);
 
+    /**
+     * 更新或者修改
+     * @param entity
+     * @return
+     */
+    Long saveOrUpdateRequest(SysDept entity);
+
 }

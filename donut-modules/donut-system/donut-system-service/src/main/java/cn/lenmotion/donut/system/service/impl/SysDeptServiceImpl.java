@@ -47,7 +47,7 @@ public class SysDeptServiceImpl extends DonutServiceImpl<SysDeptMapper, SysDept>
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean saveOrUpdate(SysDept entity) {
+    public Long saveOrUpdateRequest(SysDept entity) {
         this.checkDept(entity);
         if (Objects.isNull(entity.getId())) {
             String ancestors = "";
@@ -68,7 +68,6 @@ public class SysDeptServiceImpl extends DonutServiceImpl<SysDeptMapper, SysDept>
                 entity.setAncestors(ancestors + entity.getId());
                 super.updateById(entity);
             }
-            return result;
         } else {
             AopUtils.getAopProxy(this).checkEditPermission(entity.getId(), StpUtil.getLoginIdAsLong());
             // 获取旧的数据
@@ -88,8 +87,9 @@ public class SysDeptServiceImpl extends DonutServiceImpl<SysDeptMapper, SysDept>
                 entity.setAncestors(null);
                 entity.setLevel(null);
             }
-            return super.updateById(entity);
+            super.updateById(entity);
         }
+        return entity.getId();
     }
 
     /**

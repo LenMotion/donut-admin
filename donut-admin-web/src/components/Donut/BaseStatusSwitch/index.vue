@@ -58,7 +58,7 @@
     } catch {
       /* empty */
     }
-    emit('success');
+    emit('success', status);
     loading.value = false;
   };
 </script>

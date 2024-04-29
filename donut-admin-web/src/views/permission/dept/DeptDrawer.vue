@@ -54,9 +54,9 @@
     try {
       const values = await validate();
       setDrawerProps({ confirmLoading: true });
-      await saveApi(values);
+      const id = await saveApi(values);
       closeDrawer();
-      emit('success');
+      emit('success', { ...values, id }, unref(isUpdate));
     } finally {
       setDrawerProps({ confirmLoading: false });
     }

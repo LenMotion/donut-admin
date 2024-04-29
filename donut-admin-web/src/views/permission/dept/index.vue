@@ -12,7 +12,7 @@
           :value="record.status"
           :api="statusApi"
           :id="record.id"
-          @success="reload"
+          @success="(status) => handleSuccess({ ...record, status }, true)"
         />
       </template>
       <template #action="{ record }">
@@ -39,7 +39,7 @@
         />
       </template>
     </BasicTable>
-    <DeptDrawer @register="registerDrawer" @success="reload()" />
+    <DeptDrawer @register="registerDrawer" @success="handleSuccess" />
   </div>
 </template>
 <script lang="ts" setup>
@@ -49,18 +49,19 @@
   import { useDrawer } from '@/components/Drawer';
   import DeptDrawer from './DeptDrawer.vue';
   import BaseStatusSwitch from '@/components/Donut/BaseStatusSwitch/index.vue';
-
   import { columns, searchFormSchema } from './dept.data';
   import { useMessage } from '@/hooks/web/useMessage';
+  import { insertTableData } from '@/utils/helper/tableTreeHelper';
 
   const { createMessage } = useMessage();
 
   defineOptions({ name: 'DeptManagement' });
 
   const [registerDrawer, { openDrawer }] = useDrawer();
-  const [registerTable, { reload, getDataSource }] = useTable({
+  const [registerTable, tableAction] = useTable({
     title: '部门列表',
     api: treeApi,
+    rowKey: 'id',
     columns,
     formConfig: {
       labelWidth: 80,
@@ -86,14 +87,14 @@
   function handleCreate() {
     openDrawer(true, {
       isUpdate: false,
-      treeData: getDataSource(),
+      treeData: tableAction.getDataSource(),
     });
   }
 
   function handleEdit(record: Recordable) {
     openDrawer(true, {
       record,
-      treeData: getDataSource(),
+      treeData: tableAction.getDataSource(),
       isUpdate: true,
     });
   }
@@ -101,7 +102,16 @@
   function handleDelete(record: Recordable) {
     deleteApi(record.id).then(() => {
       createMessage.success('删除成功！');
-      reload();
+      tableAction.reload();
+    });
+  }
+
+  function handleSuccess(item: Recordable, isUpdate: boolean) {
+    insertTableData({
+      item,
+      isUpdate,
+      tableAction,
+      orderField: 'orderNum',
     });
   }
 </script>

@@ -35,7 +35,6 @@
     resetFields();
     setDrawerProps({ confirmLoading: false });
     isUpdate.value = !!data?.isUpdate;
-    console.log(data.record);
 
     setFieldsValue({ ...data.record });
     const treeData = await menuTreeApi();

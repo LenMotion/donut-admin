@@ -19,7 +19,7 @@ export const enableTreeApi = () => {
 };
 
 export const saveApi = (data) => {
-  return defHttp.post<boolean>({ url: Api.Basic, data });
+  return defHttp.post<string>({ url: Api.Basic, data });
 };
 
 export const statusApi = (data) => {

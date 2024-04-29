@@ -56,8 +56,8 @@ public class SysDeptController {
     @Operation(summary = "新增或修改部门")
     @OperationLog("新增或修改部门")
     @PostMapping
-    public ResponseResult<Boolean> saveOrUpdate(@Validated @RequestBody SysDept dept) {
-        return ResponseResult.success(deptService.saveOrUpdate(dept));
+    public ResponseResult<Long> saveOrUpdate(@Validated @RequestBody SysDept dept) {
+        return ResponseResult.success(deptService.saveOrUpdateRequest(dept));
     }
 
     @SaCheckPermission("system:dept:status")

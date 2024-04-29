@@ -45,6 +45,10 @@ export const columns: BasicColumn[] = [
     dataIndex: 'remark',
   },
   {
+    title: '排序',
+    dataIndex: 'orderNum',
+  },
+  {
     title: '创建时间',
     dataIndex: 'createTime',
   },
@@ -86,7 +90,7 @@ export const formSchema: FormSchema[] = [
         value: 'id',
         children: 'children',
       },
-    }
+    },
   },
   {
     field: 'leader',
