@@ -2,6 +2,7 @@ package cn.lenmotion.donut.system.controller;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.lenmotion.donut.core.annotation.OperationLog;
+import cn.lenmotion.donut.core.entity.BaseUpdateStatus;
 import cn.lenmotion.donut.core.entity.ResponseResult;
 import cn.lenmotion.donut.system.entity.po.SysMenu;
 import cn.lenmotion.donut.system.entity.vo.MenuTreeResponse;
@@ -52,6 +53,14 @@ public class SysMenuController {
     @DeleteMapping("/{menuIds}")
     public ResponseResult<Boolean> remove(@PathVariable List<Long> menuIds) {
         return ResponseResult.success(menuService.removeByIds(menuIds));
+    }
+
+    @SaCheckPermission("system:menu:status")
+    @Operation(summary = "更新菜单状态")
+    @OperationLog("更新菜单状态")
+    @PutMapping("status")
+    public ResponseResult<Boolean> updateStatus(@Validated @RequestBody BaseUpdateStatus request) {
+        return ResponseResult.success(menuService.updateStatus(request));
     }
 
     @SaCheckPermission("system:user:detail")

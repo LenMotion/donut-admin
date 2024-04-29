@@ -8,6 +8,7 @@ enum Api {
   Tree = basic + '/tree',
   Detail = basic + '/',
   UserMenu = basic + '/user/',
+  Status = basic + '/status',
 }
 
 export const menuTreeApi = () => {
@@ -20,6 +21,10 @@ export const userMenuApi = (userId) => {
 
 export const saveApi = (data) => {
   return defHttp.post<boolean>({ url: Api.Basic, data });
+};
+
+export const statusApi = (data) => {
+  return defHttp.put<boolean>({ url: Api.Status, data });
 };
 
 export const deleteApi = (id: number) => {

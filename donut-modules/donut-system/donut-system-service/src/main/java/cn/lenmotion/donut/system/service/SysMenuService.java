@@ -1,15 +1,15 @@
 package cn.lenmotion.donut.system.service;
 
 import cn.hutool.core.lang.tree.Tree;
+import cn.lenmotion.donut.core.service.DonutService;
 import cn.lenmotion.donut.system.entity.po.SysMenu;
-import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
 
 /**
  * @author lenmotion
  */
-public interface SysMenuService extends IService<SysMenu> {
+public interface SysMenuService extends DonutService<SysMenu> {
 
     /**
      * 获取菜单树

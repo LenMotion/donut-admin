@@ -12,6 +12,7 @@ import cn.lenmotion.donut.core.constants.BaseConstants;
 import cn.lenmotion.donut.core.constants.ConfigConstants;
 import cn.lenmotion.donut.core.enums.BaseStatusEnum;
 import cn.lenmotion.donut.core.enums.DataScopeTypeEnum;
+import cn.lenmotion.donut.core.service.impl.DonutServiceImpl;
 import cn.lenmotion.donut.core.utils.AssertUtils;
 import cn.lenmotion.donut.core.utils.EnumUtils;
 import cn.lenmotion.donut.system.entity.covert.MenuConverter;
@@ -24,7 +25,6 @@ import cn.lenmotion.donut.system.service.SysConfigService;
 import cn.lenmotion.donut.system.service.SysMenuService;
 import cn.lenmotion.donut.system.service.SysRoleMenuService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.fhs.trans.service.impl.TransService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,7 +41,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> implements SysMenuService {
+public class SysMenuServiceImpl extends DonutServiceImpl<SysMenuMapper, SysMenu> implements SysMenuService {
 
     private final SysRoleMenuService roleMenuService;
     private final SysConfigService configService;
@@ -50,6 +50,9 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     @Override
     public Long saveOrUpdateMenu(SysMenu entity) {
         this.checkMenu(entity);
+        if (entity.getId() == null) {
+            entity.setStatus(BaseStatusEnum.DISABLE.getCode());
+        }
         super.saveOrUpdate(entity);
         return entity.getId();
     }
@@ -82,7 +85,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
             AssertUtils.notNull(this.getById(menu.getParentId()), "父菜单不存在");
         }
 
-        if (!MenuTypeEnum.BUTTON.equals(menuType)) {
+        if (!MenuTypeEnum.BUTTON.equals(menuType) && !menu.getFrame()) {
             AssertUtils.notBlank(menu.getName(), "菜单页面名称不能为空");
 
             LambdaQueryWrapper<SysMenu> queryWrapper = new LambdaQueryWrapper<>();
@@ -177,6 +180,9 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
             RouteVO routeVO = MenuConverter.INSTANCE.toRouteVO(sysMenu);
             // 将sysMenu转换为RouteMetaVO
             RouteMetaVO routeMetaVO = MenuConverter.INSTANCE.toRouteMetaVO(sysMenu);
+            if (sysMenu.getFrame()) {
+                routeMetaVO.setFrameSrc(sysMenu.getPath());
+            }
             // 将RouteMetaVO设置到RouteVO中
             routeVO.setMeta(routeMetaVO);
 

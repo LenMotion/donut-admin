@@ -1,8 +1,6 @@
 import { BasicColumn, FormSchema } from '@/components/Table';
 import { h } from 'vue';
-import { Tag } from 'ant-design-vue';
 import Icon from '@/components/Icon/Icon.vue';
-import { dictSelectProps } from '@/api/system/dictData';
 
 export const columns: BasicColumn[] = [
   {
@@ -42,19 +40,13 @@ export const columns: BasicColumn[] = [
     title: '排序',
     dataIndex: 'orderNo',
     sorter: true,
-    width: 50,
+    width: 70,
   },
   {
     title: '状态',
     dataIndex: 'status',
     width: 80,
-    customRender: ({ record }) => {
-      const status = record.status;
-      const enable = ~~status === 0;
-      const color = enable ? 'green' : 'red';
-      const text = enable ? '启用' : '停用';
-      return h(Tag, { color: color }, () => text);
-    },
+    slots: { customRender: 'status' },
   },
   {
     title: '创建时间',
@@ -120,6 +112,7 @@ export const formSchema: FormSchema[] = [
     label: '组件名称',
     component: 'Input',
     required: true,
+    helpMessage: '目录时，填写LAYOUT，外链时，填写Frame，菜单时，填写组件name',
     componentProps: { placeholder: '唯一名称，大写字母开头' },
     ifShow: ({ values }) => !isButton(values.menuType),
   },
@@ -146,6 +139,7 @@ export const formSchema: FormSchema[] = [
     field: 'path',
     label: '路由地址',
     component: 'Input',
+    helpMessage: '外链时，此字段填写对应的url地址',
     required: true,
     ifShow: ({ values }) => !isButton(values.menuType),
   },
@@ -154,7 +148,7 @@ export const formSchema: FormSchema[] = [
     label: '组件路径',
     component: 'Input',
     required: ({ values }) => !isButton(values.menuType),
-    ifShow: ({ values }) => !isButton(values.menuType),
+    ifShow: ({ values }) => !isButton(values.menuType) && !values.frame,
   },
   {
     field: 'perms',
@@ -182,14 +176,14 @@ export const formSchema: FormSchema[] = [
     ifShow: ({ values }) => isMenu(values.menuType),
     componentProps: { placeholder: '详情页时左侧激活的菜单路径' },
   },
-  {
-    field: 'status',
-    label: '状态',
-    component: 'ApiSelect',
-    defaultValue: '0',
-    required: true,
-    componentProps: dictSelectProps('sys_base_status', false),
-  },
+  // {
+  //   field: 'status',
+  //   label: '状态',
+  //   component: 'ApiSelect',
+  //   defaultValue: '0',
+  //   required: true,
+  //   componentProps: dictSelectProps('sys_base_status', false),
+  // },
   {
     field: 'frame',
     label: '是否外链',
@@ -201,18 +195,19 @@ export const formSchema: FormSchema[] = [
         { label: '是', value: true },
       ],
     },
-    ifShow: ({ values }) => !isButton(values.menuType),
+    ifShow: ({ values }) => isMenu(values.menuType),
   },
 
   {
     field: 'ignoreKeepAlive',
-    label: '忽略缓存',
+    label: '页面缓存',
     component: 'RadioButtonGroup',
-    defaultValue: true,
+    helpMessage: '需要vue页面组件name与配置的组件名称一致',
+    defaultValue: false,
     componentProps: {
       options: [
-        { label: '是', value: true },
-        { label: '否', value: false },
+        { label: '是', value: false },
+        { label: '否', value: true },
       ],
     },
     ifShow: ({ values }) => isMenu(values.menuType),

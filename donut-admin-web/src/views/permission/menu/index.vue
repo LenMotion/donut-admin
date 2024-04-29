@@ -7,6 +7,14 @@
             新增菜单
           </a-button>
         </template>
+        <template #status="{ record }">
+          <BaseStatusSwitch
+            :value="record.status"
+            :api="statusApi"
+            :id="record.id"
+            @success="(status) => handleSuccess({ ...record, status }, true)"
+          />
+        </template>
         <template #action="{ record }">
           <TableAction
             :actions="[
@@ -40,13 +48,14 @@
 </template>
 <script lang="ts" setup>
   import { BasicTable, useTable, TableAction } from '@/components/Table';
-  import { menuTreeApi, deleteApi } from '@/api/system/menu';
+  import { menuTreeApi, statusApi, deleteApi } from '@/api/system/menu';
   import { PageWrapper } from '@/components/Page';
   import { useDrawer } from '@/components/Drawer';
   import MenuDrawer from './MenuDrawer.vue';
   import { columns } from './menu.data';
   import { useMessage } from '@/hooks/web/useMessage';
   import { insertTableData } from '@/utils/helper/tableTreeHelper';
+  import BaseStatusSwitch from '@/components/Donut/BaseStatusSwitch/index.vue';
 
   const { createMessage } = useMessage();
 
