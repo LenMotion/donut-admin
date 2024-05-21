@@ -32,7 +32,7 @@ public enum MysqlTypeEnum implements BaseEnum<String> {
     TIME("LocalTime", LocalTime.class.getName()),
     DATETIME("LocalDateTime", LocalDateTime.class.getName()),
     BOOLEAN("Boolean", Boolean.class.getName()),
-    BIT("Boolean", Integer.class.getName()),
+    BIT("Boolean", Boolean.class.getName()),
     ;
 
     /**
