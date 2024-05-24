@@ -24,6 +24,9 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(callSuper = true)
 public class SysUser extends BaseCreatePo {
 
+    @Schema(description = "租户ID")
+    private Long tenantId;
+
     /**
      * 部门ID
      */

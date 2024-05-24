@@ -19,6 +19,7 @@ import { joinTimestamp, formatRequestDate } from './helper';
 import { useUserStoreWithOut } from '@/store/modules/user';
 import { AxiosRetry } from '@/utils/http/axios/axiosRetry';
 import axios from 'axios';
+import { useAppStore } from '@/store/modules/app';
 
 const globSetting = useGlobSetting();
 const urlPrefix = globSetting.urlPrefix;
@@ -162,6 +163,7 @@ const transform: AxiosTransform = {
     // 请求之前处理config
     const token = getToken();
     const tokenName = getTokenName();
+    const appStore = useAppStore();
     if (token && (config as Recordable)?.requestOptions?.withToken !== false) {
       // jwt token
       let headerTokenName = 'Authorization';
@@ -171,6 +173,9 @@ const transform: AxiosTransform = {
       (config as Recordable).headers[headerTokenName] = options.authenticationScheme
         ? `${options.authenticationScheme} ${token}`
         : token;
+    }
+    if (appStore.getTenantId) {
+      (config as Recordable).headers['tenant-id'] = appStore.getTenantId;
     }
     return config;
   },

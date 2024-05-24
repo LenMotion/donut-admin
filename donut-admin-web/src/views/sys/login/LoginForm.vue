@@ -98,7 +98,7 @@
   </Form>
 </template>
 <script lang="ts" setup>
-  import { reactive, ref, unref, computed } from 'vue';
+  import { reactive, ref, unref, computed, watch } from 'vue';
 
   import { Checkbox, Form, Input, Row, Col, Button, Image as AImage } from 'ant-design-vue';
   import LoginFormTitle from './LoginFormTitle.vue';
@@ -112,7 +112,7 @@
   import { captchaImageApi } from '@/api/sys/user';
   import JSEncrypt from 'jsencrypt';
   import { useGlobSetting } from '@/hooks/setting';
-  //import { onKeyStroke } from '@vueuse/core';
+  import { useAppStore } from '@/store/modules/app';
 
   const ACol = Col;
   const ARow = Row;
@@ -123,6 +123,7 @@
   const { prefixCls } = useDesign('login');
   const userStore = useUserStore();
   const { publicKey } = useGlobSetting();
+  const appStore = useAppStore();
 
   const { setLoginState, getLoginState } = useLoginState();
   const { getFormRules } = useFormRules();
@@ -190,4 +191,8 @@
   };
 
   getCaptchaImage();
+  watch(
+    () => appStore.getTenantId,
+    () => getCaptchaImage(),
+  );
 </script>

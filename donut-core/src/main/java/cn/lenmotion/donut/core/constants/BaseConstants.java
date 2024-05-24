@@ -13,6 +13,8 @@ public interface BaseConstants {
 
     Long SUPER_ID = 1L;
 
+    String SUPER_USER = "admin";
+
     Long PARENT_ID = 0L;
 
     String STORAGE_NAMESPACE = "StorageNamespace";
@@ -25,5 +27,7 @@ public interface BaseConstants {
      * Excel文件类型
      */
     String EXCEL_CONTEXT_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+    String TENANT_HEADER = "tenant-id";
 
 }

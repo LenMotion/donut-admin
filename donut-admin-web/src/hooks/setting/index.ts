@@ -10,6 +10,7 @@ export const useGlobSetting = (): Readonly<GlobConfig> => {
     VITE_GLOB_UPLOAD_URL,
     VITE_GLOB_PUBLIC_KEY,
     VITE_GLOB_WS_URL,
+    VITE_GLOB_TENANT_ID,
   } = getAppEnvConfig();
 
   // Take global configuration
@@ -21,6 +22,7 @@ export const useGlobSetting = (): Readonly<GlobConfig> => {
     uploadUrl: VITE_GLOB_UPLOAD_URL,
     publicKey: VITE_GLOB_PUBLIC_KEY,
     wsUrl: VITE_GLOB_WS_URL,
+    tenantId: VITE_GLOB_TENANT_ID,
   };
   return glob as Readonly<GlobConfig>;
 };

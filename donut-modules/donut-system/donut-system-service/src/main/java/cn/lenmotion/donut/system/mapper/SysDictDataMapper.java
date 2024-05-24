@@ -14,9 +14,9 @@ public interface SysDictDataMapper extends BaseMapper<SysDictData> {
 
     /**
      * 获取启用状态的数据字典信息
-     * @param dictKey
+     * @param dictKeys
      * @return
      */
-    List<SysDictData> getEnableByDictKey(String dictKey);
+    List<SysDictData> getEnableByDictKey(List<String> dictKeys);
 
 }

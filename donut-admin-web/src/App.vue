@@ -15,9 +15,18 @@
   import { useDarkModeTheme } from '@/hooks/setting/useDarkModeTheme';
   import 'dayjs/locale/zh-cn';
   import { computed } from 'vue';
+  import { useGlobSetting } from '@/hooks/setting';
+  import { useAppStore } from './store/modules/app';
 
+  const appStore = useAppStore();
   // support Multi-language
   const { getAntdLocale } = useLocale();
+
+  if (!appStore.getTenantId) {
+    const { tenantId } = useGlobSetting();
+    console.log('tenantId', tenantId);
+    appStore.setTenantId(tenantId.split(',')[1]);
+  }
 
   const { isDark, darkTheme } = useDarkModeTheme();
 

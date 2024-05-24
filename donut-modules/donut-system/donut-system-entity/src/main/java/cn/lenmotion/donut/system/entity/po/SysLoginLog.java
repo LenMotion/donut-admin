@@ -18,6 +18,9 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(callSuper = true)
 public class SysLoginLog extends BasePo {
 
+    @Schema(description = "租户ID")
+    private Long tenantId;
+
     /**
      * 用户账号
      */

@@ -22,6 +22,10 @@ import java.time.LocalDateTime;
 public class SysOperationLog extends BasePo {
     @Serial
     private static final long serialVersionUID = 1L;
+
+    @Schema(description = "租户ID")
+    private Long tenantId;
+
     /**
      * 操作人员
      */

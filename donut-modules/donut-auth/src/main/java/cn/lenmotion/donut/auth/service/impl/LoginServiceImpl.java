@@ -15,6 +15,7 @@ import cn.lenmotion.donut.auth.service.LoginService;
 import cn.lenmotion.donut.core.constants.BaseConstants;
 import cn.lenmotion.donut.core.constants.ConfigConstants;
 import cn.lenmotion.donut.core.constants.RedisConstants;
+import cn.lenmotion.donut.core.context.TenantContext;
 import cn.lenmotion.donut.core.entity.LoginInfo;
 import cn.lenmotion.donut.core.enums.BaseStatusEnum;
 import cn.lenmotion.donut.core.enums.ResponseCodeEnum;
@@ -116,7 +117,7 @@ public class LoginServiceImpl implements LoginService {
             return null;
         }
 
-        RAtomicLong atomicLong = redissonClient.getAtomicLong(RedisConstants.ACCOUNT_LOCK_KEY + username);
+        RAtomicLong atomicLong = redissonClient.getAtomicLong(RedisConstants.ACCOUNT_LOCK_KEY + TenantContext.getTenant() + ":" + username);
         atomicLong.expire(Duration.ofMinutes(accountLockTime));
         // 获取锁定次数，校验是否超过限制
         AssertUtils.isFalse(atomicLong.get() >= accountLockCount, "输入密码次数过多，账号已锁定!");

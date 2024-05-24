@@ -19,6 +19,10 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(callSuper = true)
 @TableName(value = "sys_notice_read")
 public class SysNoticeRead extends BasePo {
+
+    @Schema(description = "租户ID")
+    private Long tenantId;
+
     /**
      * 用户id
      */

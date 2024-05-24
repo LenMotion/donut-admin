@@ -6,7 +6,7 @@ import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.util.StrUtil;
 import cn.lenmotion.donut.core.annotation.OperationLog;
 import cn.lenmotion.donut.core.entity.ResponseResult;
-import cn.lenmotion.donut.system.entity.covert.UserConverter;
+import cn.lenmotion.donut.system.entity.converter.UserConverter;
 import cn.lenmotion.donut.system.entity.po.SysUser;
 import cn.lenmotion.donut.system.entity.request.UserAvatarRequest;
 import cn.lenmotion.donut.system.entity.request.UserProfileRequest;

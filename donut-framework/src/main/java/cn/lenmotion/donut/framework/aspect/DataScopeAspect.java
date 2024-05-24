@@ -1,7 +1,7 @@
 package cn.lenmotion.donut.framework.aspect;
 
 import cn.lenmotion.donut.core.annotation.DataScope;
-import cn.lenmotion.donut.framework.config.MybatisPlusConfig;
+import cn.lenmotion.donut.core.context.DataScopeContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
@@ -21,12 +21,12 @@ public class DataScopeAspect {
 
     @Before(value = "@annotation(dataScope)")
     public void doBefore(JoinPoint joinPoint, DataScope dataScope) {
-        MybatisPlusConfig.DonutDataPermissionHandler.DATA_SCOPE_THREAD_LOCAL.set(dataScope);
+        DataScopeContext.setDataScope(dataScope);
     }
 
     @After(value = "@annotation(dataScope)")
     public void doAfter(JoinPoint joinPoint, DataScope dataScope) {
-        MybatisPlusConfig.DonutDataPermissionHandler.DATA_SCOPE_THREAD_LOCAL.remove();
+        DataScopeContext.clear();
     }
 
 }

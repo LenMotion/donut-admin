@@ -7,7 +7,7 @@ import cn.lenmotion.donut.core.enums.BaseStatusEnum;
 import cn.lenmotion.donut.core.service.impl.DonutServiceImpl;
 import cn.lenmotion.donut.core.utils.AssertUtils;
 import cn.lenmotion.donut.core.utils.EnumUtils;
-import cn.lenmotion.donut.system.entity.covert.NoticeConverter;
+import cn.lenmotion.donut.system.entity.converter.NoticeConverter;
 import cn.lenmotion.donut.system.entity.enums.NoticeSendTypeEnum;
 import cn.lenmotion.donut.system.entity.po.SysNotice;
 import cn.lenmotion.donut.system.entity.query.NoticeQuery;

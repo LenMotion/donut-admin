@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.fhs.core.trans.anno.Trans;
 import com.fhs.core.trans.constant.TransType;
 import com.fhs.core.trans.vo.TransPojo;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -23,6 +24,9 @@ import java.time.LocalDateTime;
 public class SysFileStorage implements TransPojo, Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
+
+    @Schema(description = "租户ID")
+    private Long tenantId;
 
     /** 文件id */
     @TableId(type = IdType.INPUT)

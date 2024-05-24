@@ -3,7 +3,7 @@ package cn.lenmotion.donut.system.service.impl;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.lenmotion.donut.core.constants.BaseConstants;
-import cn.lenmotion.donut.system.entity.covert.FileStorageConverter;
+import cn.lenmotion.donut.system.entity.converter.FileStorageConverter;
 import cn.lenmotion.donut.system.entity.po.SysFileStorage;
 import cn.lenmotion.donut.system.entity.query.FileStorageQuery;
 import cn.lenmotion.donut.system.mapper.SysFileStorageMapper;

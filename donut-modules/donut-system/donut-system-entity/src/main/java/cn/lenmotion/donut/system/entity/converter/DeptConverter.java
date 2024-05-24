@@ -1,4 +1,4 @@
-package cn.lenmotion.donut.system.entity.covert;
+package cn.lenmotion.donut.system.entity.converter;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;

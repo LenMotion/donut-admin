@@ -35,7 +35,7 @@ public class CaptchaController {
 
     @Operation(summary = "验证码图片", description = "base64格式")
     @GetMapping("/captchaImage")
-    @RateLimiter(count = 2, time = 5, message = "验证码获取过于频繁，请稍后再试！")
+    @RateLimiter(count = 2, time = 3, message = "验证码获取过于频繁，请稍后再试！")
     public ResponseResult<CaptchaVo> getCode() {
         CaptchaVo captchaVo = new CaptchaVo();
         // 判断是否开启验证码登陆

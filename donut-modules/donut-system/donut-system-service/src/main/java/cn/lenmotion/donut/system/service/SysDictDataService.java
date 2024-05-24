@@ -36,8 +36,8 @@ public interface SysDictDataService extends DonutService<SysDictData> {
 
     /**
      * 刷新缓存
-     * @param dictKey
+     * @param dictKeys
      */
-    void refreshCache(String dictKey);
+    void refreshCache(String... dictKeys);
 
 }

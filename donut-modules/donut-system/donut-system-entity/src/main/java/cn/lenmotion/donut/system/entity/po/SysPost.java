@@ -21,6 +21,10 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @TableName(value = "sys_post")
 public class SysPost extends BaseCreatePo {
+
+    @Schema(description = "租户ID")
+    private Long tenantId;
+
     /**
      * 岗位类型 0全局岗位 1部门岗位
      */

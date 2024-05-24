@@ -19,6 +19,10 @@ import java.util.Date;
 @EqualsAndHashCode(callSuper = true)
 @TableName(value = "sys_notice_send_relation")
 public class SysNoticeSendRelation extends BasePo {
+
+    @Schema(description = "租户ID")
+    private Long tenantId;
+
     /**
      * 通知id
      */

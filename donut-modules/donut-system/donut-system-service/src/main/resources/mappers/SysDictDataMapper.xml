@@ -2,11 +2,14 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.lenmotion.donut.system.mapper.SysDictDataMapper">
     <select id="getEnableByDictKey" resultType="cn.lenmotion.donut.system.entity.po.SysDictData">
-        select dd.dict_label, dd.dict_value
+        select dd.dict_label, dd.dict_value,  dd.dict_key
         from sys_dict_data dd
                  inner join sys_dict_type dt on dd.dict_key = dt.dict_key
         where dd.status = '0'
           and dt.status = '0'
-          and dt.dict_key = #{dictKey}
+          and dt.dict_key in
+        <foreach collection="dictKeys" item="dictKey" index="index" open="(" close=")" separator=",">
+            #{dictKey}
+        </foreach>
     </select>
 </mapper>

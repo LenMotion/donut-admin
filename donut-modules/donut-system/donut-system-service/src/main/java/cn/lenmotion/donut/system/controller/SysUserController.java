@@ -8,7 +8,7 @@ import cn.lenmotion.donut.core.entity.PageResult;
 import cn.lenmotion.donut.core.entity.ResponseResult;
 import cn.lenmotion.donut.core.utils.PageUtils;
 import cn.lenmotion.donut.framework.excel.ExcelClient;
-import cn.lenmotion.donut.system.entity.covert.UserConverter;
+import cn.lenmotion.donut.system.entity.converter.UserConverter;
 import cn.lenmotion.donut.system.entity.query.UserQuery;
 import cn.lenmotion.donut.system.entity.request.SysUserRequest;
 import cn.lenmotion.donut.system.entity.vo.UserResponseVO;

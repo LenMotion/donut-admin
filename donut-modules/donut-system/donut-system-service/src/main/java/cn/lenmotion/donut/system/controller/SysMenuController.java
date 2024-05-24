@@ -31,7 +31,6 @@ public class SysMenuController {
 
     private final SysMenuService menuService;
 
-    @SaCheckPermission("system:menu:list")
     @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = MenuTreeResponse.class)))
     @Operation(summary = "菜单结构树")
     @GetMapping("tree")

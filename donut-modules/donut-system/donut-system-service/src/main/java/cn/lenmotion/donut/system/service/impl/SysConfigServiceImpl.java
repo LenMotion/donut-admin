@@ -6,9 +6,9 @@ import cn.lenmotion.donut.core.constants.BaseConstants;
 import cn.lenmotion.donut.core.constants.ConfigConstants;
 import cn.lenmotion.donut.core.constants.RedisConstants;
 import cn.lenmotion.donut.core.exception.BusinessException;
+import cn.lenmotion.donut.core.service.impl.DonutServiceImpl;
 import cn.lenmotion.donut.core.utils.AopUtils;
 import cn.lenmotion.donut.core.utils.AssertUtils;
-import cn.lenmotion.donut.core.service.impl.DonutServiceImpl;
 import cn.lenmotion.donut.system.entity.po.SysConfig;
 import cn.lenmotion.donut.system.entity.query.ConfigQuery;
 import cn.lenmotion.donut.system.entity.vo.LoginPageVO;
@@ -21,7 +21,6 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -83,7 +82,7 @@ public class SysConfigServiceImpl extends DonutServiceImpl<SysConfigMapper, SysC
     }
 
     @Override
-    @Cacheable(value = RedisConstants.CONFIG_KEY, key = "#configKey")
+//    @Cacheable(value = RedisConstants.CONFIG_KEY, key = "#cn.lenmotion.donut.core.context.TenantContext.getTenant() + ':' + #configKey")
     public String getConfigByKey(String configKey) {
         if (StringUtils.isBlank(configKey)) {
             return null;

@@ -1,4 +1,4 @@
-package cn.lenmotion.donut.system.entity.covert;
+package cn.lenmotion.donut.system.entity.converter;
 
 import cn.lenmotion.donut.system.entity.po.SysMenu;
 import cn.lenmotion.donut.system.entity.vo.RouteMetaVO;

@@ -1,7 +1,7 @@
 package cn.lenmotion.donut.system.controller;
 
 import cn.lenmotion.donut.core.entity.ResponseResult;
-import cn.lenmotion.donut.system.entity.covert.FileStorageConverter;
+import cn.lenmotion.donut.system.entity.converter.FileStorageConverter;
 import cn.lenmotion.donut.system.entity.vo.FileUploadVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

@@ -17,7 +17,7 @@ import cn.lenmotion.donut.core.exception.BusinessException;
 import cn.lenmotion.donut.core.service.impl.DonutServiceImpl;
 import cn.lenmotion.donut.core.utils.AopUtils;
 import cn.lenmotion.donut.core.utils.AssertUtils;
-import cn.lenmotion.donut.system.entity.covert.UserConverter;
+import cn.lenmotion.donut.system.entity.converter.UserConverter;
 import cn.lenmotion.donut.system.entity.po.SysDept;
 import cn.lenmotion.donut.system.entity.po.SysPost;
 import cn.lenmotion.donut.system.entity.po.SysUser;

@@ -153,6 +153,8 @@ export interface GlobConfig {
   publicKey: string;
   // ws地址
   wsUrl: string;
+  // 租户id
+  tenantId: string;
 }
 export interface GlobEnvConfig {
   // Site title
@@ -167,4 +169,6 @@ export interface GlobEnvConfig {
   VITE_GLOB_PUBLIC_KEY: string;
   // ws地址
   VITE_GLOB_WS_URL: string;
+  // 租户id
+  VITE_GLOB_TENANT_ID: string;
 }

@@ -15,7 +15,7 @@ import cn.lenmotion.donut.core.enums.DataScopeTypeEnum;
 import cn.lenmotion.donut.core.service.impl.DonutServiceImpl;
 import cn.lenmotion.donut.core.utils.AssertUtils;
 import cn.lenmotion.donut.core.utils.EnumUtils;
-import cn.lenmotion.donut.system.entity.covert.MenuConverter;
+import cn.lenmotion.donut.system.entity.converter.MenuConverter;
 import cn.lenmotion.donut.system.entity.enums.MenuTypeEnum;
 import cn.lenmotion.donut.system.entity.po.SysMenu;
 import cn.lenmotion.donut.system.entity.vo.RouteMetaVO;

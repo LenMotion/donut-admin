@@ -1,6 +1,7 @@
 <template>
   <div :class="prefixCls" class="relative w-full h-full px-4">
     <div class="flex items-center absolute right-4 top-4">
+      <AppTenantPicker class="enter-x mr-2" />
       <AppDarkModeToggle class="enter-x mr-2" v-if="!sessionTimeout" />
       <AppLocalePicker
         class="text-white enter-x xl:text-gray-600"
@@ -48,17 +49,23 @@
   </div>
 </template>
 <script lang="ts" setup>
-  import { AppDarkModeToggle, AppLocalePicker, AppLogo } from '@/components/Application';
+  import {
+    AppDarkModeToggle,
+    AppLocalePicker,
+    AppLogo,
+    AppTenantPicker,
+  } from '@/components/Application';
   import { useGlobSetting } from '@/hooks/setting';
   import { useDesign } from '@/hooks/web/useDesign';
   import { useLocaleStore } from '@/store/modules/locale';
-  import { computed, ref } from 'vue';
+  import { computed, ref, watch } from 'vue';
   import ForgetPasswordForm from './ForgetPasswordForm.vue';
   import LoginForm from './LoginForm.vue';
   import MobileForm from './MobileForm.vue';
   import QrCodeForm from './QrCodeForm.vue';
   import RegisterForm from './RegisterForm.vue';
   import { loginPageApi } from '@/api/system/config';
+  import { useAppStore } from '@/store/modules/app';
   // eslint-disable-next-line import/no-duplicates
 
   defineProps({
@@ -74,12 +81,18 @@
     logo: '',
   });
   const globSetting = useGlobSetting();
+  const appStore = useAppStore();
   const { prefixCls } = useDesign('login');
   const localeStore = useLocaleStore();
   const showLocale = localeStore.getShowPicker;
   const title = computed(() => globSetting?.title ?? '');
 
-  loginPageApi().then((res) => (systemInfo.value = res));
+  const init = () => {
+    loginPageApi().then((res) => (systemInfo.value = res));
+  };
+
+  init();
+  watch(() => appStore.getTenantId, init);
 </script>
 <style lang="less">
   @prefix-cls: ~'@{namespace}-login';

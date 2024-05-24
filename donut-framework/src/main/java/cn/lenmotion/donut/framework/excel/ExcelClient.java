@@ -120,8 +120,6 @@ public class ExcelClient {
                     .upload();
             // 生成访问链接
             return fileStorageService.generatePresignedUrl(fileInfo, DateUtil.offsetMinute(new Date(), 30));
-        } catch (Exception e) {
-            throw e;
         } finally {
             IoUtil.close(in);
         }

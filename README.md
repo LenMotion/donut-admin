@@ -4,10 +4,11 @@
     Donut Admin (甜甜圈后台通用模板)
 </h2>
 <p align="center">
-	<strong>基于Spring Boot3、JDK17的一套开源管理系统</strong>
+	<strong>基于Spring Boot3、JDK17的一套多租户（Saas）开源管理系统</strong>
 </p>
 
 ## 功能：
+* 租户管理：租户管理，支持多租户，前端可配置不同租户，用户、部门、岗位、角色等数据隔离
 * 用户管理：基础的用户管理、用户登录等功能
 * 部门管理：提供基于mybatis-plus的数据权限过滤
 * 岗位管理：用户关联岗位、岗位与部门关联

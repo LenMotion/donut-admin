@@ -2,16 +2,11 @@ package cn.lenmotion.donut.system.entity.po;
 
 import cn.lenmotion.donut.core.constants.DictKeyConstants;
 import cn.lenmotion.donut.core.entity.BaseCreatePo;
-import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fhs.core.trans.anno.Trans;
 import com.fhs.core.trans.constant.TransType;
 import io.swagger.v3.oas.annotations.media.Schema;
-
-import java.time.LocalDateTime;
-
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -27,6 +22,9 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @TableName(value = "sys_dept")
 public class SysDept extends BaseCreatePo {
+
+    @Schema(description = "租户ID")
+    private Long tenantId;
 
     /**
      * 父部门id

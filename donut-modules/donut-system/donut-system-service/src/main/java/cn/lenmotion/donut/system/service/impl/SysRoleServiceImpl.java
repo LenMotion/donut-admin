@@ -7,7 +7,7 @@ import cn.lenmotion.donut.core.enums.BaseStatusEnum;
 import cn.lenmotion.donut.core.enums.DataScopeTypeEnum;
 import cn.lenmotion.donut.core.utils.AssertUtils;
 import cn.lenmotion.donut.core.service.impl.DonutServiceImpl;
-import cn.lenmotion.donut.system.entity.covert.RoleConverter;
+import cn.lenmotion.donut.system.entity.converter.RoleConverter;
 import cn.lenmotion.donut.system.entity.po.SysRole;
 import cn.lenmotion.donut.system.entity.po.SysRoleMenu;
 import cn.lenmotion.donut.system.entity.query.RoleQuery;

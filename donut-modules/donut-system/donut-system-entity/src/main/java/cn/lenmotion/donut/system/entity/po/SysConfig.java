@@ -15,6 +15,9 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class SysConfig extends BaseCreatePo {
 
+    @Schema(description = "租户ID")
+    private Long tenantId;
+
     /** 参数名称 */
     @Schema(description = "参数名称")
     @NotBlank(message = "参数名称不能为空")

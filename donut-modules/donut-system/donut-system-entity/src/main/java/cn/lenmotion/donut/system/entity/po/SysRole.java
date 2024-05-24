@@ -19,6 +19,10 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @TableName(value = "sys_role")
 public class SysRole extends BaseCreatePo {
+
+    @Schema(description = "租户ID")
+    private Long tenantId;
+
     /**
      * 角色名称
      */

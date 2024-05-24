@@ -2,11 +2,11 @@ package cn.lenmotion.donut.system.service.impl;
 
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.lenmotion.donut.core.entity.BaseUpdateStatus;
 import cn.lenmotion.donut.core.enums.BaseStatusEnum;
 import cn.lenmotion.donut.core.service.impl.DonutServiceImpl;
 import cn.lenmotion.donut.system.entity.po.SysDictType;
 import cn.lenmotion.donut.system.entity.query.DictTypeQuery;
-import cn.lenmotion.donut.core.entity.BaseUpdateStatus;
 import cn.lenmotion.donut.system.mapper.SysDictTypeMapper;
 import cn.lenmotion.donut.system.service.SysDictDataService;
 import cn.lenmotion.donut.system.service.SysDictTypeService;
@@ -42,7 +42,7 @@ public class SysDictTypeServiceImpl extends DonutServiceImpl<SysDictTypeMapper, 
                 // 遍历字典类型，刷新缓存
                 LambdaQueryWrapper<SysDictType> queryWrapper = new LambdaQueryWrapper<>();
                 queryWrapper.eq(SysDictType::getStatus, BaseStatusEnum.ENABLED.getCode());
-                list(queryWrapper).forEach(dictType -> dictDataService.refreshCache(dictType.getDictKey()));
+                dictDataService.refreshCache(list(queryWrapper).stream().map(SysDictType::getDictKey).toArray(String[]::new));
             });
         } catch (Exception e) {
             log.info("初始化easy-trans失败", e);

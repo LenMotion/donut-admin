@@ -2,7 +2,7 @@ package cn.lenmotion.donut.system.listener;
 
 import cn.lenmotion.donut.core.entity.OperationLogData;
 import cn.lenmotion.donut.framework.event.OperationLogEvent;
-import cn.lenmotion.donut.system.entity.covert.OperationLogConverter;
+import cn.lenmotion.donut.system.entity.converter.OperationLogConverter;
 import cn.lenmotion.donut.system.entity.po.SysOperationLog;
 import cn.lenmotion.donut.system.service.SysOperationLogService;
 import lombok.RequiredArgsConstructor;

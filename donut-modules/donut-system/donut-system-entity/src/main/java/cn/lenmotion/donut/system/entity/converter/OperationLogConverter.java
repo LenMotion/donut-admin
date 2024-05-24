@@ -1,4 +1,4 @@
-package cn.lenmotion.donut.system.entity.covert;
+package cn.lenmotion.donut.system.entity.converter;
 
 import cn.lenmotion.donut.core.entity.OperationLogData;
 import cn.lenmotion.donut.system.entity.po.SysOperationLog;

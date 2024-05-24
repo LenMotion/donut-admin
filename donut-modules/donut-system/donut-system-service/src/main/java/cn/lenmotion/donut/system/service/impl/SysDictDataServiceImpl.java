@@ -1,13 +1,14 @@
 package cn.lenmotion.donut.system.service.impl;
 
+import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.lenmotion.donut.core.constants.BaseConstants;
+import cn.lenmotion.donut.core.entity.BaseUpdateStatus;
 import cn.lenmotion.donut.core.enums.BaseStatusEnum;
 import cn.lenmotion.donut.core.service.impl.DonutServiceImpl;
 import cn.lenmotion.donut.system.entity.po.SysDictData;
 import cn.lenmotion.donut.system.entity.query.DictDataQuery;
-import cn.lenmotion.donut.core.entity.BaseUpdateStatus;
 import cn.lenmotion.donut.system.mapper.SysDictDataMapper;
 import cn.lenmotion.donut.system.service.SysDictDataService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -85,13 +86,21 @@ public class SysDictDataServiceImpl extends DonutServiceImpl<SysDictDataMapper, 
     }
 
     @Override
-    public void refreshCache(String dictKey) {
-        List<SysDictData> dataList = getBaseMapper().getEnableByDictKey(dictKey);
-        // 将查询结果封装成map
-        Map<String, String> dictDataMap = dataList.stream()
-                .collect(Collectors.toMap(SysDictData::getDictValue, SysDictData::getDictLabel));
-        // 刷新缓存
-        dictionaryTransService.refreshCache(dictKey, dictDataMap);
+    public void refreshCache(String... dictKeys) {
+        if (ArrayUtil.isEmpty(dictKeys)) {
+            return;
+        }
+        List<SysDictData> dataList = getBaseMapper().getEnableByDictKey(List.of(dictKeys));
+
+        Map<String, List<SysDictData>> listMap = dataList.stream().collect(Collectors.groupingBy(SysDictData::getDictKey));
+
+        listMap.forEach((dictKey, list) -> {
+            // 将查询结果封装成map
+            Map<String, String> dictDataMap = list.stream()
+                    .collect(Collectors.toMap(SysDictData::getDictValue, SysDictData::getDictLabel));
+            // 刷新缓存
+            dictionaryTransService.refreshCache(dictKey, dictDataMap);
+        });
     }
 
     @Override

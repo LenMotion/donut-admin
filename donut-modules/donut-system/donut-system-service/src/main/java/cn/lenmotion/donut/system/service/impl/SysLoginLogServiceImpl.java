@@ -1,6 +1,6 @@
 package cn.lenmotion.donut.system.service.impl;
 
-import cn.lenmotion.donut.system.entity.covert.LogConverter;
+import cn.lenmotion.donut.system.entity.converter.LogConverter;
 import cn.lenmotion.donut.system.entity.po.SysLoginLog;
 import cn.lenmotion.donut.system.entity.query.LoginLogQuery;
 import cn.lenmotion.donut.system.entity.vo.export.LoginLogExportVO;

@@ -1,4 +1,4 @@
-package cn.lenmotion.donut.system.entity.covert;
+package cn.lenmotion.donut.system.entity.converter;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.lang.Dict;

@@ -22,6 +22,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @TableName(value = "sys_menu")
 public class SysMenu extends BaseCreatePo {
+
     /**
      * 菜单名称
      */

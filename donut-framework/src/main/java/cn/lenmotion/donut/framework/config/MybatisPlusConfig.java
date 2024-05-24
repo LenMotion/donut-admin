@@ -5,6 +5,8 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.lenmotion.donut.core.annotation.DataScope;
 import cn.lenmotion.donut.core.constants.BaseConstants;
+import cn.lenmotion.donut.core.context.DataScopeContext;
+import cn.lenmotion.donut.core.context.TenantContext;
 import cn.lenmotion.donut.core.entity.LoginInfo;
 import cn.lenmotion.donut.core.enums.DataScopeEnum;
 import cn.lenmotion.donut.core.enums.DataScopeTypeEnum;
@@ -13,32 +15,31 @@ import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.handler.DataPermissionHandler;
-import com.baomidou.mybatisplus.extension.plugins.inner.BlockAttackInnerInterceptor;
-import com.baomidou.mybatisplus.extension.plugins.inner.DataPermissionInterceptor;
-import com.baomidou.mybatisplus.extension.plugins.inner.OptimisticLockerInnerInterceptor;
-import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.handler.TenantLineHandler;
+import com.baomidou.mybatisplus.extension.plugins.inner.*;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jsqlparser.expression.Expression;
+import net.sf.jsqlparser.expression.LongValue;
 import net.sf.jsqlparser.expression.operators.conditional.AndExpression;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import org.apache.ibatis.reflection.MetaObject;
-import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author LenMotion
  */
 @Configuration
-@MapperScan("cn.lenmotion.donut.**.mapper")
+@RequiredArgsConstructor
 public class MybatisPlusConfig {
+
+    private final ProjectProperties projectProperties;
 
     @Bean
     public MybatisPlusInterceptor mybatisPlusInterceptor() {
@@ -51,6 +52,9 @@ public class MybatisPlusConfig {
         interceptor.addInnerInterceptor(optimisticLockerInnerInterceptor());
         // 阻断插件
         interceptor.addInnerInterceptor(blockAttackInnerInterceptor());
+        // 租户插件
+        interceptor.addInnerInterceptor(tenantLineInnerInterceptor(projectProperties));
+
         return interceptor;
     }
 
@@ -85,6 +89,13 @@ public class MybatisPlusConfig {
      */
     public DataPermissionInterceptor dataPermissionInterceptor() {
         return new DataPermissionInterceptor(new DonutDataPermissionHandler());
+    }
+
+    /**
+     * 租户插件
+     */
+    public TenantLineInnerInterceptor tenantLineInnerInterceptor(ProjectProperties projectProperties) {
+        return new TenantLineInnerInterceptor(new DonutTenantHandler(projectProperties));
     }
 
     @Slf4j
@@ -136,8 +147,6 @@ public class MybatisPlusConfig {
     @Slf4j
     public static class DonutDataPermissionHandler implements DataPermissionHandler {
 
-        public static final ThreadLocal<DataScope> DATA_SCOPE_THREAD_LOCAL = new ThreadLocal<>();
-
         private static final Map<DataScopeTypeEnum, String> DATA_SCOPE_SQL_MAP = new HashMap<>();
 
         static {
@@ -148,11 +157,16 @@ public class MybatisPlusConfig {
 
         @Override
         public Expression getSqlSegment(Expression where, String mappedStatementId) {
-            DataScope dataScope = DATA_SCOPE_THREAD_LOCAL.get();
-            if (dataScope == null || BaseConstants.SUPER_ID.equals(StpUtil.getLoginIdAsLong())) {
+            DataScope dataScope = DataScopeContext.getDataScope();
+            if (dataScope == null) {
                 return where;
             }
+
             Long userId = StpUtil.getLoginIdAsLong();
+            var loginInfo = (LoginInfo) StpUtil.getSession().get(BaseConstants.SESSION_LOGIN_INFO);
+            if (BaseConstants.SUPER_ID.equals(userId) || StrUtil.equalsIgnoreCase(loginInfo.getUsername(), BaseConstants.SUPER_USER)) {
+                return where;
+            }
 
             Expression expression = null;
             try {
@@ -167,7 +181,6 @@ public class MybatisPlusConfig {
                         yield StrUtil.format(DATA_SCOPE_SQL_MAP.get(dataScope.type()), column, StpUtil.getLoginIdAsLong());
                     }
                     case DEPT -> {
-                        var loginInfo = (LoginInfo) StpUtil.getSession().get(BaseConstants.SESSION_LOGIN_INFO);
                         // 如果为空则表示没有权限，不允许获取数据
                         if (CollUtil.isEmpty(loginInfo.getRoleDataScopes()) || CollUtil.isEmpty(loginInfo.getDeptAncestors())) {
                             yield "1=2";
@@ -207,8 +220,6 @@ public class MybatisPlusConfig {
                     case DEPT -> StrUtil.format(" ancestors = '{}' ", deptAncestor);
                     case SELF -> StrUtil.format(" create_by = {} ", userId);
                 };
-
-//                sqlSet.add(StrUtil.format(" ( select id from sys_dept where {} and deleted = 0 ) ", where));
                 sqlSet.add(where);
             }
 
@@ -226,6 +237,26 @@ public class MybatisPlusConfig {
             AssertUtils.notBlank(field, "field不能为空");
             return StrUtil.isBlank(alias) ? field : alias + "." + field;
         }
+    }
+
+    /**
+     * 租户处理器
+     */
+    @AllArgsConstructor
+    public static class DonutTenantHandler implements TenantLineHandler {
+
+        private final ProjectProperties projectProperties;
+
+        @Override
+        public Expression getTenantId() {
+            return Optional.ofNullable(TenantContext.getTenant()).map(LongValue::new).orElse(null);
+        }
+
+        @Override
+        public boolean ignoreTable(String tableName) {
+            return projectProperties.getTenantIgnoreTables().contains(tableName);
+        }
+
     }
 
 }

@@ -49,4 +49,9 @@ public class ProjectProperties {
      */
     private List<String> fileExt;
 
+    /**
+     * 忽略需要设置租户的表
+     */
+    private List<String> tenantIgnoreTables;
+
 }
