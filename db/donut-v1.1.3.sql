@@ -1,3 +1,0 @@
-INSERT INTO `sys_file_storage` (`id`, `url`, `size`, `filename`, `original_filename`, `base_path`, `path`, `ext`, `content_type`, `platform`, `th_url`, `th_filename`, `th_size`, `th_content_type`, `object_id`, `object_type`, `metadata`, `user_metadata`, `th_metadata`, `th_user_metadata`, `attr`, `file_acl`, `th_file_acl`, `create_time`, `deleted`) VALUES ('bd402cdfad364e78b18f68c056dbeece', 'http://localhost:9000/open/logo.png', 7694, 'logo.png', '甜甜圈 (1).png', '', 'open/', 'png', 'image/png', 'minio-1', NULL, NULL, NULL, NULL, NULL, NULL, '{}', '{}', '{}', '{}', '{}', NULL, NULL, '2024-04-24 11:06:32', 0);
-
-UPDATE `sys_user` set `avatar` = 'http://localhost:9000/open/logo.png' where `id` = 1;
