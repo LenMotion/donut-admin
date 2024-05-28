@@ -70,3 +70,10 @@ export interface TableSetting {
   columns: Recordable<Nullable<Array<ColumnOptionsType>>>;
   showRowSelection: Nullable<boolean>;
 }
+
+export interface SiteInfo {
+  name: String;
+  logo: Sting;
+  title: String;
+  description: String;
+}

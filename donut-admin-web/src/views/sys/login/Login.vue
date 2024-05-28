@@ -64,9 +64,9 @@
   import MobileForm from './MobileForm.vue';
   import QrCodeForm from './QrCodeForm.vue';
   import RegisterForm from './RegisterForm.vue';
-  import { loginPageApi } from '@/api/system/config';
-  import { useAppStore } from '@/store/modules/app';
-  // eslint-disable-next-line import/no-duplicates
+  import { useSiteInfoStore } from '@/store/modules/siteInfo';
+
+  const siteInfoStore = useSiteInfoStore();
 
   defineProps({
     sessionTimeout: {
@@ -80,19 +80,22 @@
     description: '',
     logo: '',
   });
+
+  watch(
+    () => siteInfoStore.siteInfo,
+    (val) => {
+      if (val) {
+        systemInfo.value = val;
+      }
+    },
+    { immediate: true },
+  );
+
   const globSetting = useGlobSetting();
-  const appStore = useAppStore();
   const { prefixCls } = useDesign('login');
   const localeStore = useLocaleStore();
   const showLocale = localeStore.getShowPicker;
   const title = computed(() => globSetting?.title ?? '');
-
-  const init = () => {
-    loginPageApi().then((res) => (systemInfo.value = res));
-  };
-
-  init();
-  watch(() => appStore.getTenantId, init);
 </script>
 <style lang="less">
   @prefix-cls: ~'@{namespace}-login';

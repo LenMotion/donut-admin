@@ -11,14 +11,14 @@
   </div>
 </template>
 <script lang="ts" setup>
-  import { computed, ref, unref } from 'vue';
+  import { computed, ref, unref, watch } from 'vue';
   import { useGo } from '@/hooks/web/usePage';
   import { useMenuSetting } from '@/hooks/setting/useMenuSetting';
   import { useDesign } from '@/hooks/web/useDesign';
   import { PageEnum } from '@/enums/pageEnum';
   import { useUserStore } from '@/store/modules/user';
-  import { loginPageApi } from '@/api/system/config';
   import logo from '@/assets/images/logo.png';
+  import { useSiteInfoStore } from '@/store/modules/siteInfo';
 
   const props = defineProps({
     /**
@@ -38,6 +38,7 @@
   const { prefixCls } = useDesign('app-logo');
   const { getCollapsedShowTitle } = useMenuSetting();
   const userStore = useUserStore();
+  const siteInfoStore = useSiteInfoStore();
   const go = useGo();
 
   const getAppLogoClass = computed(() => [
@@ -61,7 +62,16 @@
     name: 'Donut-Admin',
     logo,
   });
-  loginPageApi().then((res) => (systemInfo.value = res));
+
+  watch(
+    () => siteInfoStore.siteInfo,
+    (val) => {
+      if (val) {
+        systemInfo.value = val;
+      }
+    },
+    { immediate: true },
+  );
 </script>
 <style lang="less" scoped>
   @prefix-cls: ~'@{namespace}-app-logo';

@@ -21,6 +21,7 @@ import { Persistent } from '@/utils/cache/persistent';
 import { darkMode } from '@/settings/designSetting';
 import { resetRouter } from '@/router';
 import { deepMerge } from '@/utils';
+import { useSiteInfoStore } from '@/store/modules/siteInfo';
 
 interface AppState {
   darkMode?: ThemeEnum;
@@ -124,6 +125,9 @@ export const useAppStore = defineStore({
     setTenantId(tenantId: string): void {
       Persistent.setLocal(PROJ_CFG_TENANT_ID_KEY, tenantId);
       this.tenantId = tenantId;
+
+      const siteInfoStore = useSiteInfoStore();
+      siteInfoStore.getSiteInfo();
     },
   },
 });

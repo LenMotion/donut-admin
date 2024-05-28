@@ -24,7 +24,6 @@
 
   if (!appStore.getTenantId) {
     const { tenantId } = useGlobSetting();
-    console.log('tenantId', tenantId);
     appStore.setTenantId(tenantId.split(',')[1]);
   }
 
