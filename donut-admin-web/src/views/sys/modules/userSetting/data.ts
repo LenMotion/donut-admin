@@ -69,11 +69,14 @@ export const baseSetschemas: FormSchema[] = [
     colProps: { span: 12 },
   },
   {
-    field: 'age',
-    component: 'InputNumber',
-    label: '年龄',
+    field: 'birthday',
+    component: 'DatePicker',
+    label: '生日',
     required: true,
     colProps: { span: 12 },
+    componentProps: {
+      valueFormat: 'YYYY-MM-DD',
+    },
   },
   {
     field: 'nation',
@@ -202,8 +205,8 @@ export const userInfoSchema: DescItem[] = [
     label: '岗位',
   },
   {
-    field: 'age',
-    label: '年龄',
+    field: 'birthday',
+    label: '生日',
   },
   {
     field: 'phoneNumber',
