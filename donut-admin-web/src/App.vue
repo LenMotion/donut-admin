@@ -22,10 +22,11 @@
   // support Multi-language
   const { getAntdLocale } = useLocale();
 
-  console.log(appStore.getTenantId);
   if (!appStore.getTenantId) {
     const { tenantId } = useGlobSetting();
     appStore.setTenantId(tenantId.split(',')[0]);
+  } else {
+    appStore.setTenantId(appStore.getTenantId);
   }
 
   const { isDark, darkTheme } = useDarkModeTheme();

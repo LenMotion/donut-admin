@@ -76,7 +76,7 @@ export const useAppStore = defineStore({
       return JSON.parse(localStorage.getItem(API_ADDRESS) || '{}');
     },
     getTenantId(state) {
-      return state.tenantId || '';
+      return state.tenantId || localStorage.getItem(PROJ_CFG_TENANT_ID_KEY);
     },
   },
   actions: {
@@ -124,6 +124,7 @@ export const useAppStore = defineStore({
 
     setTenantId(tenantId: string): void {
       Persistent.setLocal(PROJ_CFG_TENANT_ID_KEY, tenantId);
+      localStorage.setItem(PROJ_CFG_TENANT_ID_KEY, tenantId);
       this.tenantId = tenantId;
 
       const siteInfoStore = useSiteInfoStore();
