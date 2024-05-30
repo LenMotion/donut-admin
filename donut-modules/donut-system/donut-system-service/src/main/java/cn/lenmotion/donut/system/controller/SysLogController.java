@@ -6,12 +6,10 @@ import cn.dev33.satoken.stp.StpUtil;
 import cn.lenmotion.donut.core.entity.PageResult;
 import cn.lenmotion.donut.core.entity.ResponseResult;
 import cn.lenmotion.donut.core.utils.PageUtils;
-import cn.lenmotion.donut.framework.excel.ExcelClient;
 import cn.lenmotion.donut.system.entity.po.SysLoginLog;
 import cn.lenmotion.donut.system.entity.query.LoginLogQuery;
 import cn.lenmotion.donut.system.entity.query.OperationLogQuery;
 import cn.lenmotion.donut.system.entity.vo.OperationLogVO;
-import cn.lenmotion.donut.system.entity.vo.export.LoginLogExportVO;
 import cn.lenmotion.donut.system.service.SysLoginLogService;
 import cn.lenmotion.donut.system.service.SysOperationLogService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -32,7 +30,6 @@ public class SysLogController {
 
     private final SysLoginLogService loginLogService;
     private final SysOperationLogService operationLogService;
-    private final ExcelClient excelClient;
 
     @Operation(summary = "登录日志")
     @SaCheckPermission(value = {"system:loginLog:list", "system:user:detail"}, mode = SaMode.OR)
@@ -53,9 +50,9 @@ public class SysLogController {
     @Operation(summary = "登录日志")
     @SaCheckPermission(value = "system:loginLog:export")
     @GetMapping("/exportLoginLog")
-    public ResponseResult<String> exportLoginLog(LoginLogQuery query) {
-        var list = loginLogService.selectListByQuery(query);
-        return ResponseResult.success("导出成功", excelClient.exportTrans(list, LoginLogExportVO.class, "登录日志"));
+    public ResponseResult<Boolean> exportLoginLog(LoginLogQuery query) {
+        loginLogService.exportLog(query);
+        return ResponseResult.success(true);
     }
 
     @Operation(summary = "操作日志")

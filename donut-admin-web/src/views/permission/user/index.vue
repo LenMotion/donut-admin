@@ -6,13 +6,7 @@
         <a-button type="success" v-auth="'system:user:import'" @click="handleImport"
           >导入用户</a-button
         >
-        <a-button
-          type="warning"
-          v-auth="'system:user:export'"
-          @click="handleExport"
-          :loading="loading"
-          >导出查询用户</a-button
-        >
+        <Export text="导出查询用户" prems="system:user:export" :doExport="handleExport" />
         <a-button type="primary" v-auth="'system:user:save'" @click="handleCreate"
           >新增用户</a-button
         >
@@ -66,7 +60,7 @@
   import DeptTree from '@/components/Donut/Dept/DeptTree.vue';
   import { BasicTable, useTable, TableAction } from '@/components/Table';
   import { useDrawer } from '@/components/Drawer';
-  import { downloadByUrl } from '@/utils/file/download';
+  import Export from '@/components/Donut/Export/index.vue';
 
   import {
     listApi,
@@ -78,7 +72,7 @@
   } from '@/api/system/user';
 
   import { columns, searchFormSchema } from './user.data';
-  import { reactive, ref } from 'vue';
+  import { reactive } from 'vue';
 
   import UserDrawer from './UserDrawer.vue';
   import { useRouter } from 'vue-router';
@@ -91,7 +85,6 @@
   const router = useRouter();
 
   const searchInfo = reactive<Recordable>({});
-  const loading = ref(false);
 
   const [registerDrawer, { openDrawer }] = useDrawer();
   const [registerImportModal, importAction] = useModal();
@@ -144,11 +137,8 @@
     router.push({ path: '/organ/userManagement/userDetail/' + record.id });
   }
 
-  function handleExport() {
-    loading.value = true;
-    exportApi(getForm().getFieldsValue())
-      .then((url) => downloadByUrl({ url }))
-      .finally(() => (loading.value = false));
+  async function handleExport() {
+    await exportApi(getForm().getFieldsValue());
   }
 
   function handleImport() {

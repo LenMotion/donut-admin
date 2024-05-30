@@ -36,6 +36,13 @@ public interface SysUserService extends DonutService<SysUser> {
     List<UserExportVO> selectUserExportList(UserQuery userQuery);
 
     /**
+     * 查询导出的用户信息
+     *
+     * @param userQuery
+     */
+    void exportUserList(UserQuery userQuery);
+
+    /**
      * 根据用户名查询
      *
      * @param username 用户名

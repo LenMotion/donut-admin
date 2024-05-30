@@ -1,16 +1,13 @@
 package cn.lenmotion.donut.framework.config;
 
 import cn.dev33.satoken.stp.StpUtil;
-import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.lenmotion.donut.core.annotation.DataScope;
 import cn.lenmotion.donut.core.constants.BaseConstants;
 import cn.lenmotion.donut.core.context.DataScopeContext;
 import cn.lenmotion.donut.core.context.TenantContext;
-import cn.lenmotion.donut.core.entity.LoginInfo;
-import cn.lenmotion.donut.core.enums.DataScopeEnum;
-import cn.lenmotion.donut.core.enums.DataScopeTypeEnum;
-import cn.lenmotion.donut.core.utils.AssertUtils;
+import cn.lenmotion.donut.core.exception.BusinessException;
+import cn.lenmotion.donut.core.utils.DataScopeUtils;
 import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
@@ -20,6 +17,7 @@ import com.baomidou.mybatisplus.extension.plugins.inner.*;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.LongValue;
 import net.sf.jsqlparser.expression.operators.conditional.AndExpression;
@@ -30,7 +28,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Optional;
 
 /**
  * @author LenMotion
@@ -147,14 +145,6 @@ public class MybatisPlusConfig {
     @Slf4j
     public static class DonutDataPermissionHandler implements DataPermissionHandler {
 
-        private static final Map<DataScopeTypeEnum, String> DATA_SCOPE_SQL_MAP = new HashMap<>();
-
-        static {
-            DATA_SCOPE_SQL_MAP.put(DataScopeTypeEnum.ROLE, " {} in ( select role_id from sys_user_role where user_id = {} )");
-            DATA_SCOPE_SQL_MAP.put(DataScopeTypeEnum.MENU, " {} in ( select menu_id from sys_role_menu rm inner join sys_user_role ur on ur.role_id = rm.role_id where ur.user_id = {} )");
-            DATA_SCOPE_SQL_MAP.put(DataScopeTypeEnum.DEPT, " {} in ( select id from sys_dept where {} and deleted = 0 )");
-        }
-
         @Override
         public Expression getSqlSegment(Expression where, String mappedStatementId) {
             DataScope dataScope = DataScopeContext.getDataScope();
@@ -162,81 +152,28 @@ public class MybatisPlusConfig {
                 return where;
             }
 
-            Long userId = StpUtil.getLoginIdAsLong();
-            var loginInfo = (LoginInfo) StpUtil.getSession().get(BaseConstants.SESSION_LOGIN_INFO);
+            Long userId = DataScopeContext.getUserId();
+            var loginInfo = DataScopeContext.getLoginInfo();
             if (BaseConstants.SUPER_ID.equals(userId) || StrUtil.equalsIgnoreCase(loginInfo.getUsername(), BaseConstants.SUPER_USER)) {
                 return where;
             }
 
-            Expression expression = null;
+            Expression expression;
             try {
-                expression = CCJSqlParserUtil.parseCondExpression("1=2");
-                var sql = switch (dataScope.type()) {
-                    case ROLE -> {
-                        String column = this.getColumn(dataScope.roleAlias(), dataScope.roleField());
-                        yield StrUtil.format(DATA_SCOPE_SQL_MAP.get(dataScope.type()), column, StpUtil.getLoginIdAsLong());
-                    }
-                    case MENU -> {
-                        String column = this.getColumn(dataScope.menuAlias(), dataScope.menuField());
-                        yield StrUtil.format(DATA_SCOPE_SQL_MAP.get(dataScope.type()), column, StpUtil.getLoginIdAsLong());
-                    }
-                    case DEPT -> {
-                        // 如果为空则表示没有权限，不允许获取数据
-                        if (CollUtil.isEmpty(loginInfo.getRoleDataScopes()) || CollUtil.isEmpty(loginInfo.getDeptAncestors())) {
-                            yield "1=2";
-                        }
-                        // 生成列
-                        String column = this.getColumn(dataScope.deptAlias(), dataScope.deptField());
-                        // 生成需要查询的部门sql
-                        Set<String> sqlSet = new HashSet<>();
-                        for (DataScopeEnum dataScopeEnum : loginInfo.getRoleDataScopes()) {
-                            sqlSet.addAll(this.getDeptInByDataScope(userId, dataScopeEnum, loginInfo.getDeptAncestors()));
-                        }
-                        // 构建动态查询sql
-                        yield StrUtil.format(DATA_SCOPE_SQL_MAP.get(dataScope.type()), column, StrUtil.join(" OR ", sqlSet));
-                    }
-                };
+                var sql = DataScopeUtils.getDataScopeSql(userId, loginInfo, dataScope);
                 expression = CCJSqlParserUtil.parseCondExpression(sql);
                 log.info("DataScopeHandler expression: {}", expression);
             } catch (Exception e) {
                 log.error("DataScopeHandler error", e);
+                try {
+                    expression = CCJSqlParserUtil.parseCondExpression("1=2");
+                } catch (JSQLParserException ex) {
+                    throw new BusinessException("数据权限错误");
+                }
             }
             return new AndExpression(where, expression);
         }
 
-        /**
-         * 根据权限类型，获取部门的sql
-         *
-         * @param userId
-         * @param dataScopeEnum
-         * @param deptAncestors
-         * @return
-         */
-        private Set<String> getDeptInByDataScope(Long userId, DataScopeEnum dataScopeEnum, Set<String> deptAncestors) {
-            Set<String> sqlSet = new HashSet<>(deptAncestors.size());
-            for (String deptAncestor : deptAncestors) {
-                var where = switch (dataScopeEnum) {
-                    case DEPT_AND_CHILDREN -> StrUtil.format(" ancestors like '{}%' ", deptAncestor);
-                    case DEPT -> StrUtil.format(" ancestors = '{}' ", deptAncestor);
-                    case SELF -> StrUtil.format(" create_by = {} ", userId);
-                };
-                sqlSet.add(where);
-            }
-
-            return sqlSet;
-        }
-
-        /**
-         * 生成对应的column
-         *
-         * @param alias
-         * @param field
-         * @return
-         */
-        private String getColumn(String alias, String field) {
-            AssertUtils.notBlank(field, "field不能为空");
-            return StrUtil.isBlank(alias) ? field : alias + "." + field;
-        }
     }
 
     /**

@@ -2,13 +2,18 @@ package cn.lenmotion.donut.framework.excel;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.date.TimeInterval;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.URLUtil;
 import cn.lenmotion.donut.core.constants.BaseConstants;
+import cn.lenmotion.donut.core.context.DataScopeContext;
 import cn.lenmotion.donut.core.exception.BusinessException;
 import cn.lenmotion.donut.core.utils.AssertUtils;
+import cn.lenmotion.donut.system.entity.enums.ExportStatusEnum;
+import cn.lenmotion.donut.system.entity.po.SysExportLog;
+import cn.lenmotion.donut.system.remote.SysExportLogRemoteService;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.excel.write.metadata.style.WriteCellStyle;
@@ -44,35 +49,42 @@ import java.util.Map;
 public class ExcelClient {
     private final FileStorageService fileStorageService;
     private final TransService transService;
+    private final SysExportLogRemoteService exportLogRemoteService;
 
     /**
      * 导出需要easy-trans转换的数据
      */
-    public <T extends VO> String exportTrans(List<T> list, Class<T> clz, String fileName) {
+    public <T extends VO> void exportTrans(List<T> list, Class<T> clz, SysExportLog exportLog, TimeInterval timer) {
         if (CollUtil.isNotEmpty(list)) {
+            // 这里需要清空数据权限的Context，避免数据转换的时候，sql查询错误
+            DataScopeContext.clear();
             transService.transBatch(list);
         }
-        return this.export(list, clz, fileName);
+        this.export(list, clz, exportLog, timer);
     }
 
     /**
      * 导出excel
      */
-    public <T> String export(List<T> list, Class<T> clz, String fileName) {
+    public <T> String export(List<T> list, Class<T> clz, SysExportLog exportLog, TimeInterval timer) {
         var out = new ByteArrayOutputStream();
         try {
             // 写数据到文件中
             EasyExcel.write(out, clz)
                     .excelType(ExcelTypeEnum.XLSX)
                     .registerWriteHandler(cellStyleStrategy())
-                    .sheet(fileName)
+                    .sheet(exportLog.getName())
                     .doWrite(list);
             // 上传流至文件服务器
-            return this.uploadStream(out, fileName);
+            return this.uploadStream(out, exportLog.getName(), exportLog);
         } catch (Exception e) {
             log.error("导出失败", e);
+            exportLog.setStatus(ExportStatusEnum.FAILED.getCode());
+            exportLog.setErrorMsg(e.getMessage());
             throw new BusinessException("导出失败");
         } finally {
+            exportLog.setExecTime(timer.interval());
+            exportLogRemoteService.endExport(exportLog);
             IoUtil.close(out);
         }
     }
@@ -80,21 +92,26 @@ public class ExcelClient {
     /**
      * 自定义head导出
      */
-    public <T> String export(List<List<String>> head, List<T> dataList, String fileName) {
+    public <T> String export(List<List<String>> head, List<T> dataList, SysExportLog exportLog) {
         var out = new ByteArrayOutputStream();
+        TimeInterval timer = DateUtil.timer();
         try {
             EasyExcel.write(out)
                     .head(head)
                     .excelType(ExcelTypeEnum.XLSX)
                     .registerWriteHandler(cellStyleStrategy())
-                    .sheet(fileName)
+                    .sheet(exportLog.getName())
                     .doWrite(dataList);
             // 上传流至文件服务器
-            return this.uploadStream(out, fileName);
+            return this.uploadStream(out, exportLog.getName(), exportLog);
         } catch (Exception e) {
             log.error("导出失败", e);
+            exportLog.setStatus(ExportStatusEnum.FAILED.getCode());
+            exportLog.setErrorMsg(e.getMessage());
             throw new BusinessException("导出失败");
         } finally {
+            exportLog.setExecTime(timer.interval());
+            exportLogRemoteService.endExport(exportLog);
             IoUtil.close(out);
         }
     }
@@ -102,7 +119,7 @@ public class ExcelClient {
     /**
      * 上传流至文件服务器
      */
-    private String uploadStream(ByteArrayOutputStream out, String fileName) {
+    private String uploadStream(ByteArrayOutputStream out, String fileName, SysExportLog exportLog) {
         ByteArrayInputStream in = null;
         try {
             // 生成文件地址，加入随机数，避免重复
@@ -118,6 +135,8 @@ public class ExcelClient {
                     .setMetadata(metadata)
                     .setObjectType("excel")
                     .upload();
+            exportLog.setStatus(ExportStatusEnum.FINISHED.getCode());
+            exportLog.setUrl(fileInfo.getUrl());
             // 生成访问链接
             return fileStorageService.generatePresignedUrl(fileInfo, DateUtil.offsetMinute(new Date(), 30));
         } finally {

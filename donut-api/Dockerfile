@@ -1,6 +1,6 @@
 FROM amazoncorretto:17.0.10-al2023
 WORKDIR /app
-COPY ./target/donut-api-2.0.0.jar app.jar
+COPY ./target/donut-api-2.1.0.jar app.jar
 # COPY --from=builder ./donut-api/target/donut-api-1.0.0.jar .
 # 设定时区
 ENV TZ=Asia/Shanghai

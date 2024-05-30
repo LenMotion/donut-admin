@@ -1,6 +1,8 @@
 package cn.lenmotion.donut.system.controller;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.core.date.DateUtil;
 import cn.lenmotion.donut.core.annotation.OperationLog;
 import cn.lenmotion.donut.core.entity.BaseImportResult;
 import cn.lenmotion.donut.core.entity.BaseUpdateStatus;
@@ -12,12 +14,11 @@ import cn.lenmotion.donut.system.entity.converter.UserConverter;
 import cn.lenmotion.donut.system.entity.query.UserQuery;
 import cn.lenmotion.donut.system.entity.request.SysUserRequest;
 import cn.lenmotion.donut.system.entity.vo.UserResponseVO;
-import cn.lenmotion.donut.system.entity.vo.export.UserExportVO;
 import cn.lenmotion.donut.system.entity.vo.imported.UserImportVO;
+import cn.lenmotion.donut.system.remote.SysExportLogRemoteService;
 import cn.lenmotion.donut.system.service.SysUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
@@ -39,6 +40,7 @@ public class SysUserController {
 
     private final SysUserService userService;
     private final ExcelClient excelClient;
+    private final SysExportLogRemoteService exportLogRemoteService;
 
     @SaCheckPermission("system:user:list")
     @Operation(summary = "获取用户列表")
@@ -51,17 +53,17 @@ public class SysUserController {
     @SaCheckPermission("system:user:export")
     @Operation(summary = "导出用户信息")
     @GetMapping("/export")
-    public ResponseResult<String> export(UserQuery userQuery, HttpServletResponse response) {
-        var exportList = userService.selectUserExportList(userQuery);
-        String url = excelClient.exportTrans(exportList, UserExportVO.class, "用户信息");
-        return ResponseResult.success("导出成功", url);
+    public ResponseResult<Boolean> export(UserQuery userQuery) {
+        userService.exportUserList(userQuery);
+        return ResponseResult.success(true);
     }
 
     @SaCheckPermission("system:user:import")
     @Operation(summary = "导入用户信息模板")
     @GetMapping("/exportTemplate")
     public ResponseResult<String> exportTemplate() {
-        String url = excelClient.export(new ArrayList<>(), UserImportVO.class, "用户导入模板");
+        var exportLog = exportLogRemoteService.startExport(StpUtil.getLoginIdAsLong(), "用户导入模板");
+        String url = excelClient.export(new ArrayList<>(), UserImportVO.class, exportLog, DateUtil.timer());
         return ResponseResult.success("导出成功", url);
     }
 

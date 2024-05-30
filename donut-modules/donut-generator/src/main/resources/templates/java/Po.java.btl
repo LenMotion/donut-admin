@@ -11,6 +11,10 @@ import ${item};
 <%
 	}
 %>
+<% if (isNotEmpty(column.dictKey)) { %>
+import com.fhs.core.trans.anno.Trans;
+import com.fhs.core.trans.constant.TransType;
+<% } %>
 <% if (isEmpty(superClass)) { %>
 
 import java.io.Serial;

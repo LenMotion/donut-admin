@@ -1,7 +1,10 @@
 package cn.lenmotion.donut.framework.aspect;
 
+import cn.dev33.satoken.stp.StpUtil;
 import cn.lenmotion.donut.core.annotation.DataScope;
+import cn.lenmotion.donut.core.constants.BaseConstants;
 import cn.lenmotion.donut.core.context.DataScopeContext;
+import cn.lenmotion.donut.core.entity.LoginInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
@@ -21,7 +24,9 @@ public class DataScopeAspect {
 
     @Before(value = "@annotation(dataScope)")
     public void doBefore(JoinPoint joinPoint, DataScope dataScope) {
-        DataScopeContext.setDataScope(dataScope);
+        Long userId = StpUtil.getLoginIdAsLong();
+        var loginInfo = (LoginInfo) StpUtil.getSession().get(BaseConstants.SESSION_LOGIN_INFO);
+        DataScopeContext.setDataScope(dataScope, userId, loginInfo);
     }
 
     @After(value = "@annotation(dataScope)")
