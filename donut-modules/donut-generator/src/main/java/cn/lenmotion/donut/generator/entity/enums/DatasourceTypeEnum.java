@@ -12,6 +12,7 @@ import lombok.Getter;
 public enum DatasourceTypeEnum implements BaseEnum<String> {
     MYSQL("mysql",  "mysql", "jdbc:mysql://{}:{}/{}?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&" +
                     "useSSL=true&serverTimezone=GMT%2B8&useInformationSchema=true", "select 1"),
+    POSTGRESQL("postgresql",  "postgresql", "jdbc:postgresql://{}:{}/{}", "select 'x'"),
     ;
 
     /**

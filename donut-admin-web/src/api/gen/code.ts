@@ -6,7 +6,7 @@ enum Api {
   Basic = basic,
   List = basic + '/list',
   TableList = basic + '/tableList',
-  TableColumns = basic + '/tableColumns/',
+  TableColumns = basic + '/tableColumns',
   TableColumnsByTable = basic + '/tableColumnsByTable/',
   Detail = basic + '/',
   Preview = basic + '/preview',
@@ -28,8 +28,8 @@ export const tableListApi = (params) => {
   return defHttp.get<Recordable[]>({ url: Api.TableList, params });
 };
 
-export const tableColumnsApi = (tableName: string) => {
-  return defHttp.get<Recordable[]>({ url: Api.TableColumns + tableName });
+export const tableColumnsApi = (params) => {
+  return defHttp.get<Recordable[]>({ url: Api.TableColumns, params });
 };
 
 export const tableColumnsByTableApi = (tableId: number) => {

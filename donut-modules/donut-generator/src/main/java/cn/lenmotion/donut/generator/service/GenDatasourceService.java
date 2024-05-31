@@ -6,6 +6,8 @@ import cn.lenmotion.donut.generator.entity.query.GenDatasourceQuery;
 import cn.lenmotion.donut.generator.entity.request.GenDatasourceRequest;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -39,4 +41,11 @@ public interface GenDatasourceService extends DonutService<GenDatasource> {
      * @return
      */
     Boolean checkConnection(Long id);
+
+    /**
+     * 根据id生成连接
+     * @param id
+     * @return
+     */
+    Connection getConnectionById(Long id) throws SQLException;
 }

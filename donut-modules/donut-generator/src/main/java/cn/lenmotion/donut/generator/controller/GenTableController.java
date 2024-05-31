@@ -7,6 +7,7 @@ import cn.lenmotion.donut.core.entity.ResponseResult;
 import cn.lenmotion.donut.core.utils.PageUtils;
 import cn.lenmotion.donut.generator.entity.po.GenTable;
 import cn.lenmotion.donut.generator.entity.po.GenTableColumn;
+import cn.lenmotion.donut.generator.entity.query.ColumnsQuery;
 import cn.lenmotion.donut.generator.entity.query.GenTableQuery;
 import cn.lenmotion.donut.generator.entity.request.GenTableRequest;
 import cn.lenmotion.donut.generator.service.GenTableColumnService;
@@ -71,9 +72,9 @@ public class GenTableController {
 
     @SaCheckPermission("gen:code:save")
     @Operation(summary = "查询表字段列表")
-    @GetMapping("tableColumns/{tableName}")
-    public ResponseResult<List<GenTableColumn>> tableColumns(@PathVariable String tableName) {
-        return ResponseResult.success(genTableColumnService.tableColumns(tableName));
+    @GetMapping("tableColumns")
+    public ResponseResult<List<GenTableColumn>> tableColumns(ColumnsQuery query) {
+        return ResponseResult.success(genTableColumnService.tableColumns(query));
     }
 
     @Operation(summary = "保存或更新表信息")

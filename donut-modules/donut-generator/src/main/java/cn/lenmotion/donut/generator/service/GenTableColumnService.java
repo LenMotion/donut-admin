@@ -2,6 +2,7 @@ package cn.lenmotion.donut.generator.service;
 
 import cn.lenmotion.donut.generator.entity.po.GenTable;
 import cn.lenmotion.donut.generator.entity.po.GenTableColumn;
+import cn.lenmotion.donut.generator.entity.query.ColumnsQuery;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
@@ -13,10 +14,10 @@ public interface GenTableColumnService extends IService<GenTableColumn> {
 
     /**
      * 查询表的字段
-     * @param tableName
+     * @param query
      * @return
      */
-    List<GenTableColumn> tableColumns(String tableName);
+    List<GenTableColumn> tableColumns(ColumnsQuery query);
 
     /**
      * 查询表的字段

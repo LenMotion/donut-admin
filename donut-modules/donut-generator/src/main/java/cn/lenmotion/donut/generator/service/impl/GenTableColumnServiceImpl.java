@@ -3,25 +3,33 @@ package cn.lenmotion.donut.generator.service.impl;
 import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.ObjUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.crypto.asymmetric.RSA;
 import cn.lenmotion.donut.core.entity.BasePageQuery;
 import cn.lenmotion.donut.core.entity.BasePo;
 import cn.lenmotion.donut.core.exception.BusinessException;
+import cn.lenmotion.donut.core.utils.AssertUtils;
+import cn.lenmotion.donut.core.utils.EnumUtils;
+import cn.lenmotion.donut.generator.entity.enums.DatasourceTypeEnum;
 import cn.lenmotion.donut.generator.entity.enums.MysqlTypeEnum;
 import cn.lenmotion.donut.generator.entity.po.GenTable;
 import cn.lenmotion.donut.generator.entity.po.GenTableColumn;
+import cn.lenmotion.donut.generator.entity.query.ColumnsQuery;
 import cn.lenmotion.donut.generator.mapper.GenTableColumnMapper;
+import cn.lenmotion.donut.generator.service.GenDatasourceService;
 import cn.lenmotion.donut.generator.service.GenTableColumnService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.jdbc.support.JdbcUtils;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -34,26 +42,29 @@ import java.util.concurrent.atomic.AtomicInteger;
 @RequiredArgsConstructor
 public class GenTableColumnServiceImpl extends ServiceImpl<GenTableColumnMapper, GenTableColumn> implements GenTableColumnService {
 
-    private final DataSourceProperties dataSourceProperties;
+    private final GenDatasourceService datasourceService;
 
     @Override
-    public List<GenTableColumn> tableColumns(String tableName) {
+    public List<GenTableColumn> tableColumns(ColumnsQuery query) {
+        var datasource = datasourceService.getById(query.getDatasourceId());
+        AssertUtils.notNull(datasource, "数据源不存在");
+        var datasourceTypeEnum = EnumUtils.getByCode(DatasourceTypeEnum.class, datasource.getType());
+        AssertUtils.notNull(datasourceTypeEnum, "数据源类型不存在");
+
         Connection conn = null;
         ResultSet rs = null;
         ResultSet primaryKeys = null;
         try {
-            conn = DriverManager.getConnection(dataSourceProperties.getUrl(),
-                    dataSourceProperties.getUsername(),
-                    dataSourceProperties.getPassword());
+            conn = datasourceService.getConnectionById(query.getDatasourceId());
             DatabaseMetaData metaData = conn.getMetaData();
             // 获取主键
-            primaryKeys = metaData.getPrimaryKeys(conn.getCatalog(), conn.getSchema(), tableName);
+            primaryKeys = metaData.getPrimaryKeys(conn.getCatalog(), conn.getSchema(), query.getTableName());
             List<String> pkList = new ArrayList<>();
             while (primaryKeys.next()) {
                 pkList.add(primaryKeys.getString("COLUMN_NAME"));
             }
             // 查询表列信息
-            rs = metaData.getColumns(conn.getCatalog(), conn.getSchema(), tableName, "%");
+            rs = metaData.getColumns(conn.getCatalog(), conn.getSchema(), query.getTableName(), "%");
             List<GenTableColumn> columns = new ArrayList<>();
             AtomicInteger atomicInteger = new AtomicInteger(0);
             while (rs.next()) {
@@ -68,14 +79,23 @@ public class GenTableColumnServiceImpl extends ServiceImpl<GenTableColumnMapper,
                 // 获取列的数据类型
                 String typeName = rs.getString("TYPE_NAME").toUpperCase();
                 tableColumn.setColumnType(ObjUtil.isEmpty(typeName) ? "NONE" : typeName);
-                // 生成对应的java类型
-                if (MysqlTypeEnum.TINYINT.name().equals(typeName) && rs.getInt("COLUMN_SIZE") == 1) {
-                    tableColumn.setJavaTypeClass(Boolean.class.getName());
-                    tableColumn.setJavaType("Boolean");
-                } else {
-                    MysqlTypeEnum typeEnum = MysqlTypeEnum.getByName(typeName);
-                    tableColumn.setJavaType(typeEnum.getCode());
-                    tableColumn.setJavaTypeClass(typeEnum.getRemark());
+
+                switch (datasourceTypeEnum) {
+                    case MYSQL -> {
+                        // 生成对应的java类型
+                        if (MysqlTypeEnum.TINYINT.name().equals(typeName) && rs.getInt("COLUMN_SIZE") == 1) {
+                            tableColumn.setJavaTypeClass(Boolean.class.getName());
+                            tableColumn.setJavaType("Boolean");
+                        } else {
+                            MysqlTypeEnum typeEnum = MysqlTypeEnum.getByName(typeName);
+                            tableColumn.setJavaType(typeEnum.getCode());
+                            tableColumn.setJavaTypeClass(typeEnum.getRemark());
+                        }
+                    }
+                    // todo 实现pgsql的字段映射
+                    case POSTGRESQL -> {
+
+                    }
                 }
                 // 是否是主键
                 tableColumn.setIdField(pkList.contains(tableColumn.getColumnName()));
@@ -91,7 +111,7 @@ public class GenTableColumnServiceImpl extends ServiceImpl<GenTableColumnMapper,
             return columns;
         } catch (SQLException e) {
             log.error("查询数据库表错误", e);
-            throw new BusinessException("获取字段错误：表名 = " + tableName);
+            throw new BusinessException("获取字段错误：表名 = " + query.getTableName());
         } finally {
             JdbcUtils.closeResultSet(primaryKeys);
             JdbcUtils.closeResultSet(rs);

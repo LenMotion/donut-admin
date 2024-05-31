@@ -31,10 +31,9 @@
   import { BasicModal, useModalInner } from '@/components/Modal';
   import { tableColumnsByTableApi, saveApi, tableColumnsApi } from '@/api/gen/code';
   import { useMessage } from '@/hooks/web/useMessage';
-  import { Steps } from 'ant-design-vue';
+  import { Steps, Space } from 'ant-design-vue';
   import ColumnTable from './components/ColumnTable.vue';
   import ColumnForm from './components/ColumnForm.vue';
-  import { Space } from 'ant-design-vue';
 
   const { createMessage: msg } = useMessage();
   const isUpdate = ref(true);
@@ -59,6 +58,7 @@
    * 下一步
    */
   const handleNextStep = (values: Recordable) => {
+    console.log(values);
     record.value = values;
     stepCurrent.value = 1;
     const columns = columnTableRef.value?.getDataSource();
@@ -69,7 +69,8 @@
           columnTableRef.value?.resetTable(res);
         });
       } else {
-        tableColumnsApi(values.tableName).then((res) => {
+        const params = { tableName: values.tableName, datasourceId: values.datasourceId };
+        tableColumnsApi(params).then((res) => {
           columnTableRef.value?.setTableData(res);
         });
       }

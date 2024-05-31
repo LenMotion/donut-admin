@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -68,16 +69,9 @@ public class GenDatasourceServiceImpl extends DonutServiceImpl<GenDatasourceMapp
 
     @Override
     public Boolean checkConnection(Long id) {
-        var datasource = this.getById(id);
-        AssertUtils.notNull(datasource, "数据源不存在");
-        var typeEnum = EnumUtils.getByCode(DatasourceTypeEnum.class, datasource.getType());
-        AssertUtils.notNull(typeEnum, "数据源类型不存在");
-        var url = StrUtil.format(typeEnum.getUrl(), datasource.getHost(), datasource.getPort(), datasource.getSchemaName());
-        var password = rsa.decryptStr(datasource.getPassword(), KeyType.PrivateKey);
-
         GenDatasource updateDatasource = new GenDatasource();
         updateDatasource.setId(id);
-        try (Connection ignored = DriverManager.getConnection(url, datasource.getUsername(), password)) {
+        try (Connection ignored = this.getConnectionById(id)) {
             updateDatasource.setCheckConnection(true);
         } catch (Exception e) {
             log.error("数据源连接失败: ", e);
@@ -87,4 +81,14 @@ public class GenDatasourceServiceImpl extends DonutServiceImpl<GenDatasourceMapp
         return updateDatasource.getCheckConnection();
     }
 
+    @Override
+    public Connection getConnectionById(Long id) throws SQLException {
+        var datasource = this.getById(id);
+        AssertUtils.notNull(datasource, "数据源不存在");
+        var typeEnum = EnumUtils.getByCode(DatasourceTypeEnum.class, datasource.getType());
+        AssertUtils.notNull(typeEnum, "数据源类型不存在");
+        var url = StrUtil.format(typeEnum.getUrl(), datasource.getHost(), datasource.getPort(), datasource.getSchemaName());
+        var password = rsa.decryptStr(datasource.getPassword(), KeyType.PrivateKey);
+        return DriverManager.getConnection(url, datasource.getUsername(), password);
+    }
 }
