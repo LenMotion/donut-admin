@@ -34,6 +34,9 @@ public class DataScopeUtils {
             }
             case MENU -> {
                 String column = DataScopeUtils.getColumn(dataScope.menuAlias(), dataScope.menuField());
+
+
+
                 yield StrUtil.format(DATA_SCOPE_SQL_MAP.get(dataScope.type()), column, StpUtil.getLoginIdAsLong());
             }
             case DEPT -> {

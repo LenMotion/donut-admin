@@ -3,6 +3,7 @@ package cn.lenmotion.donut.system.service.impl;
 import cn.hutool.core.util.StrUtil;
 import cn.lenmotion.donut.core.annotation.DataScope;
 import cn.lenmotion.donut.core.constants.BaseConstants;
+import cn.lenmotion.donut.core.entity.LoginInfo;
 import cn.lenmotion.donut.core.enums.BaseStatusEnum;
 import cn.lenmotion.donut.core.enums.DataScopeTypeEnum;
 import cn.lenmotion.donut.core.utils.AssertUtils;
@@ -38,7 +39,7 @@ public class SysRoleServiceImpl extends DonutServiceImpl<SysRoleMapper, SysRole>
     private final SysRoleMenuService roleMenuService;
 
     @Override
-    @DataScope(type = DataScopeTypeEnum.ROLE, roleField = "id")
+    @DataScope(type = DataScopeTypeEnum.ROLE, roleField = "id", tenantAdminIgnore = true)
     public IPage<SysRole> selectRolePage(RoleQuery query) {
         // 将query转成lambdaQuery的查询条件
         LambdaQueryWrapper<SysRole> queryWrapper = Wrappers.lambdaQuery(SysRole.class)
@@ -67,14 +68,11 @@ public class SysRoleServiceImpl extends DonutServiceImpl<SysRoleMapper, SysRole>
     }
 
     @Override
-    public List<SysRole> selectRolesByUserId(Long userId) {
-        if (BaseConstants.SUPER_ID.equals(userId)) {
-            LambdaQueryWrapper<SysRole> queryWrapper = new LambdaQueryWrapper<>();
-            queryWrapper.eq(SysRole::getStatus, BaseStatusEnum.ENABLED.getCode());
-
-            return list(queryWrapper);
-        }
-        return getBaseMapper().selectRolesByUserId(userId);
+    @DataScope(type = DataScopeTypeEnum.ROLE, roleField = "id", tenantAdminIgnore = true)
+    public List<SysRole> selectRolesByLoginInfo(LoginInfo loginInfo) {
+        LambdaQueryWrapper<SysRole> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(SysRole::getStatus, BaseStatusEnum.ENABLED.getCode());
+        return list(queryWrapper);
     }
 
     @Override

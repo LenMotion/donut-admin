@@ -153,8 +153,12 @@ public class MybatisPlusConfig {
             }
 
             Long userId = DataScopeContext.getUserId();
+            if (BaseConstants.SUPER_ID.equals(userId)) {
+                return where;
+            }
+            // 是否忽略租户管理员
             var loginInfo = DataScopeContext.getLoginInfo();
-            if (BaseConstants.SUPER_ID.equals(userId) || StrUtil.equalsIgnoreCase(loginInfo.getUsername(), BaseConstants.SUPER_USER)) {
+            if (dataScope.tenantAdminIgnore() && StrUtil.equalsIgnoreCase(loginInfo.getUsername(), BaseConstants.SUPER_USER)) {
                 return where;
             }
 

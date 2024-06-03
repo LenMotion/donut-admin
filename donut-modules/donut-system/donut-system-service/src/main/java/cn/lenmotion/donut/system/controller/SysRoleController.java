@@ -3,6 +3,8 @@ package cn.lenmotion.donut.system.controller;
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.lenmotion.donut.core.annotation.OperationLog;
+import cn.lenmotion.donut.core.constants.BaseConstants;
+import cn.lenmotion.donut.core.entity.LoginInfo;
 import cn.lenmotion.donut.core.entity.PageResult;
 import cn.lenmotion.donut.core.entity.ResponseResult;
 import cn.lenmotion.donut.core.utils.PageUtils;
@@ -45,7 +47,8 @@ public class SysRoleController {
     @GetMapping("options")
     @Operation(summary = "角色选择框")
     public ResponseResult<List<SysRole>> options() {
-        return ResponseResult.success(sysRoleService.selectRolesByUserId(StpUtil.getLoginIdAsLong()));
+        var loginInfo = (LoginInfo) StpUtil.getSession().get(BaseConstants.SESSION_LOGIN_INFO);
+        return ResponseResult.success(sysRoleService.selectRolesByLoginInfo(loginInfo));
     }
 
     @SaCheckPermission("system:role:save")

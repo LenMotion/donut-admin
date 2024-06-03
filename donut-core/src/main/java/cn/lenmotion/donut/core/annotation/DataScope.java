@@ -26,4 +26,10 @@ public @interface DataScope {
 
     String menuAlias() default "";
 
+    /**
+     * 是否忽略租户管理员
+     * @return
+     */
+    boolean tenantAdminIgnore() default false;
+
 }

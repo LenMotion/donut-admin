@@ -29,7 +29,6 @@ public class SysDictDataController {
 
     private final SysDictDataService dictDataService;
 
-    @SaCheckPermission("system:dict:list")
     @GetMapping("/list")
     @Operation(summary = "分页查询")
     public ResponseResult<PageResult<SysDictData>> list(DictDataQuery query) {

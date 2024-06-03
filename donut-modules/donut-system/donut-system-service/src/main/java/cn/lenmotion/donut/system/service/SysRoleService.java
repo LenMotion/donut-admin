@@ -1,5 +1,6 @@
 package cn.lenmotion.donut.system.service;
 
+import cn.lenmotion.donut.core.entity.LoginInfo;
 import cn.lenmotion.donut.core.service.DonutService;
 import cn.lenmotion.donut.system.entity.po.SysRole;
 import cn.lenmotion.donut.system.entity.query.RoleQuery;
@@ -31,9 +32,9 @@ public interface SysRoleService extends DonutService<SysRole> {
 
     /**
      * 查询用户的角色
-     * @param userId
+     * @param loginInfo
      * @return
      */
-    List<SysRole> selectRolesByUserId(Long userId);
+    List<SysRole> selectRolesByLoginInfo(LoginInfo loginInfo);
 
 }

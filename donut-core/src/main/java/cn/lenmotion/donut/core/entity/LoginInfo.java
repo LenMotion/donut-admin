@@ -23,6 +23,11 @@ public class LoginInfo {
     private String username;
 
     /**
+     * 所属租户id
+     */
+    private Long tenantId;
+
+    /**
      * 用户的权限范围
      */
     private Set<DataScopeEnum> roleDataScopes;

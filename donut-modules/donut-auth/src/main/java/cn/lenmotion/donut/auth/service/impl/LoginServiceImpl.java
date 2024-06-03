@@ -188,6 +188,7 @@ public class LoginServiceImpl implements LoginService {
         LoginInfo loginInfo = new LoginInfo();
         loginInfo.setUserId(user.getId());
         loginInfo.setUsername(user.getUsername());
+        loginInfo.setTenantId(user.getTenantId());
         loginInfo.setDeptAncestors(permissionRemoteService.getDeptAncestors(user.getId()));
         loginInfo.setRoleDataScopes(permissionRemoteService.getRoleDataScope(user.getId()));
 

@@ -59,4 +59,16 @@ public interface SysRoleMenuService extends IService<SysRoleMenu> {
      */
     List<SysMenu> getMenuListByUserId(Long userId);
 
+    /**
+     * 删除所有角色中有此权限的信息
+     * @param menuIds
+     */
+    void clearAllRoleMenu(Collection<Long> menuIds);
+
+    /**
+     * 设置半选菜单
+     * @param menuIds
+     */
+    void setHalfMenu(Collection<Long> menuIds);
+
 }

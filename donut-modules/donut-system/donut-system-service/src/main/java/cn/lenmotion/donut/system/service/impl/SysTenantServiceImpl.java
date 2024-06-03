@@ -28,7 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -47,6 +47,7 @@ public class SysTenantServiceImpl extends DonutServiceImpl<SysTenantMapper, SysT
     private final SysDeptService deptService;
     private final SysPostService postService;
     private final SysUserDeptService userDeptService;
+    private final SysMenuService menuService;
 
     @Override
     public IPage<SysTenant> selectPageList(SysTenantQuery query) {
@@ -95,8 +96,17 @@ public class SysTenantServiceImpl extends DonutServiceImpl<SysTenantMapper, SysT
         } else {
             var hasTenant = super.getById(sysTenant.getId());
             TenantContext.setTenant(sysTenant.getId());
+            // 拥有的权限
             var menuIdVO = roleMenuService.getMenuIdListByRoleId(hasTenant.getRoleId());
-
+            Collection<Long> hasMenuIds = CollUtil.addAll(menuIdVO.getHalfMenuIds(), menuIdVO.getMenuIds());
+            // 新的权限
+            Collection<Long> newMenuIds = CollUtil.addAll(CollUtil.newHashSet(request.getHalfMenuIds()), request.getMenuIds());
+            // 需要删除的权限
+            roleMenuService.clearAllRoleMenu(CollUtil.subtract(hasMenuIds, newMenuIds));
+            // 新增的菜单
+            Collection<Long> addMenuIds = CollUtil.subtract(newMenuIds, hasMenuIds);
+            roleMenuService.setHalfMenu(addMenuIds);
+            // 设置超管的权限
             roleMenuService.clearRoleMenu(List.of(hasTenant.getRoleId()));
             roleMenuService.saveRoleMenu(hasTenant.getRoleId(), request.getMenuIds(), false);
             roleMenuService.saveRoleMenu(hasTenant.getRoleId(), request.getHalfMenuIds(), true);

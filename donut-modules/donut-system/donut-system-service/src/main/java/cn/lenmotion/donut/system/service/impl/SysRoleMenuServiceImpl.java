@@ -6,24 +6,27 @@ import cn.lenmotion.donut.core.constants.BaseConstants;
 import cn.lenmotion.donut.system.entity.po.SysMenu;
 import cn.lenmotion.donut.system.entity.po.SysRoleMenu;
 import cn.lenmotion.donut.system.entity.vo.RoleMenuIdVO;
+import cn.lenmotion.donut.system.mapper.SysMenuMapper;
 import cn.lenmotion.donut.system.mapper.SysRoleMenuMapper;
 import cn.lenmotion.donut.system.service.SysRoleMenuService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
  * @author lenmotion
  */
 @Service
+@RequiredArgsConstructor
 public class SysRoleMenuServiceImpl extends ServiceImpl<SysRoleMenuMapper, SysRoleMenu> implements SysRoleMenuService {
+
+    private final SysMenuMapper menuMapper;
 
     @Override
     public void clearRoleMenu(Collection<?> roleIdList) {
@@ -83,4 +86,41 @@ public class SysRoleMenuServiceImpl extends ServiceImpl<SysRoleMenuMapper, SysRo
         return getBaseMapper().getMenuListByUserId(userId);
     }
 
+    @Override
+    public void clearAllRoleMenu(Collection<Long> menuIds) {
+        if (CollUtil.isEmpty(menuIds)) {
+            return;
+        }
+        LambdaQueryWrapper<SysRoleMenu> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.in(SysRoleMenu::getMenuId, menuIds);
+        this.remove(queryWrapper);
+    }
+
+    @Override
+    public void setHalfMenu(Collection<Long> menuIds) {
+        if (CollUtil.isEmpty(menuIds)) {
+            return;
+        }
+        List<SysMenu> menuList = menuMapper.selectBatchIds(menuIds);
+        // 查找上级菜单，把有这些菜单的全部设置为半选
+        Set<Long> parentIds = new HashSet<>();
+        for (SysMenu menu : menuList) {
+            this.findParent(menu, parentIds);
+        }
+        LambdaUpdateWrapper<SysRoleMenu> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper.in(SysRoleMenu::getMenuId, parentIds)
+                .set(SysRoleMenu::getHalfMenu, true);
+        this.update(null, updateWrapper);
+    }
+
+    /**
+     * 查找上级的菜单
+     */
+    private void findParent(SysMenu sysMenu, Set<Long> parentIds) {
+        if (sysMenu == null || sysMenu.getParentId().equals(BaseConstants.PARENT_ID)) {
+            return;
+        }
+        parentIds.add(sysMenu.getParentId());
+        this.findParent(menuMapper.selectById(sysMenu.getParentId()), parentIds);
+    }
 }
