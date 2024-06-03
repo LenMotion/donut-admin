@@ -7,6 +7,8 @@
 	<strong>基于Spring Boot3、JDK17的一套多租户（Saas）开源管理系统</strong>
 </p>
 
+在线文档地址：[https://donut-doc.lenmotion.cn](https://donut-doc.lenmotion.cn/)
+
 ## 功能：
 * 租户管理：租户管理，支持多租户，前端可配置不同租户，用户、部门、岗位、角色等数据隔离
 * 用户管理：基础的用户管理、用户登录等功能
@@ -46,7 +48,7 @@
 前端基于开源项目[Vben](http://vben.vvbin.cn)
 * Vue3
 * Vite
-* Ant-Design4
+* [Ant-Design4](https://www.antdv.com/docs/vue/getting-started)
 
 ### 项目预览：
 
