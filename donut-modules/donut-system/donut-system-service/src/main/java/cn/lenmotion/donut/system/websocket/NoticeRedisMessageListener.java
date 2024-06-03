@@ -2,6 +2,7 @@ package cn.lenmotion.donut.system.websocket;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.lenmotion.donut.core.constants.BaseConstants;
+import cn.lenmotion.donut.core.context.TenantContext;
 import cn.lenmotion.donut.system.entity.po.SysNotice;
 import cn.lenmotion.donut.system.service.SysNoticeSendRelationService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -47,11 +48,16 @@ public class NoticeRedisMessageListener implements MessageListener<SysNotice> {
     public void onMessage(CharSequence channel, SysNotice notice) {
         log.info("Received message: channel = {}, msg = {}", channel, notice);
 
-        transService.transOne(notice);
+        TenantContext.setTenant(notice.getTenantId());
+        try {
+            transService.transOne(notice);
 
-        var page = new Page<Long>(1, 500);
-        // 发送消息
-        this.sendNotice(page, notice);
+            var page = new Page<Long>(1, 500);
+            // 发送消息
+            this.sendNotice(page, notice);
+        } finally {
+            TenantContext.clear();
+        }
     }
 
     // 发送通知
