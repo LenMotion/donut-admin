@@ -8,7 +8,7 @@
     <property name="LOG_HOME" value="logs/${LOG_CONTEXT_NAME}"/>
 
     <!-- 日志的显式格式 -->
-    <property name="log.pattern" value="%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(-){faint} %clr([%t]){faint} %clr(%logger{39}){cyan} %clr([%L]){magenta} %clr(:){faint} %m%n" />
+    <property name="log.pattern" value="%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(%X{TraceID:- }){magenta} %clr(-){faint} %clr([%t]){faint} %clr(%logger{39}){cyan} %clr([%L]){magenta} %clr(:){faint} %m%n" />
 
     <!-- 控制台输出 -->
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">

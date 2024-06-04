@@ -1,10 +1,10 @@
 package cn.lenmotion.donut.core.entity;
 
+import cn.lenmotion.donut.core.context.TraceIdContext;
 import cn.lenmotion.donut.core.enums.ResponseCodeEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 import java.io.Serial;
@@ -15,7 +15,6 @@ import java.io.Serializable;
  */
 @Data
 @Accessors(chain = true)
-@NoArgsConstructor
 @AllArgsConstructor
 @Schema(title = "响应结果")
 public class ResponseResult<T> implements Serializable {
@@ -32,8 +31,13 @@ public class ResponseResult<T> implements Serializable {
     @Schema(description = "响应数据")
     private T result;
 
+    @Schema(description = "请求跟踪ID")
+    private String traceId;
+
+    private ResponseResult() {}
+
     public static <T> ResponseResult<T> custom(Integer code, String message, T result) {
-        return new ResponseResult<>(code, message, result);
+        return new ResponseResult<>(code, message, result, TraceIdContext.getTraceId());
     }
 
     public static <T> ResponseResult<T> custom(ResponseCodeEnum responseCodeEnum, T result) {

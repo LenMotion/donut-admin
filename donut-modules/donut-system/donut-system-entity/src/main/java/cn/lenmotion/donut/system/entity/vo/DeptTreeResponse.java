@@ -9,4 +9,7 @@ import java.util.List;
  * @author lenmotion
  */
 public class DeptTreeResponse extends ResponseResult<List<SysDept>> {
+    public DeptTreeResponse(Integer code, String msg, List<SysDept> result, String traceId) {
+        super(code, msg, result, traceId);
+    }
 }

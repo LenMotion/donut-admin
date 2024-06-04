@@ -74,7 +74,7 @@ services:
       - donut-net
   donut-api:
     container_name: donut-api
-    image: donut-api:2.1.0
+    image: donut-api:2.1.1
     hostname: donut-api
     build:
       context: ./donut-api
@@ -89,7 +89,7 @@ services:
       - donut-net
   donut-web:
     container_name: donut-web
-    image: donut-web:2.1.0
+    image: donut-web:2.1.1
     build:
       context: ./donut-admin-web
       dockerfile: Dockerfile
