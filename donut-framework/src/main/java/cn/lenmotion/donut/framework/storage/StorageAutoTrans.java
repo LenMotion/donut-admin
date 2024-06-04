@@ -6,6 +6,7 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.URLUtil;
 import cn.lenmotion.donut.core.constants.BaseConstants;
+import cn.lenmotion.donut.system.remote.SysFileStorageRemoteService;
 import com.fhs.core.trans.anno.AutoTrans;
 import com.fhs.trans.service.AutoTransable;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +16,10 @@ import org.dromara.x.file.storage.core.FileStorageService;
 import org.dromara.x.file.storage.core.platform.FileStorage;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * @author lenmotion
@@ -28,27 +32,41 @@ public class StorageAutoTrans implements AutoTransable<StorageVO> {
 
     private final FileStorageService fileStorageService;
     private final SaTokenConfig saTokenConfig;
+    private final SysFileStorageRemoteService fileStorageRemoteService;
 
     @Override
     public List<StorageVO> selectByIds(List<?> ids) {
-       return ids.stream().map(this::selectById).toList();
+        var fileMap = fileStorageRemoteService.getMapByUrlList(ids.stream().map(Object::toString).toList());
+
+        List<StorageVO> voList = new ArrayList<>(fileMap.size());
+        for (Object id : ids) {
+            FileInfo fileInfo = fileMap.get(id.toString());
+            voList.add(this.fileInfoToStorageVO(fileInfo));
+        }
+        return voList;
     }
 
     @Override
     public StorageVO selectById(Object primaryValue) {
+        FileInfo fileInfo = fileStorageService.getFileInfoByUrl(primaryValue.toString());
+        if (Objects.isNull(fileInfo)) {
+            return new StorageVO();
+        }
+        return this.fileInfoToStorageVO(fileInfo);
+    }
+
+    /**
+     * fileInfo转storageVO
+     */
+    private StorageVO fileInfoToStorageVO(FileInfo fileInfo) {
         StorageVO storageVO = new StorageVO();
         try {
-            FileInfo fileInfo = fileStorageService.getFileInfoByUrl(primaryValue.toString());
-            if (Objects.isNull(fileInfo)) {
-                return storageVO;
-            }
-
             FileStorage fileStorage = fileStorageService.getFileStorage(fileInfo.getPlatform());
             if (Objects.isNull(fileStorage)) {
                 return storageVO;
             }
 
-            storageVO.setId(primaryValue.toString());
+            storageVO.setId(fileInfo.getUrl());
             if (fileStorage.isSupportPresignedUrl()) {
                 storageVO.setUrl(fileStorageService.generatePresignedUrl(fileInfo, DateUtil.offsetMinute(new Date(), 30)));
             } else if (StpUtil.isLogin()) {

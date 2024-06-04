@@ -10,17 +10,19 @@ import org.dromara.x.file.storage.core.FileInfo;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
+import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 /**
  * @author lenmotion
  */
-@Mapper(imports = {JSON.class, Dict.class})
+@Mapper(imports = {JSON.class, Dict.class}, unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface FileStorageConverter {
 
     FileStorageConverter INSTANCE = Mappers.getMapper(FileStorageConverter.class);
@@ -34,6 +36,8 @@ public interface FileStorageConverter {
             @Mapping(target = "attr", expression = "java(JSON.parseObject(storage.getAttr(), Dict.class))")
     })
     FileInfo toFileInfo(SysFileStorage storage);
+
+    List<FileInfo> toFileInfoList(List<SysFileStorage> storageList);
 
     FileUploadVO toUploadVO(FileInfo fileInfo);
 
