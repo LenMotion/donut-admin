@@ -1,7 +1,6 @@
 package cn.lenmotion.donut.system.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
-import cn.lenmotion.donut.core.context.TenantContext;
 import cn.lenmotion.donut.system.entity.po.SysDept;
 import cn.lenmotion.donut.system.entity.po.SysNoticeSendRelation;
 import cn.lenmotion.donut.system.entity.query.UserNoticeQuery;
@@ -88,7 +87,7 @@ public class SysNoticeSendRelationServiceImpl extends ServiceImpl<SysNoticeSendR
 
     @Override
     public IPage<UserNoticeVO> getUserNotice(UserNoticeQuery query) {
-        return getBaseMapper().getUserNotice(query.toPage(), query, TenantContext.getTenant());
+        return getBaseMapper().getUserNotice(query.toPage(), query);
     }
 
     private List<SysNoticeSendRelation> getRelationByNoticeId(Long noticeId) {

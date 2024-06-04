@@ -27,6 +27,6 @@ public interface SysNoticeSendRelationMapper extends BaseMapper<SysNoticeSendRel
      * @param query
      * @return
      */
-    IPage<UserNoticeVO> getUserNotice(IPage<UserNoticeVO> page, @Param("query") UserNoticeQuery query, @Param("tenantId") Long tenantId);
+    IPage<UserNoticeVO> getUserNotice(IPage<UserNoticeVO> page, @Param("query") UserNoticeQuery query);
 
 }

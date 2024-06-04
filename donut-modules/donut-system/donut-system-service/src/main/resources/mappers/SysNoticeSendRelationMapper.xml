@@ -25,7 +25,7 @@
         from sys_notice n
         left join sys_notice_send_relation nsr on nsr.notice_id = n.id
         left join sys_notice_read nr on nr.notice_id = n.id and nr.user_id = #{query.userId}
-        where n.status = '0' and n.tenant_id = #{tenantId}
+        where n.status = '0'
         <if test="query.noticeType != null and query.noticeType != ''">
             and n.notice_type = #{query.noticeType}
         </if>

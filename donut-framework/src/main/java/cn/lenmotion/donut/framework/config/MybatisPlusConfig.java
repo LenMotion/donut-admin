@@ -44,14 +44,14 @@ public class MybatisPlusConfig {
         MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
         // 数据权限插件
         interceptor.addInnerInterceptor(dataPermissionInterceptor());
+        // 租户插件
+        interceptor.addInnerInterceptor(tenantLineInnerInterceptor(projectProperties));
         // 分页插件
         interceptor.addInnerInterceptor(paginationInnerInterceptor());
         // 乐观锁插件
         interceptor.addInnerInterceptor(optimisticLockerInnerInterceptor());
         // 阻断插件
         interceptor.addInnerInterceptor(blockAttackInnerInterceptor());
-        // 租户插件
-        interceptor.addInnerInterceptor(tenantLineInnerInterceptor(projectProperties));
 
         return interceptor;
     }
