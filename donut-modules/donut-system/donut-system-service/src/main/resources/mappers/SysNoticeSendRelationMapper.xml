@@ -20,12 +20,12 @@
     </select>
 
     <select id="getUserNotice" resultType="cn.lenmotion.donut.system.entity.vo.UserNoticeVO">
-        select distinct n.id, n.notice_title, n.notice_content, n.publish_time,
+        select n.id, n.notice_title, n.notice_content, n.publish_time,
         if(nr.id is not null, 1, 0) is_read, nr.create_time read_time
         from sys_notice n
         left join sys_notice_send_relation nsr on nsr.notice_id = n.id
         left join sys_notice_read nr on nr.notice_id = n.id and nr.user_id = #{query.userId}
-        where n.status = '0'
+        where n.status = '0' and n.tenant_id = #{tenantId}
         <if test="query.noticeType != null and query.noticeType != ''">
             and n.notice_type = #{query.noticeType}
         </if>

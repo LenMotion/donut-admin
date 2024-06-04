@@ -14,6 +14,7 @@ public interface SysNoticeSendRelationMapper extends BaseMapper<SysNoticeSendRel
 
     /**
      * 获取通知已关联的用户id
+     *
      * @param page
      * @param noticeId
      * @return
@@ -26,6 +27,6 @@ public interface SysNoticeSendRelationMapper extends BaseMapper<SysNoticeSendRel
      * @param query
      * @return
      */
-    IPage<UserNoticeVO> getUserNotice(IPage<UserNoticeVO> page, @Param("query") UserNoticeQuery query);
+    IPage<UserNoticeVO> getUserNotice(IPage<UserNoticeVO> page, @Param("query") UserNoticeQuery query, @Param("tenantId") Long tenantId);
 
 }
