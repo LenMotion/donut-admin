@@ -7,6 +7,15 @@
 	<strong>基于Spring Boot3、JDK17的一套多租户（Saas）开源管理系统</strong>
 </p>
 
+<p align="center">
+    <a href="https://github.com/LenMotion/donut-admin" target="_blank">
+        <img src="https://img.shields.io/github/stars/LenMotion/donut-admin?style=social" alt="GitHub stars" />
+    </a>
+    <a href="https://gitee.com/LenMotion/donut-admin" target="_blank">
+        <img src="https://gitee.com/LenMotion/donut-admin/badge/star.svg?theme=white" alt="Gitee stars" />
+    </a>
+</p>
+
 在线文档地址：[https://donut-doc.lenmotion.cn](https://donut-doc.lenmotion.cn/)
 
 ## 功能：

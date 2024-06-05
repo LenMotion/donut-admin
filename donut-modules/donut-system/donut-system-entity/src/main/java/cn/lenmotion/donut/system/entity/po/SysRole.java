@@ -72,5 +72,5 @@ public class SysRole extends BaseCreatePo {
      */
     @TableField(value = "deleted")
     @Schema(description = "删除标志（0存在 1删除）")
-    private String deleted;
+    private Integer deleted;
 }

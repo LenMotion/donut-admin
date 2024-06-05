@@ -550,14 +550,14 @@ CREATE TABLE `sys_role`  (
   `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '更新者',
   `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
   `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '备注',
-  `deleted` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '0' COMMENT '删除标志（0存在 1删除）',
+  `deleted` tinyint(1)  DEFAULT 0 COMMENT '删除标志（0存在 1删除）',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '角色信息表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_role
 -- ----------------------------
-INSERT INTO `sys_role` VALUES (1, '超级管理员', 'SUPER', 1, '3', '0', '1', '2024-01-03 18:04:41', '', NULL, NULL, '0');
+INSERT INTO `sys_role` VALUES (1, '超级管理员', 'SUPER', 1, '3', '0', '1', '2024-01-03 18:04:41', '', NULL, NULL, 0);
 
 -- ----------------------------
 -- Table structure for sys_role_menu
@@ -606,14 +606,14 @@ CREATE TABLE `sys_user`  (
   `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '更新者',
   `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
   `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '备注',
-  `deleted` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '0' COMMENT '删除标志（0存在 1删除）',
+  `deleted` tinyint(1)  DEFAULT 0 COMMENT '删除标志（0存在 1删除）',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户信息表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_user
 -- ----------------------------
-INSERT INTO `sys_user` VALUES (1, 2, 'U01', 'admin', '超级管理员', NULL, 11, 'lenmotion@sina.com', '18001010101', '0', 25, 'http://localhost:9000/2024-01-20/65abd255db9add95652a070a.jpeg', 'c7084fa75f5d32685e89f7490f04efb160511c652c72a692135077b1c9092ec1', '1', NULL, NULL, '4', 'ces', NULL, NULL, '0', '127.0.0.1', '2024-01-22 22:17:29', '', '', NULL, '1', '2024-01-22 22:22:19', NULL, '0');
+INSERT INTO `sys_user` VALUES (1, 2, 'U01', 'admin', '超级管理员', NULL, 11, 'lenmotion@sina.com', '18001010101', '0', 25, 'http://localhost:9000/2024-01-20/65abd255db9add95652a070a.jpeg', 'c7084fa75f5d32685e89f7490f04efb160511c652c72a692135077b1c9092ec1', '1', NULL, NULL, '4', 'ces', NULL, NULL, '0', '127.0.0.1', '2024-01-22 22:17:29', '', '', NULL, '1', '2024-01-22 22:22:19', NULL, 0);
 
 -- ----------------------------
 -- Table structure for sys_user_dept
