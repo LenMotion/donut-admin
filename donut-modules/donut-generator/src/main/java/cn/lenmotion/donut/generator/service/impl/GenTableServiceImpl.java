@@ -145,6 +145,7 @@ public class GenTableServiceImpl extends ServiceImpl<GenTableMapper, GenTable> i
         List<GenTableColumn> editColumns = genTableColumnService.genEditColumn(genTable);
         dict.set("editColumns", editColumns);
         dict.set("editColumnClasses", editColumns.stream().map(GenTableColumn::getJavaTypeClass).filter(e -> !e.startsWith("java.lang")).toList());
+        dict.set("idColumns", genTableColumnService.genIdColumn(genTable));
         List<GenTableColumn> tableColumns = genTableColumnService.genTableColumn(genTable);
         dict.set("tableColumns", tableColumns);
         dict.set("tableColumnClasses", tableColumns.stream().map(GenTableColumn::getJavaTypeClass).filter(e -> !e.startsWith("java.lang")).toList());
@@ -168,4 +169,5 @@ public class GenTableServiceImpl extends ServiceImpl<GenTableMapper, GenTable> i
         genTableColumnService.remove(queryWrapper);
         return super.removeById(id);
     }
+
 }

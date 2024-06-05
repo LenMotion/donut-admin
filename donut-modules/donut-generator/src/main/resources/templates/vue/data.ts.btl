@@ -9,7 +9,7 @@ export const columns: BasicColumn[] = [
 <% if (isNotEmpty(column.dictKey) && statusApi==false) { %>
     customRender: ({ record }) => record.transMap?.${column.fieldName}Name,
 <% } %>
-<% if (statusApi==true) { %>
+<% if (statusApi==true && column.fieldName == 'status') { %>
     slots: { customRender: '${column.fieldName}' },
 <% } %>
   },
@@ -33,13 +33,18 @@ export const searchFormSchema: FormSchema[] = [
 ];
 
 export const formSchema: FormSchema[] = [
+    <% for(column in idColumns) { %>
+  {
+    field: '${column.fieldName}',
+    label: '${column.columnRemark}',
+    component: 'Input',
+    show: false,
+  },
+<% } %>
     <% for(column in editColumns) { %>
   {
     field: '${column.fieldName}',
     label: '${column.columnRemark}',
-<% if (column.fieldName=='id') { %>
-    show: false,
-<% } %>
 <% if (isEmpty(column.dictKey)) { %>
     component: '${column.editFieldType}',
 <% } %>

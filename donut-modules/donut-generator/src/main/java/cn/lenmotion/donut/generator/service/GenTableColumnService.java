@@ -62,4 +62,11 @@ public interface GenTableColumnService extends IService<GenTableColumn> {
      */
     List<GenTableColumn> genTableColumn(GenTable genTable);
 
+    /**
+     * 获取id字段
+     * @param genTable
+     * @return
+     */
+    List<GenTableColumn> genIdColumn(GenTable genTable);
+
 }

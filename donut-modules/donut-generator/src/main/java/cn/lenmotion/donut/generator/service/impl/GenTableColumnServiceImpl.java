@@ -3,7 +3,6 @@ package cn.lenmotion.donut.generator.service.impl;
 import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.ObjUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.crypto.asymmetric.RSA;
 import cn.lenmotion.donut.core.entity.BasePageQuery;
 import cn.lenmotion.donut.core.entity.BasePo;
 import cn.lenmotion.donut.core.exception.BusinessException;
@@ -43,6 +42,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class GenTableColumnServiceImpl extends ServiceImpl<GenTableColumnMapper, GenTableColumn> implements GenTableColumnService {
 
     private final GenDatasourceService datasourceService;
+
+    private static final List<String> NOT_SHOW_COLUMNS = List.of("update_time", "create_by", "update_by", "deleted");
+
+    private static final List<String> NOT_EDIT_COLUMNS = List.of("create_time", "update_time", "create_by", "update_by", "deleted");
 
     @Override
     public List<GenTableColumn> tableColumns(ColumnsQuery query) {
@@ -99,11 +102,11 @@ public class GenTableColumnServiceImpl extends ServiceImpl<GenTableColumnMapper,
                 }
                 // 是否是主键
                 tableColumn.setIdField(pkList.contains(tableColumn.getColumnName()));
-                tableColumn.setEditField(true);
+                tableColumn.setEditField(!NOT_EDIT_COLUMNS.contains(tableColumn.getColumnName()));
                 tableColumn.setEditFieldType("Input");
-                tableColumn.setSearchField(!tableColumn.getIdField());
+                tableColumn.setSearchField(!tableColumn.getIdField() && !NOT_EDIT_COLUMNS.contains(tableColumn.getColumnName()));
                 tableColumn.setSearchFieldType("Input");
-                tableColumn.setTableField(!tableColumn.getIdField());
+                tableColumn.setTableField(!tableColumn.getIdField() && !NOT_SHOW_COLUMNS.contains(tableColumn.getColumnName()));
                 tableColumn.setSortIndex(atomicInteger.incrementAndGet());
 
                 columns.add(tableColumn);
@@ -201,11 +204,20 @@ public class GenTableColumnServiceImpl extends ServiceImpl<GenTableColumnMapper,
 
     @Override
     public List<GenTableColumn> genTableColumn(GenTable genTable) {
-        // 查询表的字段，然后过滤父字段
         LambdaQueryWrapper<GenTableColumn> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(GenTableColumn::getTableId, genTable.getId())
                 .eq(GenTableColumn::getTableField, 1)
                 .orderByAsc(GenTableColumn::getSortIndex);
         return this.list(queryWrapper);
     }
+
+    @Override
+    public List<GenTableColumn> genIdColumn(GenTable genTable) {
+        LambdaQueryWrapper<GenTableColumn> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(GenTableColumn::getTableId, genTable.getId())
+                .eq(GenTableColumn::getIdField, 1)
+                .orderByAsc(GenTableColumn::getSortIndex);
+        return this.list(queryWrapper);
+    }
+
 }
