@@ -155,6 +155,7 @@
   function handleBeforeUpload(file: File) {
     if (props.size && file.size > 1024 * 1024 * props.size) {
       emit('uploadError', { msg: t('component.cropper.imageTooBig') });
+      createMessage.error(t('component.cropper.imageTooBig'));
       return;
     }
     const reader = new FileReader();
@@ -242,7 +243,9 @@
           transparent 75%,
           rgb(0 0 0 / 25%) 0
         );
-      background-position: 0 0, 12px 12px;
+      background-position:
+        0 0,
+        12px 12px;
       background-size: 24px 24px;
     }
 

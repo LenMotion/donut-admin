@@ -35,7 +35,7 @@
     center: true,
     responsive: true,
     restore: true,
-    checkCrossOrigin: true,
+    checkCrossOrigin: false,
     checkOrientation: true,
     scalable: true,
     modal: true,
