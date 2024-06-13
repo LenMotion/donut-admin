@@ -29,7 +29,7 @@ import java.util.List;
 @Tag(name = "用户授权信息")
 @RestController
 @AllArgsConstructor
-@RequestMapping("profile")
+@RequestMapping("/system/profile")
 public class ProfileController {
 
     private final SysUserService userService;

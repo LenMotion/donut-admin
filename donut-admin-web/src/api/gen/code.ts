@@ -1,6 +1,6 @@
 import { defHttp } from '@/utils/http/axios';
 
-const basic = '/gen/code';
+const basic = '/generator/code';
 
 enum Api {
   Basic = basic,

@@ -23,7 +23,7 @@ import java.io.IOException;
 @Slf4j
 @RestController
 @Tag(name = "文件上传", description = "文件上传")
-@RequestMapping("upload")
+@RequestMapping("/system/upload")
 @RequiredArgsConstructor
 public class FileUploadController {
 

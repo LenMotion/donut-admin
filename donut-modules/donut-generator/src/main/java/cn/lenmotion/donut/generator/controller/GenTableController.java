@@ -25,7 +25,7 @@ import java.util.List;
  */
 @Tag(name = "生成管理")
 @RestController
-@RequestMapping("/gen/code")
+@RequestMapping("/generator/code")
 @RequiredArgsConstructor
 public class GenTableController {
 

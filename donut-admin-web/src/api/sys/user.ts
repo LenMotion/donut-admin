@@ -9,15 +9,13 @@ import {
 import { ErrorMessageMode } from '#/axios';
 
 enum Api {
-  Login = '/login',
-  CaptchaImage = '/captchaImage',
-  Logout = '/logout',
-  GetUserInfo = '/profile/userInfo',
-  UpdateUserInfo = '/profile/info',
-  UpdateUserAvatar = '/profile/avatar',
-  UpdateUserPassword = '/profile/password',
-  GetPermCode = '/profile/permissionCode',
-  TestRetry = '/testRetry',
+  Login = '/auth/login',
+  CaptchaImage = '/auth/captchaImage',
+  Logout = '/auth/logout',
+  GetUserInfo = '/system/profile/userInfo',
+  UpdateUserInfo = '/system/profile/info',
+  UpdateUserAvatar = '/system/profile/avatar',
+  UpdateUserPassword = '/system/profile/password',
 }
 
 /**
@@ -59,23 +57,6 @@ export function captchaImageApi() {
   return defHttp.get<CaptchaImageResultModel>({ url: Api.CaptchaImage }, { withToken: false });
 }
 
-export function getPermCode() {
-  return defHttp.get<string[]>({ url: Api.GetPermCode });
-}
-
 export function doLogout() {
   return defHttp.get({ url: Api.Logout });
-}
-
-export function testRetry() {
-  return defHttp.get(
-    { url: Api.TestRetry },
-    {
-      retryRequest: {
-        isOpenRetry: true,
-        count: 5,
-        waitTime: 1000,
-      },
-    },
-  );
 }
