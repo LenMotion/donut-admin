@@ -27,7 +27,7 @@ export const columns: BasicColumn[] = [
   {
     title: '角色',
     dataIndex: 'roleNames',
-    customRender: ({ record }) => record.transMap.roleName,
+    customRender: ({ record }) => record.transMap?.roleName,
   },
   {
     title: '手机号',
@@ -37,7 +37,7 @@ export const columns: BasicColumn[] = [
     title: '性别',
     dataIndex: 'sex',
     width: 60,
-    customRender: ({ record }) => record.transMap.sexName,
+    customRender: ({ record }) => record.transMap?.sexName,
   },
   {
     title: '生日',
