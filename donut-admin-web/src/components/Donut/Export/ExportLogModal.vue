@@ -31,8 +31,18 @@
 
   defineEmits(['register']);
 
+  const props = defineProps({
+    exportType: {
+      type: String,
+      required: true,
+    },
+  });
+
   const [registerModal] = useModalInner(() => {
-    reload();
+    // 避免立即刷新导致导出数据未生成
+    setTimeout(() => {
+      reload();
+    }, 200);
   });
 
   const [registerTable, { reload }] = useTable({
@@ -66,6 +76,9 @@
     showTableSetting: true,
     canResize: false,
     bordered: true,
+    searchInfo: {
+      exportType: props.exportType,
+    },
     actionColumn: {
       width: 60,
       title: '操作',

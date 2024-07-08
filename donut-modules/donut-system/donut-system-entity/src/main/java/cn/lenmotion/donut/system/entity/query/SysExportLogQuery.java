@@ -16,7 +16,7 @@ public class SysExportLogQuery extends BasePageQuery {
     @Schema(description = "文件名称")
     private String name;
 
-    @Schema(description = "错误日志")
-    private String errorMsg;
+    @Schema(description = "导出类型")
+    private String exportType;
 
 }

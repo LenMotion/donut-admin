@@ -18,6 +18,8 @@
 
 在线文档地址：[https://donut-doc.lenmotion.cn](https://donut-doc.lenmotion.cn/)
 
+微服务版本：[donut-admin-cloud](https://github.com/LenMotion/donut-admin-cloud)
+
 ## 功能：
 * 租户管理：租户管理，支持多租户，前端可配置不同租户，用户、部门、岗位、角色等数据隔离
 * 用户管理：基础的用户管理、用户登录等功能

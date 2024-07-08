@@ -18,9 +18,10 @@ public class SysExportLogRemoteServiceImpl implements SysExportLogRemoteService 
 
 
     @Override
-    public SysExportLog startExport(Long userId, String fileName) {
+    public SysExportLog startExport(Long userId, String fileName, String exportType) {
         var exportLog = new SysExportLog();
         exportLog.setName(fileName);
+        exportLog.setExportType(exportType);
         exportLog.setStatus(ExportStatusEnum.RUNNING.getCode());
         exportLog.setUserId(userId);
         exportLogService.save(exportLog);

@@ -22,10 +22,9 @@ public class SysExportLogServiceImpl extends DonutServiceImpl<SysExportLogMapper
     @Override
     public IPage<SysExportLog> selectPageList(SysExportLogQuery query) {
         var queryWrapper = Wrappers.<SysExportLog>lambdaQuery();
-        queryWrapper
-                .eq(SysExportLog::getUserId, StpUtil.getLoginIdAsLong())
-                .eq(ObjUtil.isNotEmpty(query.getName()), SysExportLog::getName, query.getName())
-                .eq(ObjUtil.isNotEmpty(query.getErrorMsg()), SysExportLog::getErrorMsg, query.getErrorMsg())
+        queryWrapper.eq(SysExportLog::getUserId, StpUtil.getLoginIdAsLong())
+                .like(ObjUtil.isNotEmpty(query.getName()), SysExportLog::getName, query.getName())
+                .eq(ObjUtil.isNotEmpty(query.getExportType()), SysExportLog::getExportType, query.getExportType())
                 .orderByDesc(SysExportLog::getCreateTime);
         return this.page(query.toPage(), queryWrapper);
     }

@@ -2,6 +2,7 @@ package cn.lenmotion.donut.system.service.impl;
 
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.date.DateUtil;
+import cn.lenmotion.donut.core.constants.ExportTypeConstants;
 import cn.lenmotion.donut.framework.excel.ExcelClient;
 import cn.lenmotion.donut.system.entity.converter.LogConverter;
 import cn.lenmotion.donut.system.entity.po.SysLoginLog;
@@ -37,7 +38,7 @@ public class SysLoginLogServiceImpl extends ServiceImpl<SysLoginLogMapper, SysLo
         var userId = StpUtil.getLoginIdAsLong();
         taskExecutor.execute(() -> {
             var timer = DateUtil.timer();
-            var exportLog = exportLogRemoteService.startExport(userId, "登录日志");
+            var exportLog = exportLogRemoteService.startExport(userId, "登录日志", ExportTypeConstants.LOGIN_LIST);
             var logList = getBaseMapper().selectListByQuery(query);
             var list = LogConverter.INSTANCE.toExportVO(logList);
             excelClient.exportTrans(list, LoginLogExportVO.class, exportLog, timer);

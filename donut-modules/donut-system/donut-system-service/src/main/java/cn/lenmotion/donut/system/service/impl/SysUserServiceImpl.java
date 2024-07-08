@@ -10,6 +10,7 @@ import cn.hutool.crypto.asymmetric.RSA;
 import cn.lenmotion.donut.core.annotation.DataScope;
 import cn.lenmotion.donut.core.constants.BaseConstants;
 import cn.lenmotion.donut.core.constants.ConfigConstants;
+import cn.lenmotion.donut.core.constants.ExportTypeConstants;
 import cn.lenmotion.donut.core.entity.BaseImportResult;
 import cn.lenmotion.donut.core.entity.BaseUpdateStatus;
 import cn.lenmotion.donut.core.enums.BaseStatusEnum;
@@ -85,7 +86,7 @@ public class SysUserServiceImpl extends DonutServiceImpl<SysUserMapper, SysUser>
         var userId = StpUtil.getLoginIdAsLong();
         taskExecutor.execute(() -> {
             var timer = DateUtil.timer();
-            var exportLog = exportLogRemoteService.startExport(userId, "用户信息");
+            var exportLog = exportLogRemoteService.startExport(userId, "用户信息", ExportTypeConstants.USER_LIST);
             var userList = getBaseMapper().selectUserExportList(userQuery);
             excelClient.exportTrans(userList, UserExportVO.class, exportLog, timer);
         });

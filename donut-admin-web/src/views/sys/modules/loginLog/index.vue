@@ -2,7 +2,12 @@
   <div>
     <BasicTable @register="registerTable">
       <template #toolbar>
-        <Export text="导出" prems="system:loginLog:export" :doExport="handleExport" />
+        <Export
+          exportType="login_list"
+          text="导出"
+          prems="system:loginLog:export"
+          :doExport="handleExport"
+        />
       </template>
     </BasicTable>
   </div>

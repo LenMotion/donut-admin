@@ -50,7 +50,6 @@
   const { createMessage, notification } = useMessage();
   const [registerModal, { openModal }] = useModal();
 
-  console.log('start websocket');
   const { status, data, close, open } = useWebSocket(wsUrl + '/ws/notice/' + getToken(), {
     autoReconnect: {
       retries: () => {
@@ -88,7 +87,6 @@
   const getNoticeList = (pageNum: number) => {
     userNoticeListApi({ read: false, noticeType: '0', pageSize: 5, pageNum }).then((res) => {
       count.value = res.total;
-      console.log(count.value);
       pageInfo.total = res.total;
       pageInfo.currentPage = res.pageNum;
       pageInfo.pageSize = res.pageSize;

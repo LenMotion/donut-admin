@@ -27,6 +27,10 @@ public class SysExportLog extends BaseCreatePo {
     @Schema(description = "用户id")
     private Long userId;
 
+    @TableField(value = "`export_type`")
+    @Schema(description = "到处类型")
+    private String exportType;
+
     @TableField(value = "`name`")
     @Schema(description = "文件名称")
     private String name;

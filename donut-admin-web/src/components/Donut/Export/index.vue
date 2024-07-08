@@ -4,7 +4,7 @@
       <template #content>
         <div class="flex">
           <p class="h-32px line-height-32px">请点击</p>
-          <a-button type="link" @click="openExportLogModal()">这里</a-button>
+          <a-button type="link" @click="openModal()">这里</a-button>
           <p class="h-32px line-height-32px">查看进度、下载文件!</p>
         </div>
       </template>
@@ -13,27 +13,22 @@
       </a-button>
     </Popover>
 
-    <ExportLogModal @register="registerModal" />
+    <ExportLogModal :export-type="exportType" @register="registerModal" />
   </div>
 </template>
 
 <script setup lang="ts">
+  import { useModal } from '@/components/Modal';
   import { Popover } from 'ant-design-vue';
   import { ref } from 'vue';
   import { useMessage } from '@/hooks/web/useMessage';
   import ExportLogModal from './ExportLogModal.vue';
-  import { useModal } from '@/components/Modal';
-
-  const loading = ref(false);
-  const visible = ref(false);
-  const canExport = ref(true);
-  const time = ref(120);
-  const timer = ref<any>(null);
-
-  const { createMessage } = useMessage();
-  const [registerModal, { openModal: openExportLogModal }] = useModal();
 
   const props = defineProps({
+    exportType: {
+      type: String,
+      required: true,
+    },
     text: {
       type: String,
       required: true,
@@ -47,6 +42,15 @@
       required: true,
     },
   });
+
+  const loading = ref(false);
+  const visible = ref(false);
+  const canExport = ref(true);
+  const time = ref(120);
+  const timer = ref<any>(null);
+
+  const [registerModal, { openModal }] = useModal();
+  const { createMessage } = useMessage();
 
   const handleExport = () => {
     if (!canExport.value) {

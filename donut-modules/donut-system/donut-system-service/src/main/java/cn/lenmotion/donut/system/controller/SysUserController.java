@@ -4,6 +4,7 @@ import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.lenmotion.donut.core.annotation.OperationLog;
+import cn.lenmotion.donut.core.constants.ExportTypeConstants;
 import cn.lenmotion.donut.core.entity.BaseImportResult;
 import cn.lenmotion.donut.core.entity.BaseUpdateStatus;
 import cn.lenmotion.donut.core.entity.PageResult;
@@ -62,7 +63,7 @@ public class SysUserController {
     @Operation(summary = "导入用户信息模板")
     @GetMapping("/exportTemplate")
     public ResponseResult<String> exportTemplate() {
-        var exportLog = exportLogRemoteService.startExport(StpUtil.getLoginIdAsLong(), "用户导入模板");
+        var exportLog = exportLogRemoteService.startExport(StpUtil.getLoginIdAsLong(), "用户导入模板", ExportTypeConstants.USER_TEMPLATE);
         String url = excelClient.export(new ArrayList<>(), UserImportVO.class, exportLog, DateUtil.timer());
         return ResponseResult.success("导出成功", url);
     }

@@ -6,7 +6,12 @@
         <a-button type="success" v-auth="'system:user:import'" @click="handleImport"
           >导入用户</a-button
         >
-        <Export text="导出查询用户" prems="system:user:export" :doExport="handleExport" />
+        <Export
+          text="导出查询用户"
+          export-type="user_list"
+          prems="system:user:export"
+          :doExport="handleExport"
+        />
         <a-button type="primary" v-auth="'system:user:save'" @click="handleCreate"
           >新增用户</a-button
         >
