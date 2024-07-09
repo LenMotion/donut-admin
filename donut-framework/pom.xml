@@ -4,7 +4,7 @@
     <parent>
         <groupId>cn.lenmotion</groupId>
         <artifactId>donut-admin</artifactId>
-        <version>2.2.0</version>
+        <version>2.2.1</version>
     </parent>
     <artifactId>donut-framework</artifactId>
     <description>donut-framework 系统框架代码</description>

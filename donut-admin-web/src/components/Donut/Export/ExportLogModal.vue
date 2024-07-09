@@ -3,7 +3,7 @@
     v-bind="$attrs"
     @register="registerModal"
     width="70%"
-    title="日志列表"
+    title="导出记录列表"
     :show-ok-btn="false"
     cancel-text="关闭"
   >

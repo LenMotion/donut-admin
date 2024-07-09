@@ -5,6 +5,8 @@ package cn.lenmotion.donut.core.constants;
  */
 public interface BaseConstants {
 
+    String PROD = "prod";
+
     String LIMIT_1 = " limit 1 ";
 
     String SESSION_LOGIN_INFO = "session_login_info";

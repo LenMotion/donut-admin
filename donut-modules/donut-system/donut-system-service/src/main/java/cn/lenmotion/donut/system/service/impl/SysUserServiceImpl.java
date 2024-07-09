@@ -41,6 +41,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.fhs.trans.service.impl.TransService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -67,6 +68,9 @@ public class SysUserServiceImpl extends DonutServiceImpl<SysUserMapper, SysUser>
     private final SysExportLogRemoteService exportLogRemoteService;
     private final TaskExecutor taskExecutor;
     private final ExcelClient excelClient;
+
+    @Value("${spring.profiles.active}")
+    private String profile;
 
     @Override
     @DataScope(type = DataScopeTypeEnum.DEPT, deptAlias = "ud", deptField = "dept_id")
@@ -188,6 +192,11 @@ public class SysUserServiceImpl extends DonutServiceImpl<SysUserMapper, SysUser>
 
     @Override
     public boolean updateStatus(BaseUpdateStatus request) {
+        var user = this.getById(request.getId());
+        if (!BaseConstants.PROD.equals(profile) && BaseConstants.SUPER_USER.equals(user.getUsername())) {
+            throw new BusinessException("超级管理员不允许修改状态");
+        }
+
         boolean result = super.updateStatus(request);
         // 如果是禁用并且对应用户是登录状态，则同时退出当前用户
         if (result && BaseStatusEnum.DISABLE.getCode().equals(request.getStatus()) && StpUtil.isLogin(request.getId())) {
@@ -230,6 +239,9 @@ public class SysUserServiceImpl extends DonutServiceImpl<SysUserMapper, SysUser>
             throw new BusinessException("密码解密失败");
         }
         var user = this.getById(StpUtil.getLoginIdAsLong());
+        if (!BaseConstants.PROD.equals(profile) && BaseConstants.SUPER_USER.equals(user.getUsername())) {
+            throw new BusinessException("超级管理员不允许修改密码");
+        }
         // 密码校验
         AssertUtils.equals(SaSecureUtil.sha256BySalt(oldPwd, user.getUsername()), user.getPassword(), "原密码错误");
         // 更新用户密码

@@ -14,4 +14,8 @@ export function formatToDate(date?: dayjs.ConfigType, format = DATE_FORMAT): str
   return dayjs(date).format(format);
 }
 
+export function calcAge(date?: dayjs.ConfigType): number {
+  return dayjs().diff(date, 'year');
+}
+
 export const dateUtil = dayjs;

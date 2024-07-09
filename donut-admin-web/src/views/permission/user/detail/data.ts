@@ -1,5 +1,6 @@
 import { DescItem } from '@/components/Description';
 import { BasicColumn } from '@/components/Table';
+import { calcAge } from '@/utils/dateUtil';
 
 export const userInfoSchema: DescItem[] = [
   {
@@ -32,8 +33,9 @@ export const userInfoSchema: DescItem[] = [
     label: '岗位',
   },
   {
-    field: 'age',
-    label: '年龄',
+    field: 'birthday',
+    label: '生日',
+    render: (_, data) => `${data.birthday} (${calcAge(data.birthday)}岁) ` || '-',
   },
   {
     field: 'phoneNumber',
@@ -101,6 +103,7 @@ export const userInfoSchema: DescItem[] = [
   {
     field: 'roleNames',
     label: '关联角色',
+    render: (_, data) => data.transMap?.roleName || '-',
     span: 4,
   },
 ];
