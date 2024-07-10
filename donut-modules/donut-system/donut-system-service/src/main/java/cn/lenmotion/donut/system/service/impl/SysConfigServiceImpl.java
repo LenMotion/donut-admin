@@ -5,10 +5,11 @@ import cn.hutool.core.util.StrUtil;
 import cn.lenmotion.donut.core.constants.BaseConstants;
 import cn.lenmotion.donut.core.constants.ConfigConstants;
 import cn.lenmotion.donut.core.constants.RedisConstants;
+import cn.lenmotion.donut.core.context.TenantContext;
 import cn.lenmotion.donut.core.exception.BusinessException;
 import cn.lenmotion.donut.core.service.impl.DonutServiceImpl;
-import cn.lenmotion.donut.core.utils.AopUtils;
 import cn.lenmotion.donut.core.utils.AssertUtils;
+import cn.lenmotion.donut.framework.template.JacksonRedisTemplate;
 import cn.lenmotion.donut.system.entity.po.SysConfig;
 import cn.lenmotion.donut.system.entity.query.ConfigQuery;
 import cn.lenmotion.donut.system.entity.vo.LoginPageVO;
@@ -19,21 +20,22 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import lombok.RequiredArgsConstructor;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * @author lenmotion
  */
 @Service
+@RequiredArgsConstructor
 public class SysConfigServiceImpl extends DonutServiceImpl<SysConfigMapper, SysConfig> implements SysConfigService {
+
+    private final JacksonRedisTemplate jacksonRedisTemplate;
 
     @Override
     public JSONObject selectSystemConfigList() {
@@ -45,6 +47,7 @@ public class SysConfigServiceImpl extends DonutServiceImpl<SysConfigMapper, SysC
 
         for (SysConfig config : list) {
             result.put(config.getConfigKey(), config.getConfigValue());
+            jacksonRedisTemplate.opsForValue().set(config.getConfigKey(), config.getConfigValue());
         }
 
         return result;
@@ -52,7 +55,6 @@ public class SysConfigServiceImpl extends DonutServiceImpl<SysConfigMapper, SysC
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    @CacheEvict(value = RedisConstants.CONFIG_KEY, allEntries = true)
     public boolean updateSystemConfig(JSONObject data) {
         for (String key : data.keySet()) {
             LambdaUpdateWrapper<SysConfig> updateWrapper = Wrappers.lambdaUpdate();
@@ -60,6 +62,8 @@ public class SysConfigServiceImpl extends DonutServiceImpl<SysConfigMapper, SysC
                     .set(SysConfig::getConfigValue, data.getString(key));
 
             super.update(updateWrapper);
+            // 删除redis缓存
+            jacksonRedisTemplate.delete(this.formatKey(key));
         }
         return true;
     }
@@ -77,27 +81,43 @@ public class SysConfigServiceImpl extends DonutServiceImpl<SysConfigMapper, SysC
     }
 
     @Override
-    @CacheEvict(value = RedisConstants.CONFIG_KEY, allEntries = true)
     public void resetConfigCache() {
+        var keys = jacksonRedisTemplate.keys(this.formatKey("*"));
+        if (CollectionUtils.isNotEmpty(keys)) {
+            keys.forEach(key -> {
+                if (StrUtil.isNotBlank(key)) {
+                    jacksonRedisTemplate.delete(key);
+                }
+            });
+        }
     }
 
     @Override
-//    @Cacheable(value = RedisConstants.CONFIG_KEY, key = "#cn.lenmotion.donut.core.context.TenantContext.getTenant() + ':' + #configKey")
     public String getConfigByKey(String configKey) {
         if (StringUtils.isBlank(configKey)) {
             return null;
         }
-
+        // 获取key
+        var key = this.formatKey(configKey);
+        // 获取redis缓存数据
+        var value = jacksonRedisTemplate.opsForValue().get(key);
+        // 如果value为空，去数据库获取
+        if (value != null) {
+            return value;
+        }
         LambdaQueryWrapper<SysConfig> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(SysConfig::getConfigKey, configKey).last(BaseConstants.LIMIT_1);
-        return Optional.ofNullable(this.getOne(queryWrapper))
+        value = Optional.ofNullable(this.getOne(queryWrapper))
                 .map(SysConfig::getConfigValue)
                 .orElse(StringUtils.EMPTY);
+        // 缓存到redis
+        jacksonRedisTemplate.opsForValue().set(key, value);
+        return value;
     }
 
     @Override
     public Integer getConfigIntValue(String configKey) {
-        return Optional.ofNullable(AopUtils.getAopProxy(this).getConfigByKey(configKey))
+        return Optional.ofNullable(this.getConfigByKey(configKey))
                 .filter(StrUtil::isNotBlank)
                 .map(Integer::valueOf)
                 .orElse(null);
@@ -105,7 +125,7 @@ public class SysConfigServiceImpl extends DonutServiceImpl<SysConfigMapper, SysC
 
     @Override
     public Boolean getConfigBoolValue(String configKey) {
-        return Optional.ofNullable(AopUtils.getAopProxy(this).getConfigByKey(configKey))
+        return Optional.ofNullable(this.getConfigByKey(configKey))
                 .filter(StrUtil::isNotBlank)
                 .map(Boolean::valueOf)
                 .orElse(null);
@@ -115,41 +135,44 @@ public class SysConfigServiceImpl extends DonutServiceImpl<SysConfigMapper, SysC
     public LoginPageVO getLoginPageConfig() {
         var vo = new LoginPageVO();
 
-        vo.setName(AopUtils.getAopProxy(this).getConfigByKey(ConfigConstants.SYSTEM_NAME));
-        vo.setTitle(AopUtils.getAopProxy(this).getConfigByKey(ConfigConstants.SYSTEM_TITLE));
-        vo.setDescription(AopUtils.getAopProxy(this).getConfigByKey(ConfigConstants.SYS_DESCRIPTION));
-        vo.setLogo(AopUtils.getAopProxy(this).getConfigByKey(ConfigConstants.SYSTEM_LOGO));
+        vo.setName(this.getConfigByKey(ConfigConstants.SYSTEM_NAME));
+        vo.setTitle(this.getConfigByKey(ConfigConstants.SYSTEM_TITLE));
+        vo.setDescription(this.getConfigByKey(ConfigConstants.SYS_DESCRIPTION));
+        vo.setLogo(this.getConfigByKey(ConfigConstants.SYSTEM_LOGO));
 
         return vo;
     }
 
     @Override
-    @CacheEvict(value = RedisConstants.CONFIG_KEY, key = "#entity.configKey")
     public boolean saveOrUpdate(SysConfig entity) {
         entity.setSystemConfig(null);
         this.checkConfigKey(entity);
-        return super.saveOrUpdate(entity);
+
+        var result = super.saveOrUpdate(entity);
+
+        if (result) {
+            // 重置信息
+            jacksonRedisTemplate.opsForValue().set(this.formatKey(entity.getConfigKey()), entity.getConfigValue());
+        }
+
+        return result;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean removeByIds(Collection<?> list) {
         for (Object object : list) {
-            SysConfig config = this.getById(object.toString());
-            AopUtils.getAopProxy(this).removeByConfig(config);
+            var config = this.getById(object.toString());
+            if (config == null) {
+                continue;
+            }
+            if (config.getSystemConfig()) {
+                throw new BusinessException("系统配置[" + config.getConfigName() + "]不可删除");
+            }
+            super.removeById(config.getId());
+            jacksonRedisTemplate.delete(this.formatKey(config.getConfigKey()));
         }
         return true;
-    }
-
-    @CacheEvict(value = RedisConstants.CONFIG_KEY, key = "#config.configKey")
-    public void removeByConfig(SysConfig config) {
-        if (config == null) {
-            return;
-        }
-        if (config.getSystemConfig()) {
-            throw new BusinessException("系统配置[" + config.getConfigName() + "]不可删除");
-        }
-        super.removeById(config.getId());
     }
 
     /**
@@ -163,6 +186,13 @@ public class SysConfigServiceImpl extends DonutServiceImpl<SysConfigMapper, SysC
                 .ne(Objects.nonNull(config.getId()), SysConfig::getId, config.getId())
                 .last(BaseConstants.LIMIT_1);
         AssertUtils.isNull(getOne(queryWrapper), "新增配置'" + config.getConfigKey() + "'失败，配置Key已存在");
+    }
+
+    /**
+     * 格式化key
+     */
+    private String formatKey(String configKey) {
+        return RedisConstants.CONFIG_KEY + TenantContext.getTenant() + ":" + configKey;
     }
 
 }

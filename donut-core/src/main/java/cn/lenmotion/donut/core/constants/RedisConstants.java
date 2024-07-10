@@ -8,7 +8,7 @@ public interface RedisConstants {
     // 验证码的缓存key
     String CAPTCHA_CODE_KEY = "captcha_codes:";
 
-    String CONFIG_KEY = "cache:config";
+    String CONFIG_KEY = "cache:config:";
 
     String RATE_LIMIT_KEY = "rate_limit:";
 
