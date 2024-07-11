@@ -67,8 +67,8 @@ spring:
         enabled: true
         url-pattern: /druid/*
         reset-enable: false
-        login-username: druid
-        login-password: druid
+        login-username: donut
+        login-password: Donut@123,./
         allow: 127.0.0.1
   servlet:
     multipart:

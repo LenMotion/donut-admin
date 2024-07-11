@@ -167,7 +167,9 @@ public class LoginServiceImpl implements LoginService {
                 loginLog.setOs(agent.getOs().getName());
                 loginLog.setLoginTime(LocalDateTime.now());
                 loginLog.setMsg(Optional.ofNullable(e).map(Exception::getMessage).orElse("登录成功"));
-                loginLog.setTokenValue(loginRsa.encryptBase64(tokenValue, KeyType.PrivateKey));
+                if (StrUtil.isNotBlank(tokenValue)) {
+                    loginLog.setTokenValue(loginRsa.encryptBase64(tokenValue, KeyType.PrivateKey));
+                }
                 loginLogRemoteService.saveLoginLog(loginLog);
             } catch (Exception e1) {
                 log.error("登录日志记录异常", e1);
