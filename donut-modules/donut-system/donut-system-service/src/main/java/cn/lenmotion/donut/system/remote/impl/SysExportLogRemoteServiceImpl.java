@@ -30,6 +30,9 @@ public class SysExportLogRemoteServiceImpl implements SysExportLogRemoteService 
 
     @Override
     public void endExport(SysExportLog exportLog) {
+        if (exportLog.getId() == 0L) {
+            return;
+        }
         exportLogService.updateById(exportLog);
     }
 

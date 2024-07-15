@@ -63,8 +63,7 @@ public class SysUserController {
     @Operation(summary = "导入用户信息模板")
     @GetMapping("/exportTemplate")
     public ResponseResult<String> exportTemplate() {
-        var exportLog = exportLogRemoteService.startExport(StpUtil.getLoginIdAsLong(), "用户导入模板", ExportTypeConstants.USER_TEMPLATE);
-        String url = excelClient.export(new ArrayList<>(), UserImportVO.class, exportLog, DateUtil.timer());
+        String url = excelClient.export(new ArrayList<>(), UserImportVO.class, "用户导入模板");
         return ResponseResult.success("导出成功", url);
     }
 

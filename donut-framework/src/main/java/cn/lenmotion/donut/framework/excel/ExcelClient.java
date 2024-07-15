@@ -54,6 +54,16 @@ public class ExcelClient {
     /**
      * 导出需要easy-trans转换的数据
      */
+    public <T extends VO> void exportTrans(List<T> list, Class<T> clz, String fileName) {
+        SysExportLog exportLog = new SysExportLog();
+        exportLog.setName(fileName);
+        exportLog.setId(0L);
+        this.exportTrans(list, clz, exportLog, DateUtil.timer());
+    }
+
+    /**
+     * 导出需要easy-trans转换的数据
+     */
     public <T extends VO> void exportTrans(List<T> list, Class<T> clz, SysExportLog exportLog, TimeInterval timer) {
         if (CollUtil.isNotEmpty(list)) {
             // 这里需要清空数据权限的Context，避免数据转换的时候，sql查询错误
@@ -61,6 +71,16 @@ public class ExcelClient {
             transService.transBatch(list);
         }
         this.export(list, clz, exportLog, timer);
+    }
+
+    /**
+     * 导出excel
+     */
+    public <T> String export(List<T> list, Class<T> clz, String fileName) {
+        SysExportLog exportLog = new SysExportLog();
+        exportLog.setName(fileName);
+        exportLog.setId(0L);
+        return this.export(list, clz, exportLog, DateUtil.timer());
     }
 
     /**
@@ -92,9 +112,18 @@ public class ExcelClient {
     /**
      * 自定义head导出
      */
-    public <T> String export(List<List<String>> head, List<T> dataList, SysExportLog exportLog) {
+    public <T> String export(List<List<String>> head, List<T> dataList, String fileName) {
+        SysExportLog exportLog = new SysExportLog();
+        exportLog.setName(fileName);
+        exportLog.setId(0L);
+        return this.export(head, dataList, exportLog, DateUtil.timer());
+    }
+
+    /**
+     * 自定义head导出
+     */
+    public <T> String export(List<List<String>> head, List<T> dataList, SysExportLog exportLog, TimeInterval timer) {
         var out = new ByteArrayOutputStream();
-        TimeInterval timer = DateUtil.timer();
         try {
             EasyExcel.write(out)
                     .head(head)
