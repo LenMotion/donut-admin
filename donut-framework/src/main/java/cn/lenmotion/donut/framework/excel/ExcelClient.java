@@ -96,7 +96,7 @@ public class ExcelClient {
                     .sheet(exportLog.getName())
                     .doWrite(list);
             // 上传流至文件服务器
-            return this.uploadStream(out, exportLog.getName(), exportLog);
+            return this.uploadStream(out, exportLog);
         } catch (Exception e) {
             log.error("导出失败", e);
             exportLog.setStatus(ExportStatusEnum.FAILED.getCode());
@@ -132,7 +132,7 @@ public class ExcelClient {
                     .sheet(exportLog.getName())
                     .doWrite(dataList);
             // 上传流至文件服务器
-            return this.uploadStream(out, exportLog.getName(), exportLog);
+            return this.uploadStream(out, exportLog);
         } catch (Exception e) {
             log.error("导出失败", e);
             exportLog.setStatus(ExportStatusEnum.FAILED.getCode());
@@ -148,11 +148,11 @@ public class ExcelClient {
     /**
      * 上传流至文件服务器
      */
-    private String uploadStream(ByteArrayOutputStream out, String fileName, SysExportLog exportLog) {
+    public String uploadStream(ByteArrayOutputStream out, SysExportLog exportLog) {
         ByteArrayInputStream in = null;
         try {
             // 生成文件地址，加入随机数，避免重复
-            var upFileName = fileName + "_" + IdUtil.getSnowflakeNextId() + ExcelTypeEnum.XLSX.getValue();
+            var upFileName = exportLog.getName() + "_" + IdUtil.getSnowflakeNextId() + ExcelTypeEnum.XLSX.getValue();
             // 设置请求头
             Map<String, String> metadata = new HashMap<>();
             var contentDispositionValue = StrUtil.format("attachment; filename={}", URLUtil.encode(upFileName));
