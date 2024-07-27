@@ -36,6 +36,7 @@ import java.io.Serializable;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author lenmotion
@@ -138,17 +139,17 @@ public class GenTableServiceImpl extends ServiceImpl<GenTableMapper, GenTable> i
         dict.set("statusMenuId", IdUtil.getSnowflakeNextId());
         List<GenTableColumn> columns = genTableColumnService.genColumn(genTable);
         dict.set("columns", columns);
-        dict.set("columnClasses", columns.stream().map(GenTableColumn::getJavaTypeClass).filter(e -> !e.startsWith("java.lang")).toList());
+        dict.set("columnClasses", columns.stream().map(GenTableColumn::getJavaTypeClass).filter(e -> !e.startsWith("java.lang")).collect(Collectors.toSet()));
         List<GenTableColumn> searchColumns = genTableColumnService.genSearchColumn(genTable);
         dict.set("searchColumns", searchColumns);
-        dict.set("searchColumnClasses", searchColumns.stream().map(GenTableColumn::getJavaTypeClass).filter(e -> !e.startsWith("java.lang")).toList());
+        dict.set("searchColumnClasses", searchColumns.stream().map(GenTableColumn::getJavaTypeClass).filter(e -> !e.startsWith("java.lang")).collect(Collectors.toSet()));
         List<GenTableColumn> editColumns = genTableColumnService.genEditColumn(genTable);
         dict.set("editColumns", editColumns);
-        dict.set("editColumnClasses", editColumns.stream().map(GenTableColumn::getJavaTypeClass).filter(e -> !e.startsWith("java.lang")).toList());
+        dict.set("editColumnClasses", editColumns.stream().map(GenTableColumn::getJavaTypeClass).filter(e -> !e.startsWith("java.lang")).collect(Collectors.toSet()));
         dict.set("idColumns", genTableColumnService.genIdColumn(genTable));
         List<GenTableColumn> tableColumns = genTableColumnService.genTableColumn(genTable);
         dict.set("tableColumns", tableColumns);
-        dict.set("tableColumnClasses", tableColumns.stream().map(GenTableColumn::getJavaTypeClass).filter(e -> !e.startsWith("java.lang")).toList());
+        dict.set("tableColumnClasses", tableColumns.stream().map(GenTableColumn::getJavaTypeClass).filter(e -> !e.startsWith("java.lang")).collect(Collectors.toSet()));
 
         if (StrUtil.isNotBlank(genTable.getSuperClass())) {
             try {

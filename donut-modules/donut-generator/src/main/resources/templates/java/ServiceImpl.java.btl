@@ -10,6 +10,7 @@ import ${packageName}.${moduleName}.mapper.${className}Mapper;
 import ${packageName}.${moduleName}.service.${className}Service;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
