@@ -165,6 +165,7 @@ public class ExcelClient {
                     .setObjectType("excel")
                     .upload();
             exportLog.setStatus(ExportStatusEnum.FINISHED.getCode());
+            exportLog.setFileInfoId(fileInfo.getId());
             exportLog.setUrl(fileInfo.getUrl());
             // 生成访问链接
             return fileStorageService.generatePresignedUrl(fileInfo, DateUtil.offsetMinute(new Date(), 30));

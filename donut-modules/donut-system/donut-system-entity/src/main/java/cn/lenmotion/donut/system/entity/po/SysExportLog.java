@@ -35,6 +35,10 @@ public class SysExportLog extends BaseCreatePo {
     @Schema(description = "文件名称")
     private String name;
 
+    @TableField(value = "`file_info_id`")
+    @Schema(description = "所属文件id")
+    private String fileInfoId;
+
     @TableField(value = "`url`")
     @Schema(description = "文件地址")
     @Trans(type = TransType.AUTO_TRANS, key = BaseConstants.STORAGE_NAMESPACE)

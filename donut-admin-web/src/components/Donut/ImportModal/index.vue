@@ -6,6 +6,7 @@
       :min-height="500"
       :show-ok-btn="false"
       cancel-text="关闭"
+      :mask-closable="false"
     >
       <Spin :spinning="loading">
         <AUploadDragger
