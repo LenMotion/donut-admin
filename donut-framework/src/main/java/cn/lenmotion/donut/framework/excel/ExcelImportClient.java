@@ -36,7 +36,7 @@ public class ExcelImportClient {
     }
 
     private void doSyncImport() {
-        AssertUtils.isTrue(builder.listener == null, "导出监听类未配置");
+        AssertUtils.notNull(builder.listener, "导入监听类未配置");
         var readerBuilder = EasyExcel.read(builder.inputStream, builder.listener);
         Optional.ofNullable(builder.headRowNumber).ifPresent(readerBuilder::headRowNumber);
 
@@ -44,7 +44,7 @@ public class ExcelImportClient {
     }
 
     private <T> List<T> doImport() {
-        AssertUtils.isTrue(builder.clazz == null, "导出类未配置");
+        AssertUtils.notNull(builder.clazz, "导入类未配置");
 
         var readerBuilder = EasyExcel.read(builder.inputStream).head(builder.clazz);
         Optional.ofNullable(builder.headRowNumber).ifPresent(readerBuilder::headRowNumber);
