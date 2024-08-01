@@ -1,22 +1,19 @@
 package cn.lenmotion.donut.system.controller;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
-import cn.dev33.satoken.stp.StpUtil;
-import cn.hutool.core.date.DateUtil;
 import cn.lenmotion.donut.core.annotation.OperationLog;
-import cn.lenmotion.donut.core.constants.ExportTypeConstants;
 import cn.lenmotion.donut.core.entity.BaseImportResult;
 import cn.lenmotion.donut.core.entity.BaseUpdateStatus;
 import cn.lenmotion.donut.core.entity.PageResult;
 import cn.lenmotion.donut.core.entity.ResponseResult;
 import cn.lenmotion.donut.core.utils.PageUtils;
-import cn.lenmotion.donut.framework.excel.ExcelClient;
+import cn.lenmotion.donut.framework.excel.ExcelExportClient;
+import cn.lenmotion.donut.framework.excel.ExcelImportClient;
 import cn.lenmotion.donut.system.entity.converter.UserConverter;
 import cn.lenmotion.donut.system.entity.query.UserQuery;
 import cn.lenmotion.donut.system.entity.request.SysUserRequest;
 import cn.lenmotion.donut.system.entity.vo.UserResponseVO;
 import cn.lenmotion.donut.system.entity.vo.imported.UserImportVO;
-import cn.lenmotion.donut.system.remote.SysExportLogRemoteService;
 import cn.lenmotion.donut.system.service.SysUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -26,7 +23,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -40,8 +37,6 @@ import java.util.List;
 public class SysUserController {
 
     private final SysUserService userService;
-    private final ExcelClient excelClient;
-    private final SysExportLogRemoteService exportLogRemoteService;
 
     @SaCheckPermission("system:user:list")
     @Operation(summary = "获取用户列表")
@@ -63,15 +58,21 @@ public class SysUserController {
     @Operation(summary = "导入用户信息模板")
     @GetMapping("/exportTemplate")
     public ResponseResult<String> exportTemplate() {
-        String url = excelClient.export(new ArrayList<>(), UserImportVO.class, "用户导入模板");
+        var url = ExcelExportClient.builder()
+                .fileName("用户导入模板")
+                .ignoreLog()
+                .setClass(UserImportVO.class)
+                .doExport();
         return ResponseResult.success("导出成功", url);
     }
 
     @SaCheckPermission("system:user:import")
     @Operation(summary = "导入用户信息")
     @PostMapping("/importData")
-    public ResponseResult<BaseImportResult> importData(@RequestBody MultipartFile file) {
-        List<UserImportVO> list = excelClient.importExcel(file, UserImportVO.class, true);
+    public ResponseResult<BaseImportResult> importData(@RequestBody MultipartFile file) throws IOException {
+        List<UserImportVO> list = ExcelImportClient.builder().inputStream(file.getInputStream())
+                .setClass(UserImportVO.class)
+                .doImport();
         return ResponseResult.success(userService.importUser(UserConverter.INSTANCE.toPo(list)));
     }
 

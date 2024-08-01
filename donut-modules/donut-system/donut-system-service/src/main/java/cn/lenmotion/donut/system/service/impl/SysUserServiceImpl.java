@@ -3,7 +3,6 @@ package cn.lenmotion.donut.system.service.impl;
 import cn.dev33.satoken.secure.SaSecureUtil;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.asymmetric.KeyType;
 import cn.hutool.crypto.asymmetric.RSA;
@@ -19,7 +18,7 @@ import cn.lenmotion.donut.core.exception.BusinessException;
 import cn.lenmotion.donut.core.service.impl.DonutServiceImpl;
 import cn.lenmotion.donut.core.utils.AopUtils;
 import cn.lenmotion.donut.core.utils.AssertUtils;
-import cn.lenmotion.donut.framework.excel.ExcelClient;
+import cn.lenmotion.donut.framework.excel.ExcelExportClient;
 import cn.lenmotion.donut.system.entity.converter.UserConverter;
 import cn.lenmotion.donut.system.entity.po.SysDept;
 import cn.lenmotion.donut.system.entity.po.SysPost;
@@ -35,14 +34,12 @@ import cn.lenmotion.donut.system.entity.vo.UserDeptVO;
 import cn.lenmotion.donut.system.entity.vo.UserResponseVO;
 import cn.lenmotion.donut.system.entity.vo.export.UserExportVO;
 import cn.lenmotion.donut.system.mapper.SysUserMapper;
-import cn.lenmotion.donut.system.remote.SysExportLogRemoteService;
 import cn.lenmotion.donut.system.service.*;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.fhs.trans.service.impl.TransService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -65,9 +62,6 @@ public class SysUserServiceImpl extends DonutServiceImpl<SysUserMapper, SysUser>
     private final SysDeptService deptService;
     private final TransService transService;
     private final RSA loginRsa;
-    private final SysExportLogRemoteService exportLogRemoteService;
-    private final TaskExecutor taskExecutor;
-    private final ExcelClient excelClient;
 
     @Value("${spring.profiles.active}")
     private String profile;
@@ -87,13 +81,12 @@ public class SysUserServiceImpl extends DonutServiceImpl<SysUserMapper, SysUser>
     @Override
     @DataScope(type = DataScopeTypeEnum.DEPT, deptAlias = "ud", deptField = "dept_id")
     public void exportUserList(UserQuery userQuery) {
-        var userId = StpUtil.getLoginIdAsLong();
-        taskExecutor.execute(() -> {
-            var timer = DateUtil.timer();
-            var exportLog = exportLogRemoteService.startExport(userId, "用户信息", ExportTypeConstants.USER_LIST);
-            var userList = getBaseMapper().selectUserExportList(userQuery);
-            excelClient.exportTrans(userList, UserExportVO.class, exportLog, timer);
-        });
+        ExcelExportClient.builder()
+                .setClass(UserExportVO.class)
+                .queryData(() -> getBaseMapper().selectUserExportList(userQuery))
+                .exportType(ExportTypeConstants.USER_LIST)
+                .fileName("用户信息")
+                .doAsyncExport();
     }
 
     @Override

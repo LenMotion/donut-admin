@@ -1,5 +1,6 @@
 package cn.lenmotion.donut.system.remote.impl;
 
+import cn.lenmotion.donut.core.constants.BaseConstants;
 import cn.lenmotion.donut.system.entity.enums.ExportStatusEnum;
 import cn.lenmotion.donut.system.entity.po.SysExportLog;
 import cn.lenmotion.donut.system.remote.SysExportLogRemoteService;
@@ -29,8 +30,16 @@ public class SysExportLogRemoteServiceImpl implements SysExportLogRemoteService 
     }
 
     @Override
+    public void save(SysExportLog exportLog) {
+        if (BaseConstants.PARENT_ID.equals(exportLog.getId())) {
+            return;
+        }
+        exportLogService.save(exportLog);
+    }
+
+    @Override
     public void endExport(SysExportLog exportLog) {
-        if (exportLog.getId() == 0L) {
+        if (BaseConstants.PARENT_ID.equals(exportLog.getId())) {
             return;
         }
         exportLogService.updateById(exportLog);

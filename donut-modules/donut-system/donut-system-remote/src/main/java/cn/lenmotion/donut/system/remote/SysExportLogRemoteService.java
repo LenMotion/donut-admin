@@ -17,6 +17,12 @@ public interface SysExportLogRemoteService {
     SysExportLog startExport(Long userId, String fileName, String exportType);
 
     /**
+     * 新增
+     * @param exportLog
+     */
+    void save(SysExportLog exportLog);
+
+    /**
      * 结束导出
      * @param exportLog
      */
