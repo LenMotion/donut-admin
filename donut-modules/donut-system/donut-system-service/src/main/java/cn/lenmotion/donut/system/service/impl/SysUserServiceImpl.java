@@ -83,7 +83,7 @@ public class SysUserServiceImpl extends DonutServiceImpl<SysUserMapper, SysUser>
     public void exportUserList(UserQuery userQuery) {
         ExcelExportClient.builder()
                 .setClass(UserExportVO.class)
-                .queryData(() -> getBaseMapper().selectUserExportList(userQuery))
+                .queryTransData(() -> getBaseMapper().selectUserExportList(userQuery))
                 .exportType(ExportTypeConstants.USER_LIST)
                 .fileName("用户信息")
                 .doAsyncExport();

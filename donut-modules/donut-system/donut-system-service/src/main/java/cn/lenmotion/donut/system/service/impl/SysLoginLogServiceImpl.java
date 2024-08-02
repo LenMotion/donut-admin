@@ -28,7 +28,7 @@ public class SysLoginLogServiceImpl extends ServiceImpl<SysLoginLogMapper, SysLo
     public void exportLog(LoginLogQuery query) {
         ExcelExportClient.builder()
                 .setClass(LoginLogExportVO.class)
-                .queryData(() -> getBaseMapper().selectListByQuery(query))
+                .queryTransData(() -> getBaseMapper().selectListByQuery(query))
                 .exportType(ExportTypeConstants.LOGIN_LIST)
                 .fileName("登录日志")
                 .doAsyncExport();

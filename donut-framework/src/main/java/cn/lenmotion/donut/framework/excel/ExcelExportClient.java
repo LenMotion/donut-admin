@@ -217,8 +217,13 @@ public class ExcelExportClient {
             return this;
         }
 
-        public <T extends VO> ExcelExportBuilder queryData(ExcelDataFunc<T> queryFunc) {
+        public <T extends VO> ExcelExportBuilder queryTransData(ExcelDataFunc<T> queryFunc) {
             this.setTransData(queryFunc.apply());
+            return this;
+        }
+
+        public <T> ExcelExportBuilder queryData(ExcelDataFunc<T> queryFunc) {
+            this.setData(queryFunc.apply());
             return this;
         }
 
