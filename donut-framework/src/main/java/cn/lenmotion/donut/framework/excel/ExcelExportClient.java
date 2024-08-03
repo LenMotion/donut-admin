@@ -33,6 +33,7 @@ import org.springframework.core.task.TaskExecutor;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.*;
+import java.util.function.Supplier;
 
 /**
  * @author lenmotion
@@ -217,13 +218,13 @@ public class ExcelExportClient {
             return this;
         }
 
-        public <T extends VO> ExcelExportBuilder queryTransData(ExcelDataFunc<T> queryFunc) {
-            this.setTransData(queryFunc.apply());
+        public <T extends VO> ExcelExportBuilder queryTransData(Supplier<List<T>> queryFunc) {
+            this.setTransData(queryFunc.get());
             return this;
         }
 
-        public <T> ExcelExportBuilder queryData(ExcelDataFunc<T> queryFunc) {
-            this.setData(queryFunc.apply());
+        public <T> ExcelExportBuilder queryData(Supplier<List<T>> queryFunc) {
+            this.setData(queryFunc.get());
             return this;
         }
 
