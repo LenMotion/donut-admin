@@ -151,6 +151,9 @@ public class SysDeptServiceImpl extends DonutServiceImpl<SysDeptMapper, SysDept>
     @Override
     @DataScope(type = DataScopeTypeEnum.DEPT, deptField = "id")
     public void checkEditPermission(Long deptId, Long userId) {
+        if (deptId == null) {
+            return;
+        }
         // 超级管理员不做限制，任意更改
         if (BaseConstants.SUPER_ID.equals(userId)) {
             return;
