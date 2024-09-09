@@ -82,6 +82,14 @@ public class SysUserController {
         return ResponseResult.success(userService.getUserDetail(id));
     }
 
+    @SaCheckPermission("system:user:remove")
+    @Operation(summary = "删除用户")
+    @OperationLog("删除用户")
+    @DeleteMapping("{id}")
+    public ResponseResult<Boolean> removeUserById(@PathVariable("id") Long id) {
+        return ResponseResult.success(userService.removeById(id));
+    }
+
     @SaCheckPermission("system:user:save")
     @Operation(summary = "新增或修改用户")
     @OperationLog("新增或修改用户")
