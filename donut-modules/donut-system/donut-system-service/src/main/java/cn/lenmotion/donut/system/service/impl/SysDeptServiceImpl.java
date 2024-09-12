@@ -101,8 +101,10 @@ public class SysDeptServiceImpl extends DonutServiceImpl<SysDeptMapper, SysDept>
     private void checkParentDept(SysDept parentDept, SysDept entity, SysDept oldDept) {
         AssertUtils.notNull(parentDept, "上级部门不存在");
         // 如果父节点不为正常状态,则不允许新增子节点
-        AssertUtils.isTrue(entity.getId() == null && BaseStatusEnum.ENABLED.getCode().equals(parentDept.getStatus()),
-                "部门停用，不允许新增");
+        if (entity.getId() == null) {
+            AssertUtils.isTrue(BaseStatusEnum.ENABLED.getCode().equals(parentDept.getStatus()),
+                    "该上级部门停用，不允许新增下级部门");
+        }
         // 判断层级是否超过限制
         entity.setLevel(parentDept.getLevel() + 1);
         var maxDeptLevel = configService.getConfigIntValue(ConfigConstants.MAX_DEPT_LEVEL);
