@@ -37,6 +37,6 @@ public interface SysMenuService extends DonutService<SysMenu> {
      * @param entity
      * @return
      */
-    Long saveOrUpdateMenu(SysMenu entity);
+    SysMenu saveOrUpdateMenu(SysMenu entity);
 
 }

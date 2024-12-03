@@ -59,9 +59,9 @@
       const values = await validate();
       setDrawerProps({ confirmLoading: true });
       // api请求后执行操作
-      const id = await saveApi(values);
+      const menu = await saveApi(values);
       closeDrawer();
-      emit('success', { ...values, id }, unref(isUpdate));
+      emit('success', { ...menu }, unref(isUpdate));
     } finally {
       setDrawerProps({ confirmLoading: false });
     }

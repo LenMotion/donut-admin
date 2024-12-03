@@ -42,7 +42,7 @@ public class SysMenuController {
     @Operation(summary = "新增或修改菜单")
     @OperationLog("新增或修改菜单")
     @PostMapping
-    public ResponseResult<Long> saveOrUpdate(@Validated @RequestBody SysMenu menu) {
+    public ResponseResult<SysMenu> saveOrUpdate(@Validated @RequestBody SysMenu menu) {
         return ResponseResult.success(menuService.saveOrUpdateMenu(menu));
     }
 

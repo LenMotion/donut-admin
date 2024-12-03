@@ -10,17 +10,23 @@ import cn.hutool.http.HttpUtil;
 import cn.lenmotion.donut.core.annotation.DataScope;
 import cn.lenmotion.donut.core.constants.BaseConstants;
 import cn.lenmotion.donut.core.constants.ConfigConstants;
+import cn.lenmotion.donut.core.context.TenantContext;
 import cn.lenmotion.donut.core.enums.BaseStatusEnum;
 import cn.lenmotion.donut.core.enums.DataScopeTypeEnum;
+import cn.lenmotion.donut.core.exception.BusinessException;
 import cn.lenmotion.donut.core.service.impl.DonutServiceImpl;
 import cn.lenmotion.donut.core.utils.AssertUtils;
 import cn.lenmotion.donut.core.utils.EnumUtils;
 import cn.lenmotion.donut.system.entity.converter.MenuConverter;
 import cn.lenmotion.donut.system.entity.enums.MenuTypeEnum;
 import cn.lenmotion.donut.system.entity.po.SysMenu;
+import cn.lenmotion.donut.system.entity.po.SysRole;
+import cn.lenmotion.donut.system.entity.po.SysRoleMenu;
 import cn.lenmotion.donut.system.entity.vo.RouteMetaVO;
 import cn.lenmotion.donut.system.entity.vo.RouteVO;
 import cn.lenmotion.donut.system.mapper.SysMenuMapper;
+import cn.lenmotion.donut.system.mapper.SysRoleMapper;
+import cn.lenmotion.donut.system.mapper.SysRoleMenuMapper;
 import cn.lenmotion.donut.system.service.SysConfigService;
 import cn.lenmotion.donut.system.service.SysMenuService;
 import cn.lenmotion.donut.system.service.SysRoleMenuService;
@@ -30,10 +36,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import static cn.lenmotion.donut.core.constants.BaseConstants.LIMIT_1;
 
 /**
  * @author lenmotion
@@ -47,14 +56,35 @@ public class SysMenuServiceImpl extends DonutServiceImpl<SysMenuMapper, SysMenu>
     private final SysConfigService configService;
     private final TransService transService;
 
+    private final SysRoleMapper roleMapper;
+    private final SysRoleMenuMapper roleMenuMapper;
+
     @Override
-    public Long saveOrUpdateMenu(SysMenu entity) {
+    @Transactional(rollbackFor = Exception.class)
+    public SysMenu saveOrUpdateMenu(SysMenu entity) {
         this.checkMenu(entity);
+        var insert = entity.getId() == null;
         if (entity.getId() == null) {
             entity.setStatus(BaseStatusEnum.DISABLE.getCode());
         }
         super.saveOrUpdate(entity);
-        return entity.getId();
+        // 如果不是超级租户在调整菜单，那么需要把菜单权限赋给超级租户的 SUPER 角色
+        if (insert && !BaseConstants.SUPER_ID.equals(TenantContext.getTenant())) {
+            LambdaQueryWrapper<SysRole> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(SysRole::getRoleKey, "SUPER")
+                    .orderByAsc(SysRole::getCreateTime)
+                    .last(LIMIT_1);
+            SysRole sysRole = roleMapper.selectOne(queryWrapper);
+            if (sysRole == null) {
+                throw new BusinessException("当前租户不存在 SUPER 角色，无法新建菜单");
+            }
+            // 保存新的权限
+            var roleMenu = new SysRoleMenu();
+            roleMenu.setRoleId(sysRole.getId());
+            roleMenu.setMenuId(entity.getId());
+            roleMenuMapper.insert(roleMenu);
+        }
+        return entity;
     }
 
     @Override
@@ -86,13 +116,13 @@ public class SysMenuServiceImpl extends DonutServiceImpl<SysMenuMapper, SysMenu>
         }
 
         if (!MenuTypeEnum.BUTTON.equals(menuType) && !menu.getFrame()) {
-            AssertUtils.notBlank(menu.getName(), "菜单页面名称不能为空");
+            AssertUtils.notBlank(menu.getName(), "菜单组件名称不能为空");
 
             LambdaQueryWrapper<SysMenu> queryWrapper = new LambdaQueryWrapper<>();
             queryWrapper.eq(SysMenu::getName, menu.getName())
                     .ne(Objects.nonNull(menu.getId()), SysMenu::getId, menu.getId())
-                    .last(BaseConstants.LIMIT_1);
-            AssertUtils.isNull(this.getOne(queryWrapper), "菜单页面名称已存在");
+                    .last(LIMIT_1);
+            AssertUtils.isNull(this.getOne(queryWrapper), "菜单组件名称已存在");
         }
 
         // 参数判断
@@ -201,6 +231,7 @@ public class SysMenuServiceImpl extends DonutServiceImpl<SysMenuMapper, SysMenu>
 
     /**
      * 根据菜单id获取菜单信息
+     *
      * @param id
      * @param hasMenuId
      */

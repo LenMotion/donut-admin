@@ -54,11 +54,14 @@
     loading.value = true;
     const data = { id: props.id, status };
     try {
-      await props.api(data);
-    } catch {
+      const res = await props.api(data);
+      console.log(res);
+      emit('success', status);
+    } catch (e) {
+      console.error(e);
       /* empty */
+    } finally {
+      loading.value = false;
     }
-    emit('success', status);
-    loading.value = false;
   };
 </script>
