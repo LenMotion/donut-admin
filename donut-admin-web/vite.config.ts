@@ -15,6 +15,7 @@ export default defineApplicationConfig({
       ],
     },
     server: {
+      port: 10002,
       proxy: {
         '/basic-api': {
           target: 'http://localhost:10001',

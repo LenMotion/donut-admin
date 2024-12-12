@@ -1,1 +1,0 @@
-alter table sys_export_log add `export_type` varchar(50) DEFAULT NULL COMMENT '导出类型' after `user_id`;

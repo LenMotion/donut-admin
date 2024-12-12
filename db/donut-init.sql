@@ -1,102 +1,213 @@
 /*
- Navicat Premium Data Transfer
+ Navicat Premium Dump SQL
 
- Source Server         : tencent8
+ Source Server         : localhost_13306
  Source Server Type    : MySQL
- Source Server Version : 80027
- Source Host           : 139.155.69.83:15308
+ Source Server Version : 80029 (8.0.29)
+ Source Host           : localhost:13306
  Source Schema         : donut
 
  Target Server Type    : MySQL
- Target Server Version : 80027
+ Target Server Version : 80029 (8.0.29)
  File Encoding         : 65001
 
- Date: 23/01/2024 10:08:58
+ Date: 12/12/2024 17:37:40
 */
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- ----------------------------
+-- Table structure for gen_datasource
+-- ----------------------------
+DROP TABLE IF EXISTS `gen_datasource`;
+CREATE TABLE `gen_datasource`  (
+                                   `id` bigint NOT NULL COMMENT 'id',
+                                   `type` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '数据源类型 字典gen_datasource_type',
+                                   `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '名称',
+                                   `host` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT 'host',
+                                   `port` int NOT NULL COMMENT '端口',
+                                   `schema_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '库',
+                                   `username` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '用户名',
+                                   `password` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '密码',
+                                   `status` tinyint NULL DEFAULT NULL COMMENT '状态 字典sys_base_status',
+                                   `check_connection` tinyint(1) NULL DEFAULT 0 COMMENT '连接测试是否通过',
+                                   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+                                   `create_by` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '创建人',
+                                   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+                                   `update_by` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '更新人',
+                                   `deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除',
+                                   PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin COMMENT = '数据源' ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Records of gen_datasource
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for gen_table
+-- ----------------------------
+DROP TABLE IF EXISTS `gen_table`;
+CREATE TABLE `gen_table`  (
+                              `id` bigint NOT NULL COMMENT '表格id',
+                              `datasource_id` bigint NULL DEFAULT NULL COMMENT '数据源id',
+                              `table_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '表名',
+                              `module_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '模块名称',
+                              `menu_id` bigint NULL DEFAULT NULL COMMENT '所属模块',
+                              `feature_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '功能名',
+                              `author` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '作者',
+                              `package_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '包名',
+                              `super_class` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '继承上级类',
+                              `class_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '类名',
+                              `status_api` tinyint(1) NULL DEFAULT 1 COMMENT '是否开启状态接口',
+                              `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '创建者',
+                              `create_time` datetime NULL DEFAULT NULL COMMENT '创建时间',
+                              `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '更新者',
+                              `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
+                              `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '备注',
+                              `deleted` tinyint(1) NULL DEFAULT 0 COMMENT '删除标志（0存在 1删除）',
+                              PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '代码生成table信息' ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Records of gen_table
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for gen_table_column
+-- ----------------------------
+DROP TABLE IF EXISTS `gen_table_column`;
+CREATE TABLE `gen_table_column`  (
+                                     `id` bigint NOT NULL COMMENT 'id',
+                                     `table_id` bigint NOT NULL COMMENT '归属表id',
+                                     `column_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '列名',
+                                     `column_remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '备注',
+                                     `column_type` varchar(55) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '类型',
+                                     `upper_field_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '首字母大写的Java列名',
+                                     `field_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT 'Java列名',
+                                     `java_type_class` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT 'java类型的class路径',
+                                     `java_type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT 'java类型',
+                                     `id_field` tinyint(1) NULL DEFAULT 0 COMMENT '是否主键',
+                                     `search_field` tinyint(1) NULL DEFAULT 0 COMMENT '是否查询列',
+                                     `search_field_type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '查询列类型',
+                                     `edit_field` tinyint(1) NULL DEFAULT 0 COMMENT '是否编辑列',
+                                     `edit_field_type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '编辑列类型',
+                                     `table_field` tinyint(1) NULL DEFAULT 0 COMMENT '是否列表列',
+                                     `ignore_field` tinyint(1) NULL DEFAULT 0 COMMENT '是否忽略',
+                                     `sort_index` int NULL DEFAULT 0 COMMENT '序号',
+                                     `dict_key` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '字典key',
+                                     `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '创建者',
+                                     `create_time` datetime NULL DEFAULT NULL COMMENT '创建时间',
+                                     `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '更新者',
+                                     `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
+                                     `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '备注',
+                                     `deleted` tinyint(1) NULL DEFAULT 0 COMMENT '删除标志（0存在 1删除）',
+                                     PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '代码生成table列信息' ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Records of gen_table_column
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for sys_config
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_config`;
 CREATE TABLE `sys_config`  (
-  `id` bigint NOT NULL COMMENT '参数主键',
-  `config_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '参数名称',
-  `config_key` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '参数键名',
-  `config_value` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '参数键值',
-  `system_config` tinyint(1) NULL DEFAULT 0 COMMENT '是否系统内置',
-  `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '创建者',
-  `create_time` datetime NULL DEFAULT NULL COMMENT '创建时间',
-  `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '更新者',
-  `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
-  `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '备注',
-  PRIMARY KEY (`id`) USING BTREE
+                               `id` bigint NOT NULL COMMENT '参数主键',
+                               `tenant_id` bigint NULL DEFAULT 1 COMMENT '租户id',
+                               `config_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '参数名称',
+                               `config_key` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '参数键名',
+                               `config_value` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '参数值',
+                               `system_config` tinyint(1) NULL DEFAULT 0 COMMENT '是否系统内置',
+                               `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '创建者',
+                               `create_time` datetime NULL DEFAULT NULL COMMENT '创建时间',
+                               `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '更新者',
+                               `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
+                               `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '备注',
+                               PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '参数配置表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_config
 -- ----------------------------
-INSERT INTO `sys_config` VALUES (1, '验证码开关', 'LOGIN_CAPTCHA_SWITCH', 'false', 1, '', NULL, '', NULL, NULL);
-INSERT INTO `sys_config` VALUES (2, '默认密码', 'USER_DEFAULT_PASSWORD', 'qwe@123', 1, '', NULL, '', NULL, NULL);
-INSERT INTO `sys_config` VALUES (3, '最大部门层级', 'MAX_DEPT_LEVEL', '0', 1, '', NULL, '', NULL, NULL);
-INSERT INTO `sys_config` VALUES (6, '系统名称', 'SYSTEM_NAME', 'Dount Admin', 1, '', NULL, '', NULL, NULL);
-INSERT INTO `sys_config` VALUES (7, '系统默认菜单', 'DEFAULT_MENU', '2,1747177110302846977,1748664655401738242', 1, '', NULL, '', NULL, NULL);
-INSERT INTO `sys_config` VALUES (1748164430560751617, '页脚', 'SITE_COPYRIGHT', 'Copyright © 2024 Donut Admin', 1, '1', '2024-01-19 10:04:14', '', NULL, NULL);
+INSERT INTO `sys_config` VALUES (1, 1, '验证码开关', 'LOGIN_CAPTCHA_SWITCH', 'false', 1, '', NULL, '', NULL, NULL);
+INSERT INTO `sys_config` VALUES (2, 1, '默认密码', 'USER_DEFAULT_PASSWORD', 'qwe@123', 1, '', NULL, '', NULL, NULL);
+INSERT INTO `sys_config` VALUES (3, 1, '最大部门层级', 'MAX_DEPT_LEVEL', '0', 1, '', NULL, '', NULL, NULL);
+INSERT INTO `sys_config` VALUES (6, 1, '系统名称', 'SYSTEM_NAME', 'Donut Admin', 1, '', NULL, '', NULL, NULL);
+INSERT INTO `sys_config` VALUES (7, 1, '系统默认菜单', 'DEFAULT_MENU', '2,1747177110302846977,1748664655401738242', 1, '', NULL, '', NULL, NULL);
+INSERT INTO `sys_config` VALUES (1748164430560751617, 1, '页脚', 'SITE_COPYRIGHT', 'Copyright © 2024 Donut Admin', 1, '1', '2024-01-19 10:04:14', '', NULL, NULL);
+INSERT INTO `sys_config` VALUES (1771085140132188161, 1, '账号密码连续输入错误次数', 'ACCOUNT_LOCK_COUNT', '3', 1, '1', '2024-03-22 16:02:57', '', NULL, NULL);
+INSERT INTO `sys_config` VALUES (1771085227071721474, 1, '账号锁定时长（分钟）', 'ACCOUNT_LOCK_TIME', '10', 1, '1', '2024-03-22 16:03:18', '', NULL, NULL);
+INSERT INTO `sys_config` VALUES (1783005313353056258, 1, '系统标题', 'SYSTEM_TITLE', '甜甜圈通用管理系统', 1, '1', '2024-04-24 13:29:28', '', NULL, NULL);
+INSERT INTO `sys_config` VALUES (1783005477874630657, 1, '系统描述', 'SYSTEM_DESCRIPTION', '一款基于SpringBoot3、JDK17、SaToken、MybatisPlus的开源管理系统。', 1, '1', '2024-04-24 13:30:07', '', NULL, NULL);
+INSERT INTO `sys_config` VALUES (1783005566110203905, 1, '系统logo', 'SYSTEM_LOGO', 'data:image/png;base64,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', 1, '1', '2024-04-24 13:30:28', '', NULL, NULL);
+INSERT INTO `sys_config` VALUES (1793843406113193986, 1793843403441422338, '验证码开关', 'LOGIN_CAPTCHA_SWITCH', 'true', 1, '', '2024-05-24 11:16:11', '', NULL, NULL);
+INSERT INTO `sys_config` VALUES (1793843406134165505, 1793843403441422338, '默认密码', 'USER_DEFAULT_PASSWORD', 'qwe@123', 1, '', '2024-05-24 11:16:11', '', NULL, NULL);
+INSERT INTO `sys_config` VALUES (1793843406142554113, 1793843403441422338, '最大部门层级', 'MAX_DEPT_LEVEL', '0', 1, '', '2024-05-24 11:16:11', '', NULL, NULL);
+INSERT INTO `sys_config` VALUES (1793843406150942722, 1793843403441422338, '系统名称', 'SYSTEM_NAME', 'Test Admin', 1, '', '2024-05-24 11:16:11', '', NULL, NULL);
+INSERT INTO `sys_config` VALUES (1793843406150942723, 1793843403441422338, '系统默认菜单', 'DEFAULT_MENU', '2,1747177110302846977,1748664655401738242', 1, '', '2024-05-24 11:16:11', '', NULL, NULL);
+INSERT INTO `sys_config` VALUES (1793843406155137025, 1793843403441422338, '页脚', 'SITE_COPYRIGHT', 'Copyright © 2024 Donut Admin', 1, '1', '2024-01-19 10:04:14', '', NULL, NULL);
+INSERT INTO `sys_config` VALUES (1793843406155137026, 1793843403441422338, '账号密码连续输入错误次数', 'ACCOUNT_LOCK_COUNT', '3', 1, '1', '2024-03-22 16:02:57', '', NULL, NULL);
+INSERT INTO `sys_config` VALUES (1793843406167719937, 1793843403441422338, '账号锁定时长（分钟）', 'ACCOUNT_LOCK_TIME', '10', 1, '1', '2024-03-22 16:03:18', '', NULL, NULL);
+INSERT INTO `sys_config` VALUES (1793843406167719938, 1793843403441422338, '系统标题', 'SYSTEM_TITLE', '甜甜圈通用管理系统-测试租户', 1, '1', '2024-04-24 13:29:28', '', NULL, NULL);
+INSERT INTO `sys_config` VALUES (1793843406167719939, 1793843403441422338, '系统描述', 'SYSTEM_DESCRIPTION', '一款基于SpringBoot3、JDK17、SaToken、MybatisPlus的开源管理系统。', 1, '1', '2024-04-24 13:30:07', '', NULL, NULL);
+INSERT INTO `sys_config` VALUES (1793843406176108546, 1793843403441422338, '系统logo', 'SYSTEM_LOGO', 'data:image/png;base64,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', 1, '1', '2024-04-24 13:30:28', '', NULL, NULL);
 
 -- ----------------------------
 -- Table structure for sys_dept
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_dept`;
 CREATE TABLE `sys_dept`  (
-  `id` bigint NOT NULL COMMENT '部门id',
-  `parent_id` bigint NULL DEFAULT 0 COMMENT '父部门id',
-  `level` tinyint(1) NULL DEFAULT NULL COMMENT '等级',
-  `ancestors` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '祖级列表',
-  `dept_name` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '部门名称',
-  `short_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '简称',
-  `dept_code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '单位编号',
-  `order_num` int NULL DEFAULT 0 COMMENT '显示顺序',
-  `leader` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '负责人',
-  `phone` varchar(11) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '联系电话',
-  `email` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '邮箱',
-  `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '0' COMMENT '部门状态（0正常 1停用）',
-  `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '创建者',
-  `create_time` datetime NULL DEFAULT NULL COMMENT '创建时间',
-  `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '更新者',
-  `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
-  `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '备注',
-  `deleted` tinyint(1) NULL DEFAULT 0 COMMENT '删除标志（0存在 1删除）',
-  PRIMARY KEY (`id`) USING BTREE
+                             `id` bigint NOT NULL COMMENT '部门id',
+                             `tenant_id` bigint NULL DEFAULT 1 COMMENT '租户id',
+                             `parent_id` bigint NULL DEFAULT 0 COMMENT '父部门id',
+                             `level` tinyint(1) NULL DEFAULT NULL COMMENT '等级',
+                             `ancestors` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '祖级列表',
+                             `dept_name` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '部门名称',
+                             `short_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '简称',
+                             `dept_code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '单位编号',
+                             `order_num` int NULL DEFAULT 0 COMMENT '显示顺序',
+                             `leader` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '负责人',
+                             `phone` varchar(11) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '联系电话',
+                             `email` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '邮箱',
+                             `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '0' COMMENT '部门状态（0正常 1停用）',
+                             `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '创建者',
+                             `create_time` datetime NULL DEFAULT NULL COMMENT '创建时间',
+                             `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '更新者',
+                             `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
+                             `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '备注',
+                             `deleted` tinyint(1) NULL DEFAULT 0 COMMENT '删除标志（0存在 1删除）',
+                             PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '部门表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_dept
 -- ----------------------------
-INSERT INTO `sys_dept` VALUES (2, 0, 1, '2', 'Donut总公司', '总公司', 'GS0001', 1, 'LenMotion', NULL, NULL, '0', '1', '2024-01-04 22:06:27', '1', '2024-01-04 22:06:49', NULL, 0);
-INSERT INTO `sys_dept` VALUES (3, 2, 2, '2,3', '成都分公司', '成都', 'GS0002', 1, NULL, NULL, NULL, '0', '1', '2024-01-04 22:08:23', '1', '2024-01-04 22:37:01', NULL, 0);
-INSERT INTO `sys_dept` VALUES (4, 2, 2, '2,4', '北京分公司', '北京', 'GS0003', 2, NULL, NULL, NULL, '0', '1', '2024-01-04 22:36:50', '1', '2024-01-04 22:36:50', NULL, 0);
-INSERT INTO `sys_dept` VALUES (1749431618629652481, 3, 3, '2,3,1749431618629652481', '技术研发部', '研发部', 'JSYF', 1, NULL, NULL, NULL, '0', '1', '2024-01-22 21:59:35', '1', '2024-01-22 21:59:35', NULL, 0);
+INSERT INTO `sys_dept` VALUES (2, 1, 0, 1, '2', 'Donut总公司', '总公司', 'GS0001', 1, 'LenMotion', NULL, NULL, '0', '1', '2024-01-04 22:06:27', '1', '2024-01-04 22:06:49', NULL, 0);
+INSERT INTO `sys_dept` VALUES (3, 1, 2, 2, '2,3', '成都分公司', '成都', 'GS0002', 1, NULL, NULL, NULL, '0', '1', '2024-01-04 22:08:23', '1', '2024-01-04 22:37:01', NULL, 0);
+INSERT INTO `sys_dept` VALUES (4, 1, 2, 2, '2,4', '北京分公司', '北京', 'GS0003', 2, NULL, NULL, NULL, '0', '1', '2024-01-04 22:36:50', '1', '2024-01-04 22:36:50', NULL, 0);
+INSERT INTO `sys_dept` VALUES (1749431618629652481, 1, 3, 3, '2,3,1749431618629652481', '技术研发部', '研发部', 'JSYF', 1, NULL, NULL, NULL, '0', '1', '2024-01-22 21:59:35', '1', '2024-01-22 21:59:35', NULL, 0);
+INSERT INTO `sys_dept` VALUES (1793843405932711936, 1793843403441422338, 0, 1, '1793843405932711936', '测试租户', '测试租户', '001', 1, NULL, NULL, NULL, '0', '1', '2024-05-24 11:16:11', '', NULL, NULL, 0);
 
 -- ----------------------------
 -- Table structure for sys_dict_data
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_dict_data`;
 CREATE TABLE `sys_dict_data`  (
-  `id` bigint NOT NULL COMMENT '字典编码',
-  `dict_key` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '字典类型',
-  `dict_label` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '字典标签',
-  `dict_value` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '字典键值',
-  `dict_sort` int NULL DEFAULT 0 COMMENT '字典排序',
-  `list_class` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '表格回显样式',
-  `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '0' COMMENT '状态（0正常 1停用）',
-  `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '创建者',
-  `create_time` datetime NULL DEFAULT NULL COMMENT '创建时间',
-  `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '更新者',
-  `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
-  `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '备注',
-  PRIMARY KEY (`id`) USING BTREE
+                                  `id` bigint NOT NULL COMMENT '字典编码',
+                                  `dict_key` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '字典类型',
+                                  `dict_label` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '字典标签',
+                                  `dict_value` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '字典键值',
+                                  `dict_sort` int NULL DEFAULT 0 COMMENT '字典排序',
+                                  `list_class` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '表格回显样式',
+                                  `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '0' COMMENT '状态（0正常 1停用）',
+                                  `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '创建者',
+                                  `create_time` datetime NULL DEFAULT NULL COMMENT '创建时间',
+                                  `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '更新者',
+                                  `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
+                                  `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '备注',
+                                  PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '字典数据表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -196,24 +307,28 @@ INSERT INTO `sys_dict_data` VALUES (1747440962991005697, 'sys_login_status', '�
 INSERT INTO `sys_dict_data` VALUES (1747441011082895362, 'sys_login_status', '失败', '1', 1, 'red', '0', '1', '2024-01-17 10:09:38', '1', '2024-01-17 10:22:19', NULL);
 INSERT INTO `sys_dict_data` VALUES (1747444459538890753, 'sys_operation_status', '正常', '0', 0, 'green', '0', '1', '2024-01-17 10:23:20', '1', '2024-01-17 10:24:02', NULL);
 INSERT INTO `sys_dict_data` VALUES (1747444504367611905, 'sys_operation_status', '异常', '1', 1, 'red', '0', '1', '2024-01-17 10:23:30', '1', '2024-01-17 10:24:09', NULL);
+INSERT INTO `sys_dict_data` VALUES (1783789039880323073, 'gen_datasource_type', 'mysql', 'mysql', 1, 'blue', '0', '1', '2024-04-26 17:23:43', '', NULL, NULL);
+INSERT INTO `sys_dict_data` VALUES (1795325030159982593, 'sys_export_exec_status', '执行中', '0', 0, 'green', '0', '1', '2024-05-28 13:23:37', '', NULL, NULL);
+INSERT INTO `sys_dict_data` VALUES (1795325084786597890, 'sys_export_exec_status', '执行成功', '1', 1, 'blue', '0', '1', '2024-05-28 13:23:50', '', NULL, NULL);
+INSERT INTO `sys_dict_data` VALUES (1795325166508417025, 'sys_export_exec_status', '执行失败', '2', 2, 'red', '0', '1', '2024-05-28 13:24:10', '', NULL, NULL);
 
 -- ----------------------------
 -- Table structure for sys_dict_type
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_dict_type`;
 CREATE TABLE `sys_dict_type`  (
-  `id` bigint NOT NULL COMMENT '字典主键',
-  `dict_type` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT '0' COMMENT '字典类型 0系统 1业务',
-  `dict_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '字典名称',
-  `dict_key` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '字典key',
-  `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT '0' COMMENT '状态（0正常 1停用）',
-  `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT '' COMMENT '创建者',
-  `create_time` datetime NULL DEFAULT NULL COMMENT '创建时间',
-  `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT '' COMMENT '更新者',
-  `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
-  `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '备注',
-  PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE INDEX `dict_key`(`dict_key` ASC) USING BTREE
+                                  `id` bigint NOT NULL COMMENT '字典主键',
+                                  `dict_type` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT '0' COMMENT '字典类型 0系统 1业务',
+                                  `dict_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '字典名称',
+                                  `dict_key` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '字典key',
+                                  `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT '0' COMMENT '状态（0正常 1停用）',
+                                  `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT '' COMMENT '创建者',
+                                  `create_time` datetime NULL DEFAULT NULL COMMENT '创建时间',
+                                  `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT '' COMMENT '更新者',
+                                  `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
+                                  `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '备注',
+                                  PRIMARY KEY (`id`) USING BTREE,
+                                  UNIQUE INDEX `dict_key`(`dict_key` ASC) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin COMMENT = '字典类型表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -233,61 +348,93 @@ INSERT INTO `sys_dict_type` VALUES (1747074753795641346, '0', '系统通知公�
 INSERT INTO `sys_dict_type` VALUES (1747075301903147010, '0', '系统通知公告范围', 'sys_notice_send_type', '0', '1', '2024-01-16 09:56:26', '', NULL, NULL);
 INSERT INTO `sys_dict_type` VALUES (1747440888701493250, '0', '系统登录状态', 'sys_login_status', '0', '1', '2024-01-17 10:09:08', '', NULL, NULL);
 INSERT INTO `sys_dict_type` VALUES (1747444394829168641, '0', '系统操作状态', 'sys_operation_status', '0', '1', '2024-01-17 10:23:04', '', NULL, NULL);
+INSERT INTO `sys_dict_type` VALUES (1783788938260725762, '0', '数据源类型', 'gen_datasource_type', '0', '1', '2024-04-26 17:23:19', '', NULL, '代码生成');
+INSERT INTO `sys_dict_type` VALUES (1795324921464594433, '0', '导出执行状态', 'sys_export_exec_status', '0', '1', '2024-05-28 13:23:11', '', NULL, NULL);
+
+-- ----------------------------
+-- Table structure for sys_export_log
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_export_log`;
+CREATE TABLE `sys_export_log`  (
+                                   `id` bigint NOT NULL COMMENT 'id',
+                                   `tenant_id` bigint NOT NULL COMMENT '租户ID',
+                                   `user_id` bigint NOT NULL COMMENT '用户id',
+                                   `export_type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '导出类型',
+                                   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '文件名称',
+                                   `file_info_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '所属文件id',
+                                   `url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '文件地址',
+                                   `status` char(2) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '0' COMMENT '状态 0正在导出 1导出成功 2导出失败',
+                                   `error_msg` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '错误日志',
+                                   `exec_time` bigint NULL DEFAULT NULL COMMENT '执行时间',
+                                   `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '创建者',
+                                   `create_time` datetime NULL DEFAULT NULL COMMENT '创建时间',
+                                   `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '更新者',
+                                   `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
+                                   `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '备注',
+                                   `deleted` tinyint(1) NULL DEFAULT 0 COMMENT '删除标志（0存在 1删除）',
+                                   PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '导出记录' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of sys_export_log
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for sys_file_storage
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_file_storage`;
 CREATE TABLE `sys_file_storage`  (
-  `id` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '文件id',
-  `url` varchar(512) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '文件访问地址',
-  `size` bigint NULL DEFAULT NULL COMMENT '文件大小，单位字节',
-  `filename` varchar(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '文件名称',
-  `original_filename` varchar(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '原始文件名',
-  `base_path` varchar(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '基础存储路径',
-  `path` varchar(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '存储路径',
-  `ext` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '文件扩展名',
-  `content_type` varchar(128) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT 'MIME类型',
-  `platform` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '存储平台',
-  `th_url` varchar(512) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '缩略图访问路径',
-  `th_filename` varchar(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '缩略图名称',
-  `th_size` bigint NULL DEFAULT NULL COMMENT '缩略图大小，单位字节',
-  `th_content_type` varchar(128) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '缩略图MIME类型',
-  `object_id` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '文件所属对象id',
-  `object_type` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '文件所属对象类型，例如用户头像，评价图片',
-  `metadata` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '文件元数据',
-  `user_metadata` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '文件用户元数据',
-  `th_metadata` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '缩略图元数据',
-  `th_user_metadata` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '缩略图用户元数据',
-  `attr` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '附加属性',
-  `file_acl` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '文件ACL',
-  `th_file_acl` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '缩略图文件ACL',
-  `create_time` datetime NULL DEFAULT NULL COMMENT '创建时间',
-  `deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除',
-  PRIMARY KEY (`id`) USING BTREE
+                                     `id` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '文件id',
+                                     `tenant_id` bigint NULL DEFAULT 1 COMMENT '租户id',
+                                     `url` varchar(512) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '文件访问地址',
+                                     `size` bigint NULL DEFAULT NULL COMMENT '文件大小，单位字节',
+                                     `filename` varchar(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '文件名称',
+                                     `original_filename` varchar(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '原始文件名',
+                                     `base_path` varchar(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '基础存储路径',
+                                     `path` varchar(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '存储路径',
+                                     `ext` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '文件扩展名',
+                                     `content_type` varchar(128) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT 'MIME类型',
+                                     `platform` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '存储平台',
+                                     `th_url` varchar(512) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '缩略图访问路径',
+                                     `th_filename` varchar(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '缩略图名称',
+                                     `th_size` bigint NULL DEFAULT NULL COMMENT '缩略图大小，单位字节',
+                                     `th_content_type` varchar(128) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '缩略图MIME类型',
+                                     `object_id` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '文件所属对象id',
+                                     `object_type` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '文件所属对象类型，例如用户头像，评价图片',
+                                     `metadata` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '文件元数据',
+                                     `user_metadata` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '文件用户元数据',
+                                     `th_metadata` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '缩略图元数据',
+                                     `th_user_metadata` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '缩略图用户元数据',
+                                     `attr` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '附加属性',
+                                     `file_acl` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '文件ACL',
+                                     `th_file_acl` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '缩略图文件ACL',
+                                     `create_time` datetime NULL DEFAULT NULL COMMENT '创建时间',
+                                     `deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除',
+                                     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '文件记录表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_file_storage
 -- ----------------------------
+INSERT INTO `sys_file_storage` VALUES ('bd402cdfad364e78b18f68c056dbeece', 1, 'http://localhost:9000/open/logo.png', 7694, 'logo.png', '甜甜圈 (1).png', '', 'open/', 'png', 'image/png', 'minio-1', NULL, NULL, NULL, NULL, NULL, NULL, '{}', '{}', '{}', '{}', '{}', NULL, NULL, '2024-04-24 11:06:32', 0);
 
 -- ----------------------------
 -- Table structure for sys_job
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_job`;
 CREATE TABLE `sys_job`  (
-  `id` bigint NOT NULL COMMENT 'id',
-  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '任务名称',
-  `cron` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '任务表达式',
-  `task_class` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '任务执行器的class',
-  `params` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL COMMENT '执行参数',
-  `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT '0' COMMENT '任务状态',
-  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `create_by` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '创建人',
-  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  `update_by` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '更新人',
-  `deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除',
-  PRIMARY KEY (`id`) USING BTREE
+                            `id` bigint NOT NULL COMMENT 'id',
+                            `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '任务名称',
+                            `cron` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '任务表达式',
+                            `task_class` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '任务执行器的class',
+                            `params` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL COMMENT '执行参数',
+                            `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT '0' COMMENT '任务状态',
+                            `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+                            `create_by` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '创建人',
+                            `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+                            `update_by` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '更新人',
+                            `deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除',
+                            PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin COMMENT = '定时任务' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -300,19 +447,19 @@ INSERT INTO `sys_job` VALUES (23, '系统测试任务', '0 0/1 * * * ?', 'cn.len
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_job_log`;
 CREATE TABLE `sys_job_log`  (
-  `id` bigint NOT NULL COMMENT 'id',
-  `job_id` bigint NOT NULL COMMENT '任务id',
-  `type` tinyint(1) NULL DEFAULT 0 COMMENT '0自动执行 1手动执行',
-  `status` tinyint(1) NULL DEFAULT 0 COMMENT '0执行中 1执行成功，2执行失败',
-  `time` bigint NULL DEFAULT 0 COMMENT '耗时(毫秒)',
-  `error_msg` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL COMMENT '错误日志',
-  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `end_time` datetime NULL DEFAULT NULL COMMENT '结束时间',
-  `create_by` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '创建人',
-  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  `update_by` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '更新人',
-  `deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除',
-  PRIMARY KEY (`id`) USING BTREE
+                                `id` bigint NOT NULL COMMENT 'id',
+                                `job_id` bigint NOT NULL COMMENT '任务id',
+                                `type` tinyint(1) NULL DEFAULT 0 COMMENT '0自动执行 1手动执行',
+                                `status` tinyint(1) NULL DEFAULT 0 COMMENT '0执行中 1执行成功，2执行失败',
+                                `time` bigint NULL DEFAULT 0 COMMENT '耗时(毫秒)',
+                                `error_msg` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL COMMENT '错误日志',
+                                `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+                                `end_time` datetime NULL DEFAULT NULL COMMENT '结束时间',
+                                `create_by` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '创建人',
+                                `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+                                `update_by` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '更新人',
+                                `deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除',
+                                PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin COMMENT = '定时任务执行日志' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -324,15 +471,17 @@ CREATE TABLE `sys_job_log`  (
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_login_log`;
 CREATE TABLE `sys_login_log`  (
-  `id` bigint NOT NULL COMMENT '访问ID',
-  `username` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '用户账号',
-  `ip` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '登录IP地址',
-  `browser` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '浏览器类型',
-  `os` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '操作系统',
-  `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '0' COMMENT '登录状态（0成功 1失败）',
-  `msg` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '提示消息',
-  `login_time` datetime NULL DEFAULT NULL COMMENT '访问时间',
-  PRIMARY KEY (`id`) USING BTREE
+                                  `id` bigint NOT NULL COMMENT '访问ID',
+                                  `tenant_id` bigint NULL DEFAULT 1 COMMENT '租户id',
+                                  `username` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '用户账号',
+                                  `ip` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '登录IP地址',
+                                  `browser` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '浏览器类型',
+                                  `os` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '操作系统',
+                                  `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '0' COMMENT '登录状态（0成功 1失败）',
+                                  `msg` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '提示消息',
+                                  `login_time` datetime NULL DEFAULT NULL COMMENT '访问时间',
+                                  `token_value` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT 'token值',
+                                  PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '系统访问记录' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -344,31 +493,31 @@ CREATE TABLE `sys_login_log`  (
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_menu`;
 CREATE TABLE `sys_menu`  (
-  `id` bigint NOT NULL COMMENT '菜单ID',
-  `title` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '菜单名称',
-  `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '页面名称 全局唯一',
-  `parent_id` bigint NULL DEFAULT 0 COMMENT '父菜单ID',
-  `menu_type` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '菜单类型（M目录 C菜单 F按钮）',
-  `path` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '路由地址',
-  `current_active_menu` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '当前激活的菜单。用于配置详情页时左侧激活的菜单路径',
-  `redirect` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '重定向',
-  `component` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '组件路径',
-  `ignore_keep_alive` tinyint(1) NULL DEFAULT 0 COMMENT '是否忽略缓存（0不忽略 1忽略）',
-  `hide_menu` tinyint(1) NULL DEFAULT 0 COMMENT '菜单状态（0显示 1隐藏）',
-  `hide_children_in_menu` tinyint(1) NULL DEFAULT 0 COMMENT '隐藏所有子菜单',
-  `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '0' COMMENT '菜单状态（0正常 1停用）',
-  `perms` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '权限标识',
-  `icon` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '菜单图标',
-  `order_no` int NULL DEFAULT 0 COMMENT '显示顺序',
-  `query` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '路由参数',
-  `frame` tinyint(1) NULL DEFAULT 0 COMMENT '是否为外链（0否 1是）',
-  `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '创建者',
-  `create_time` datetime NULL DEFAULT NULL COMMENT '创建时间',
-  `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '更新者',
-  `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
-  `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '备注',
-  `deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除',
-  PRIMARY KEY (`id`) USING BTREE
+                             `id` bigint NOT NULL COMMENT '菜单ID',
+                             `title` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '菜单名称',
+                             `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '页面名称 全局唯一',
+                             `parent_id` bigint NULL DEFAULT 0 COMMENT '父菜单ID',
+                             `menu_type` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '菜单类型（M目录 C菜单 F按钮）',
+                             `path` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '路由地址',
+                             `current_active_menu` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '当前激活的菜单。用于配置详情页时左侧激活的菜单路径',
+                             `redirect` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '重定向',
+                             `component` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '组件路径',
+                             `ignore_keep_alive` tinyint(1) NULL DEFAULT 0 COMMENT '是否忽略缓存（0不忽略 1忽略）',
+                             `hide_menu` tinyint(1) NULL DEFAULT 0 COMMENT '菜单状态（0显示 1隐藏）',
+                             `hide_children_in_menu` tinyint(1) NULL DEFAULT 0 COMMENT '隐藏所有子菜单',
+                             `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '0' COMMENT '菜单状态（0正常 1停用）',
+                             `perms` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '权限标识',
+                             `icon` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '菜单图标',
+                             `order_no` int NULL DEFAULT 0 COMMENT '显示顺序',
+                             `query` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '路由参数',
+                             `frame` tinyint(1) NULL DEFAULT 0 COMMENT '是否为外链（0否 1是）',
+                             `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '创建者',
+                             `create_time` datetime NULL DEFAULT NULL COMMENT '创建时间',
+                             `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '更新者',
+                             `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
+                             `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '备注',
+                             `deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除',
+                             PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '菜单权限表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -427,81 +576,106 @@ INSERT INTO `sys_menu` VALUES (1748155709478662146, '发布撤回', NULL, 174707
 INSERT INTO `sys_menu` VALUES (1748155869352947713, '导出日志', NULL, 13, '2', '', NULL, NULL, '', 1, 0, 0, '0', 'system:loginLog:export', '', 0, NULL, 0, '1', '2024-01-19 09:30:13', '', NULL, '', 0);
 INSERT INTO `sys_menu` VALUES (1748664655401738242, '我的通知公告', 'UserNoticeList', 0, '1', 'notice/mineList', NULL, NULL, '/sys/modules/notice/userNoticeList', 0, 1, 0, '0', NULL, NULL, 98, NULL, 0, '1', '2024-01-20 19:11:57', '1', '2024-01-20 19:12:25', NULL, 0);
 INSERT INTO `sys_menu` VALUES (1749432002051952641, '执行任务', NULL, 11, '2', '', NULL, NULL, '', 1, 0, 0, '0', 'system:job:exec', '', 2, NULL, 0, '1', '2024-01-22 22:01:07', '', NULL, '', 0);
+INSERT INTO `sys_menu` VALUES (1765619430731698177, '生成管理', 'Gen', 0, '0', '/gen', NULL, NULL, 'LAYOUT', 1, 0, 0, '0', NULL, 'ant-design:laptop-outlined', 5, NULL, 0, '1', '2024-03-07 14:04:11', '1', '2024-03-07 14:04:30', NULL, 0);
+INSERT INTO `sys_menu` VALUES (1767064995604787202, '代码生成', 'GenCode', 1765619430731698177, '1', 'code', NULL, NULL, '/gen/code/index', 1, 0, 0, '0', 'gen:code:list', '', 1, NULL, 0, '1', '2024-03-11 13:48:20', '', NULL, '', 0);
+INSERT INTO `sys_menu` VALUES (1772633885608275970, '在线用户', 'OnlineUserManagement', 1747515992408047617, '1', 'onlineUser', NULL, NULL, '/monitor/onlineUser/index', 1, 0, 0, '0', 'monitor:onlineUser:list', NULL, 3, NULL, 0, '1', '2024-03-26 22:37:07', '1', '2024-03-26 22:50:59', NULL, 0);
+INSERT INTO `sys_menu` VALUES (1772637557499129858, '踢人下线', NULL, 1772633885608275970, '2', '', NULL, NULL, '', 1, 0, 0, '0', 'monitor:onlineUser:kickOut', '', 1, NULL, 0, '1', '2024-03-26 22:51:42', '', NULL, '', 0);
+INSERT INTO `sys_menu` VALUES (1783794396425834496, '数据源', 'GenDatasource', 1765619430731698177, '1', 'datasource', NULL, NULL, '/gen/datasource/index', 1, 0, 0, '0', 'generator:genDatasource:list', NULL, 1, NULL, 0, '1', '2024-12-12 17:36:57', '1', NULL, NULL, 0);
+INSERT INTO `sys_menu` VALUES (1783794396425834497, '保存信息', NULL, 1783794396425834496, '2', '', NULL, NULL, '', 1, 0, 0, '0', 'generator:genDatasource:save', '', 0, NULL, 0, '1', '2024-12-12 17:36:57', '', NULL, '', 0);
+INSERT INTO `sys_menu` VALUES (1783794396425834498, '删除信息', NULL, 1783794396425834496, '2', '', NULL, NULL, '', 1, 0, 0, '0', 'generator:genDatasource:remove', '', 1, NULL, 0, '1', '2024-12-12 17:36:57', '', NULL, '', 0);
+INSERT INTO `sys_menu` VALUES (1783794396425834499, '更新状态', NULL, 1783794396425834496, '2', '', NULL, NULL, '', 1, 0, 0, '0', 'generator:genDatasource:status', '', 2, NULL, 0, '1', '2024-12-12 17:36:57', '', NULL, '', 0);
+INSERT INTO `sys_menu` VALUES (1784044183687434242, '测试连接', NULL, 1783794396425834496, '2', '', NULL, NULL, '', 1, 0, 0, '0', 'generator:genDatasource:checkConnection', '', 0, NULL, 0, '1', '2024-12-12 17:36:57', '', NULL, '', 0);
+INSERT INTO `sys_menu` VALUES (1784866340659212290, '文档地址', NULL, 0, '1', 'https://donut-doc.lenmotion.cn/', NULL, NULL, 'Frame', 0, 0, 0, '0', NULL, 'ant-design:book-outlined', 6, NULL, 1, '1', '2024-04-29 16:44:31', '', NULL, '', 0);
+INSERT INTO `sys_menu` VALUES (1784875438691790850, '更新状态', NULL, 7, '2', '', NULL, NULL, '', 0, 0, 0, '0', 'system:menu:status', '', 3, NULL, 0, '1', '2024-04-29 17:20:41', '', NULL, '', 0);
+INSERT INTO `sys_menu` VALUES (1793472257501917186, '租户管理', 'Tenant', 0, '0', '/tenant', NULL, NULL, 'LAYOUT', 0, 0, 0, '0', NULL, 'ant-design:code-sandbox-outlined', 6, NULL, 0, '1', '2024-05-23 10:41:22', '', NULL, '', 0);
+INSERT INTO `sys_menu` VALUES (1793474214046076928, '租户列表', 'SysTenantManage', 1793472257501917186, '1', 'sysTenant', NULL, NULL, '/sys/modules/tenant/index.vue', 1, 0, 0, '0', 'system:sysTenant:list', NULL, 1, NULL, 0, '1', '2024-12-12 17:36:58', '1', NULL, NULL, 0);
+INSERT INTO `sys_menu` VALUES (1793474214046076929, '保存信息', NULL, 1793474214046076928, '2', '', NULL, NULL, '', 1, 0, 0, '0', 'system:sysTenant:save', '', 0, NULL, 0, '1', '2024-12-12 17:36:58', '', NULL, '', 0);
+INSERT INTO `sys_menu` VALUES (1793474214046076930, '删除信息', NULL, 1793474214046076928, '2', '', NULL, NULL, '', 1, 0, 0, '0', 'system:sysTenant:remove', '', 1, NULL, 0, '1', '2024-12-12 17:36:58', '', NULL, '', 0);
+INSERT INTO `sys_menu` VALUES (1793474214046076931, '更新状态', NULL, 1793474214046076928, '2', '', NULL, NULL, '', 1, 0, 0, '0', 'system:sysTenant:status', '', 2, NULL, 0, '1', '2024-12-12 17:36:58', '', NULL, '', 0);
 
 -- ----------------------------
 -- Table structure for sys_notice
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_notice`;
 CREATE TABLE `sys_notice`  (
-  `id` bigint NOT NULL COMMENT '公告ID',
-  `notice_title` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '公告标题',
-  `notice_type` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '公告类型（1通知 2公告）',
-  `notice_send_type` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '公告发送类型（0全体人员 1本部门人员 2本部门及以下部门 3特定人员）',
-  `notice_content` longblob NULL COMMENT '公告内容',
-  `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '0' COMMENT '公告状态（0正常 1关闭）',
-  `publish_time` datetime NULL DEFAULT NULL COMMENT '发布时间',
-  `read_num` int NULL DEFAULT 0 COMMENT '阅读量',
-  `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '创建者',
-  `create_time` datetime NULL DEFAULT NULL COMMENT '创建时间',
-  `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '更新者',
-  `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
-  `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '备注',
-  PRIMARY KEY (`id`) USING BTREE
+                               `id` bigint NOT NULL COMMENT '公告ID',
+                               `tenant_id` bigint NULL DEFAULT 1 COMMENT '租户id',
+                               `notice_title` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '公告标题',
+                               `notice_type` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '公告类型（1通知 2公告）',
+                               `notice_send_type` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '公告发送类型（0全体人员 1本部门人员 2本部门及以下部门 3特定人员）',
+                               `notice_content` longblob NULL COMMENT '公告内容',
+                               `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '0' COMMENT '公告状态（0正常 1关闭）',
+                               `publish_time` datetime NULL DEFAULT NULL COMMENT '发布时间',
+                               `read_num` int NULL DEFAULT 0 COMMENT '阅读量',
+                               `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '创建者',
+                               `create_time` datetime NULL DEFAULT NULL COMMENT '创建时间',
+                               `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '更新者',
+                               `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
+                               `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '备注',
+                               PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '通知公告表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_notice
-INSERT INTO `sys_notice` VALUES (1748661387233615874, '关于Donut Admin上线的公告', '1', '0', 0x3C703EE5B08AE695ACE79A84E59BA2E9989FE68890E59198EFBC8C3C2F703E0A3C703EE68891E4BBACE5BE88E9AB98E585B4E59CB0E5AEA3E5B883EFBC8CE68891E4BBACE79A84E585A8E696B0E7AEA1E79086E5B9B3E58FB020446F6E75742041646D696E20E5B7B2E7BB8FE68890E58A9FE4B88AE7BABFEFBC81446F6E75742041646D696E20E5B086E68890E4B8BAE68891E4BBACE5B7A5E4BD9CE4B8ADE4B88DE58FAFE68896E7BCBAE79A84E4B880E983A8E58886EFBC8CE4B8BAE68891E4BBACE68F90E4BE9BE69BB4E9AB98E69588E38081E69BB4E699BAE883BDE79A84E7AEA1E79086E4BD93E9AA8CE38082E4BBA5E4B88BE698AFE4B880E4BA9BE585B3E994AEE79A84E58A9FE883BDE5928CE4BC98E58ABFEFBC9A3C2F703E0A3C6F6C3E0A3C6C693E0A3C703E3C7374726F6E673EE79BB4E8A782E79A84E4BBAAE8A1A8E69DBFEFBC9A3C2F7374726F6E673E20446F6E75742041646D696E20E68F90E4BE9BE4BA86E79BB4E8A782E38081E58FAFE5AE9AE588B6E79A84E4BBAAE8A1A8E69DBFEFBC8CE8AEA9E682A8E58FAFE4BBA5E4B880E79BAEE4BA86E784B6E59CB0E69FA5E79C8BE585B3E994AEE695B0E68DAEE5928CE7BB9FE8AEA1E4BFA1E681AFE38082E4BB8EE5B7A5E4BD9CE6A682E8A788E588B0E4BBBBE58AA1E8BF9BE5BAA6EFBC8CE68980E69C89E79A84E4BFA1E681AFE983BDE6B187E8819AE59CA8E4B880E4B8AAE59CB0E696B9E380823C2F703E0A3C2F6C693E0A3C6C693E0A3C703E3C7374726F6E673EE781B5E6B4BBE79A84E69D83E99990E7AEA1E79086EFBC9A3C2F7374726F6E673E20E4B88DE5908CE8A792E889B2E5928CE59BA2E9989FE68890E59198E69C89E4B88DE5908CE79A84E99C80E6B182EFBC8C446F6E75742041646D696E20E58581E8AEB8E682A8E7BB86E7B292E5BAA6E59CB0E8AEBEE7BDAEE69D83E99990EFBC8CE7A1AEE4BF9DE6AF8FE4B8AAE4BABAE983BDE883BDE5A49FE8AEBFE997AEE5B9B6E689A7E8A18CE4BB96E4BBACE99C80E8A681E79A84E6938DE4BD9CE380823C2F703E0A3C2F6C693E0A3C6C693E0A3C703E3C7374726F6E673EE4BBBBE58AA1E5928CE9A1B9E79BAEE7AEA1E79086EFBC9A3C2F7374726F6E673E20446F6E75742041646D696E20E99B86E68890E4BA86E5BCBAE5A4A7E79A84E4BBBBE58AA1E5928CE9A1B9E79BAEE7AEA1E79086E5B7A5E585B7EFBC8CE4BDBFE682A8E883BDE5A49FE69BB4E8BDBBE69DBEE59CB0E8B79FE8B8AAE5928CE58D8FE8B083E5B7A5E4BD9CE38082E58886E9858DE4BBBBE58AA1E38081E8AEBEE7BDAEE688AAE6ADA2E697A5E69C9FE38081E8BFBDE8B8AAE8BF9BE5BAA6EFBC8CE4B880E58887E983BDE59CA8E682A8E79A84E68E8CE68FA1E4B98BE4B8ADE380823C2F703E0A3C2F6C693E0A3C6C693E0A3C703E3C7374726F6E673EE5AE9EE697B6E9809AE79FA5E5928CE68F90E98692EFBC9A3C2F7374726F6E673E20E4B88DE5868DE99499E8BF87E9878DE8A681E79A84E58F98E69BB4E68896E688AAE6ADA2E697A5E69C9FEFBC81446F6E75742041646D696E20E5B086E9809AE8BF87E5AE9EE697B6E9809AE79FA5E5928CE68F90E98692E7A1AEE4BF9DE682A8E5A78BE7BB88E4BA86E8A7A3E9A1B9E79BAEE5928CE4BBBBE58AA1E79A84E69C80E696B0E78AB6E68081E380823C2F703E0A3C2F6C693E0A3C6C693E0A3C703E3C7374726F6E673EE7AE80E58C96E79A84E59BA2E9989FE58D8FE4BD9CEFBC9A3C2F7374726F6E673E20E68F90E9AB98E59BA2E9989FE58D8FE4BD9CE69588E78E87EFBC8CE9809AE8BF8720446F6E75742041646D696E20E4B8ADE79A84E8AEA8E8AEBAE69DBFE38081E69687E4BBB6E585B1E4BAABE5928CE5AE9EE697B6E58D8FE4BD9CE58A9FE883BDEFBC8CE8BDBBE69DBEE8BF9BE8A18CE4BFA1E681AFE4BAA4E6B581E5928CE585B1E4BAABE380823C2F703E0A3C2F6C693E0A3C2F6F6C3E0A3C703EE8AFB7E7AB8BE58DB3E799BBE5BD95203C6120687265663D2268747470733A2F2F646F6E75742D61646D696E2E636F6D2F22207461726765743D225F6E6577223E446F6E75742041646D696E3C2F613E20E5BC80E5A78BE4BD93E9AA8CE8BF99E4B880E696B0E79A84E7AEA1E79086E5B7A5E585B7E38082E68891E4BBACE79BB8E4BFA1EFBC8C446F6E75742041646D696E20E5B086E4B8BAE682A8E79A84E5B7A5E4BD9CE5B8A6E69DA5E69BB4E5A4A7E79A84E4BEBFE588A9E5928CE69588E78E87E380823C2F703E0A3C703EE5A682E69E9CE682A8E69C89E4BBBBE4BD95E79691E997AEE68896E99C80E8A681E5B8AEE58AA9EFBC8CE58FAFE4BBA5E99A8FE697B6E88194E7B3BBE68891E4BBACE79A84E68A80E69CAFE694AFE68C81E59BA2E9989FE38082E6849FE8B0A2E682A8E79A84E88090E5BF83E7AD89E5BE85E5928CE5AFB9E68891E4BBACE5B7A5E4BD9CE79A84E694AFE68C81EFBC813C2F703E0A3C703EE69C9FE5BE85E682A8E59CA820446F6E75742041646D696E20E4B8ADE5BAA6E8BF87E68489E5BFABE79A84E7AEA1E79086E697B6E58589EFBC813C2F703E0A3C703EE8B0A2E8B0A23C2F703E, '0', '2024-01-22 16:10:43', 1, '1', '2024-01-20 18:58:58', '1', '2024-01-22 16:10:43', NULL);
+-- ----------------------------
+INSERT INTO `sys_notice` VALUES (1748661387233615874, 1, '关于Donut Admin上线的公告', '1', '0', 0x3C703EE5B08AE695ACE79A84E59BA2E9989FE68890E59198EFBC8C3C2F703E0A3C703EE68891E4BBACE5BE88E9AB98E585B4E59CB0E5AEA3E5B883EFBC8CE68891E4BBACE79A84E585A8E696B0E7AEA1E79086E5B9B3E58FB020446F6E75742041646D696E20E5B7B2E7BB8FE68890E58A9FE4B88AE7BABFEFBC81446F6E75742041646D696E20E5B086E68890E4B8BAE68891E4BBACE5B7A5E4BD9CE4B8ADE4B88DE58FAFE68896E7BCBAE79A84E4B880E983A8E58886EFBC8CE4B8BAE68891E4BBACE68F90E4BE9BE69BB4E9AB98E69588E38081E69BB4E699BAE883BDE79A84E7AEA1E79086E4BD93E9AA8CE38082E4BBA5E4B88BE698AFE4B880E4BA9BE585B3E994AEE79A84E58A9FE883BDE5928CE4BC98E58ABFEFBC9A3C2F703E0A3C6F6C3E0A3C6C693E0A3C703E3C7374726F6E673EE79BB4E8A782E79A84E4BBAAE8A1A8E69DBFEFBC9A3C2F7374726F6E673E20446F6E75742041646D696E20E68F90E4BE9BE4BA86E79BB4E8A782E38081E58FAFE5AE9AE588B6E79A84E4BBAAE8A1A8E69DBFEFBC8CE8AEA9E682A8E58FAFE4BBA5E4B880E79BAEE4BA86E784B6E59CB0E69FA5E79C8BE585B3E994AEE695B0E68DAEE5928CE7BB9FE8AEA1E4BFA1E681AFE38082E4BB8EE5B7A5E4BD9CE6A682E8A788E588B0E4BBBBE58AA1E8BF9BE5BAA6EFBC8CE68980E69C89E79A84E4BFA1E681AFE983BDE6B187E8819AE59CA8E4B880E4B8AAE59CB0E696B9E380823C2F703E0A3C2F6C693E0A3C6C693E0A3C703E3C7374726F6E673EE781B5E6B4BBE79A84E69D83E99990E7AEA1E79086EFBC9A3C2F7374726F6E673E20E4B88DE5908CE8A792E889B2E5928CE59BA2E9989FE68890E59198E69C89E4B88DE5908CE79A84E99C80E6B182EFBC8C446F6E75742041646D696E20E58581E8AEB8E682A8E7BB86E7B292E5BAA6E59CB0E8AEBEE7BDAEE69D83E99990EFBC8CE7A1AEE4BF9DE6AF8FE4B8AAE4BABAE983BDE883BDE5A49FE8AEBFE997AEE5B9B6E689A7E8A18CE4BB96E4BBACE99C80E8A681E79A84E6938DE4BD9CE380823C2F703E0A3C2F6C693E0A3C6C693E0A3C703E3C7374726F6E673EE4BBBBE58AA1E5928CE9A1B9E79BAEE7AEA1E79086EFBC9A3C2F7374726F6E673E20446F6E75742041646D696E20E99B86E68890E4BA86E5BCBAE5A4A7E79A84E4BBBBE58AA1E5928CE9A1B9E79BAEE7AEA1E79086E5B7A5E585B7EFBC8CE4BDBFE682A8E883BDE5A49FE69BB4E8BDBBE69DBEE59CB0E8B79FE8B8AAE5928CE58D8FE8B083E5B7A5E4BD9CE38082E58886E9858DE4BBBBE58AA1E38081E8AEBEE7BDAEE688AAE6ADA2E697A5E69C9FE38081E8BFBDE8B8AAE8BF9BE5BAA6EFBC8CE4B880E58887E983BDE59CA8E682A8E79A84E68E8CE68FA1E4B98BE4B8ADE380823C2F703E0A3C2F6C693E0A3C6C693E0A3C703E3C7374726F6E673EE5AE9EE697B6E9809AE79FA5E5928CE68F90E98692EFBC9A3C2F7374726F6E673E20E4B88DE5868DE99499E8BF87E9878DE8A681E79A84E58F98E69BB4E68896E688AAE6ADA2E697A5E69C9FEFBC81446F6E75742041646D696E20E5B086E9809AE8BF87E5AE9EE697B6E9809AE79FA5E5928CE68F90E98692E7A1AEE4BF9DE682A8E5A78BE7BB88E4BA86E8A7A3E9A1B9E79BAEE5928CE4BBBBE58AA1E79A84E69C80E696B0E78AB6E68081E380823C2F703E0A3C2F6C693E0A3C6C693E0A3C703E3C7374726F6E673EE7AE80E58C96E79A84E59BA2E9989FE58D8FE4BD9CEFBC9A3C2F7374726F6E673E20E68F90E9AB98E59BA2E9989FE58D8FE4BD9CE69588E78E87EFBC8CE9809AE8BF8720446F6E75742041646D696E20E4B8ADE79A84E8AEA8E8AEBAE69DBFE38081E69687E4BBB6E585B1E4BAABE5928CE5AE9EE697B6E58D8FE4BD9CE58A9FE883BDEFBC8CE8BDBBE69DBEE8BF9BE8A18CE4BFA1E681AFE4BAA4E6B581E5928CE585B1E4BAABE380823C2F703E0A3C2F6C693E0A3C2F6F6C3E0A3C703EE8AFB7E7AB8BE58DB3E799BBE5BD95203C6120687265663D2268747470733A2F2F646F6E75742D61646D696E2E636F6D2F22207461726765743D225F6E6577223E446F6E75742041646D696E3C2F613E20E5BC80E5A78BE4BD93E9AA8CE8BF99E4B880E696B0E79A84E7AEA1E79086E5B7A5E585B7E38082E68891E4BBACE79BB8E4BFA1EFBC8C446F6E75742041646D696E20E5B086E4B8BAE682A8E79A84E5B7A5E4BD9CE5B8A6E69DA5E69BB4E5A4A7E79A84E4BEBFE588A9E5928CE69588E78E87E380823C2F703E0A3C703EE5A682E69E9CE682A8E69C89E4BBBBE4BD95E79691E997AEE68896E99C80E8A681E5B8AEE58AA9EFBC8CE58FAFE4BBA5E99A8FE697B6E88194E7B3BBE68891E4BBACE79A84E68A80E69CAFE694AFE68C81E59BA2E9989FE38082E6849FE8B0A2E682A8E79A84E88090E5BF83E7AD89E5BE85E5928CE5AFB9E68891E4BBACE5B7A5E4BD9CE79A84E694AFE68C81EFBC813C2F703E0A3C703EE69C9FE5BE85E682A8E59CA820446F6E75742041646D696E20E4B8ADE5BAA6E8BF87E68489E5BFABE79A84E7AEA1E79086E697B6E58589EFBC813C2F703E0A3C703EE8B0A2E8B0A23C2F703E, '0', '2024-01-22 16:10:43', 1, '1', '2024-01-20 18:58:58', '1', '2024-01-22 16:10:43', NULL);
 
 -- ----------------------------
 -- Table structure for sys_notice_read
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_notice_read`;
 CREATE TABLE `sys_notice_read`  (
-  `id` bigint NOT NULL COMMENT '公告ID',
-  `user_id` bigint NOT NULL COMMENT '用户id',
-  `notice_id` bigint NOT NULL COMMENT '通知id',
-  `create_time` datetime NULL DEFAULT NULL COMMENT '创建时间',
-  PRIMARY KEY (`id`) USING BTREE
+                                    `id` bigint NOT NULL COMMENT '公告ID',
+                                    `tenant_id` bigint NULL DEFAULT 1 COMMENT '租户id',
+                                    `user_id` bigint NOT NULL COMMENT '用户id',
+                                    `notice_id` bigint NOT NULL COMMENT '通知id',
+                                    `create_time` datetime NULL DEFAULT NULL COMMENT '创建时间',
+                                    PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '通知公告阅读表' ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Records of sys_notice_read
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for sys_notice_send_relation
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_notice_send_relation`;
 CREATE TABLE `sys_notice_send_relation`  (
-  `id` bigint NOT NULL COMMENT '公告ID',
-  `notice_id` bigint NOT NULL COMMENT '通知id',
-  `user_id` bigint NULL DEFAULT NULL COMMENT '用户id',
-  `dept_id` bigint NULL DEFAULT NULL COMMENT '部门id',
-  `dept_ancestors` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '部门层级',
-  `create_time` datetime NULL DEFAULT NULL COMMENT '创建时间',
-  PRIMARY KEY (`id`) USING BTREE
+                                             `id` bigint NOT NULL COMMENT '公告ID',
+                                             `tenant_id` bigint NULL DEFAULT 1 COMMENT '租户id',
+                                             `notice_id` bigint NOT NULL COMMENT '通知id',
+                                             `user_id` bigint NULL DEFAULT NULL COMMENT '用户id',
+                                             `dept_id` bigint NULL DEFAULT NULL COMMENT '部门id',
+                                             `dept_ancestors` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '部门层级',
+                                             `create_time` datetime NULL DEFAULT NULL COMMENT '创建时间',
+                                             PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '通知公告发送关联表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_notice_send_relation
 -- ----------------------------
-INSERT INTO `sys_notice_send_relation` VALUES (1748351170402856962, 1747133278391574530, NULL, 2, NULL, NULL);
+INSERT INTO `sys_notice_send_relation` VALUES (1748351170402856962, 1, 1747133278391574530, NULL, 2, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for sys_operation_log
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_operation_log`;
 CREATE TABLE `sys_operation_log`  (
-  `id` bigint NOT NULL COMMENT '日志主键',
-  `user_id` bigint NULL DEFAULT NULL COMMENT '操作人员',
-  `title` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '模块标题',
-  `method` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '方法名称',
-  `request_method` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '请求方式',
-  `url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '请求URL',
-  `ip` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT 'ip地址',
-  `params` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '请求参数',
-  `json_result` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '返回参数',
-  `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '0' COMMENT '操作状态（0正常 1异常）',
-  `error_msg` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '错误消息',
-  `create_time` datetime NULL DEFAULT NULL COMMENT '操作时间',
-  PRIMARY KEY (`id`) USING BTREE
+                                      `id` bigint NOT NULL COMMENT '日志主键',
+                                      `tenant_id` bigint NULL DEFAULT 1 COMMENT '租户id',
+                                      `user_id` bigint NULL DEFAULT NULL COMMENT '操作人员',
+                                      `title` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '模块标题',
+                                      `method` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '方法名称',
+                                      `request_method` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '请求方式',
+                                      `url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '请求URL',
+                                      `ip` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT 'ip地址',
+                                      `params` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '请求参数',
+                                      `json_result` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '返回参数',
+                                      `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '0' COMMENT '操作状态（0正常 1异常）',
+                                      `error_msg` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '错误消息',
+                                      `create_time` datetime NULL DEFAULT NULL COMMENT '操作时间',
+                                      PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '操作日志记录' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -513,136 +687,226 @@ CREATE TABLE `sys_operation_log`  (
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_post`;
 CREATE TABLE `sys_post`  (
-  `id` bigint NOT NULL COMMENT '岗位ID',
-  `post_type` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '0' COMMENT '岗位类型 0全局岗位 1部门岗位',
-  `dept_id` bigint NULL DEFAULT 0 COMMENT '部门id',
-  `post_code` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '岗位编码',
-  `post_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '岗位名称',
-  `order_no` int NOT NULL COMMENT '显示顺序',
-  `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '状态（0正常 1停用）',
-  `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '创建者',
-  `create_time` datetime NULL DEFAULT NULL COMMENT '创建时间',
-  `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '更新者',
-  `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
-  `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '备注',
-  PRIMARY KEY (`id`) USING BTREE
+                             `id` bigint NOT NULL COMMENT '岗位ID',
+                             `tenant_id` bigint NULL DEFAULT 1 COMMENT '租户id',
+                             `post_type` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '0' COMMENT '岗位类型 0全局岗位 1部门岗位',
+                             `dept_id` bigint NULL DEFAULT 0 COMMENT '部门id',
+                             `post_code` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '岗位编码',
+                             `post_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '岗位名称',
+                             `order_no` int NOT NULL COMMENT '显示顺序',
+                             `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '状态（0正常 1停用）',
+                             `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '创建者',
+                             `create_time` datetime NULL DEFAULT NULL COMMENT '创建时间',
+                             `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '更新者',
+                             `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
+                             `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '备注',
+                             PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '岗位信息表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_post
 -- ----------------------------
-INSERT INTO `sys_post` VALUES (11, '0', 0, '001', '董事长', 1, '0', '1', '2024-01-05 21:56:50', '', NULL, NULL);
-INSERT INTO `sys_post` VALUES (12, '0', 3, 'cd001', '成都分公司的岗位', 1, '0', '1', '2024-01-08 22:08:14', '', NULL, NULL);
+INSERT INTO `sys_post` VALUES (11, 1, '0', 0, '001', '董事长', 1, '0', '1', '2024-01-05 21:56:50', '', NULL, NULL);
+INSERT INTO `sys_post` VALUES (12, 1, '0', 3, 'cd001', '成都分公司的岗位', 1, '0', '1', '2024-01-08 22:08:14', '', NULL, NULL);
+INSERT INTO `sys_post` VALUES (1793843405542768641, 1793843403441422338, '0', 0, 'SUPER', '超级管理员', 1, '0', '1', '2024-05-24 11:16:11', '', NULL, NULL);
 
 -- ----------------------------
 -- Table structure for sys_role
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_role`;
 CREATE TABLE `sys_role`  (
-  `id` bigint NOT NULL COMMENT '角色ID',
-  `role_name` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '角色名称',
-  `role_key` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '角色权限字符串',
-  `role_sort` int NOT NULL COMMENT '显示顺序',
-  `data_scope` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '1' COMMENT '数据范围（1：全部数据权限 2：自定数据权限 3：本部门数据权限 4：本部门及以下数据权限）',
-  `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '角色状态（0正常 1停用）',
-  `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '创建者',
-  `create_time` datetime NULL DEFAULT NULL COMMENT '创建时间',
-  `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '更新者',
-  `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
-  `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '备注',
-  `deleted` tinyint(1)  DEFAULT 0 COMMENT '删除标志（0存在 1删除）',
-  PRIMARY KEY (`id`) USING BTREE
+                             `id` bigint NOT NULL COMMENT '角色ID',
+                             `tenant_id` bigint NULL DEFAULT 1 COMMENT '租户id',
+                             `role_name` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '角色名称',
+                             `role_key` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '角色权限字符串',
+                             `role_sort` int NOT NULL COMMENT '显示顺序',
+                             `data_scope` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '1' COMMENT '数据范围（1：全部数据权限 2：自定数据权限 3：本部门数据权限 4：本部门及以下数据权限）',
+                             `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '角色状态（0正常 1停用）',
+                             `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '创建者',
+                             `create_time` datetime NULL DEFAULT NULL COMMENT '创建时间',
+                             `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '更新者',
+                             `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
+                             `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '备注',
+                             `deleted` tinyint(1) NULL DEFAULT 0 COMMENT '删除标志（0存在 1删除）',
+                             PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '角色信息表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_role
 -- ----------------------------
-INSERT INTO `sys_role` VALUES (1, '超级管理员', 'SUPER', 1, '3', '0', '1', '2024-01-03 18:04:41', '', NULL, NULL, 0);
+INSERT INTO `sys_role` VALUES (1, 1, '超级管理员', 'SUPER', 1, '3', '0', '1', '2024-01-03 18:04:41', '', NULL, NULL, 0);
+INSERT INTO `sys_role` VALUES (1793843403722440706, 1793843403441422338, '超级管理员', 'SUPER', 1, '1', '0', '1', '2024-05-24 11:16:10', '', NULL, NULL, 0);
+INSERT INTO `sys_role` VALUES (1793898435981438978, 1793843403441422338, '测试角色', 'NORMAL', 2, '1', '1', '1793843405999947778', '2024-05-24 14:54:51', '', NULL, NULL, 0);
 
 -- ----------------------------
 -- Table structure for sys_role_menu
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_role_menu`;
 CREATE TABLE `sys_role_menu`  (
-  `id` bigint NOT NULL COMMENT '主键',
-  `role_id` bigint NOT NULL COMMENT '角色ID',
-  `menu_id` bigint NOT NULL COMMENT '菜单ID',
-  `half_menu` tinyint(1) NULL DEFAULT 0 COMMENT '是否是半菜单',
-  PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE INDEX `role_menu_unique_index`(`menu_id` ASC, `role_id` ASC) USING BTREE
+                                  `id` bigint NOT NULL COMMENT '主键',
+                                  `tenant_id` bigint NULL DEFAULT 1 COMMENT '租户id',
+                                  `role_id` bigint NOT NULL COMMENT '角色ID',
+                                  `menu_id` bigint NOT NULL COMMENT '菜单ID',
+                                  `half_menu` tinyint(1) NULL DEFAULT 0 COMMENT '是否是半菜单',
+                                  PRIMARY KEY (`id`) USING BTREE,
+                                  UNIQUE INDEX `role_menu_unique_index`(`menu_id` ASC, `role_id` ASC) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '角色和菜单关联表' ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Records of sys_role_menu
+-- ----------------------------
+INSERT INTO `sys_role_menu` VALUES (1793843403793743874, 1793843403441422338, 1793843403722440706, 1, 0);
+INSERT INTO `sys_role_menu` VALUES (1793843403827298306, 1793843403441422338, 1793843403722440706, 2, 0);
+INSERT INTO `sys_role_menu` VALUES (1793843403856658433, 1793843403441422338, 1793843403722440706, 15, 0);
+INSERT INTO `sys_role_menu` VALUES (1793843403886018562, 1793843403441422338, 1793843403722440706, 4, 0);
+INSERT INTO `sys_role_menu` VALUES (1793843404087345154, 1793843403441422338, 1793843403722440706, 16, 0);
+INSERT INTO `sys_role_menu` VALUES (1793843404611633154, 1793843403441422338, 1793843403722440706, 17, 0);
+INSERT INTO `sys_role_menu` VALUES (1793843404628410369, 1793843403441422338, 1793843403722440706, 18, 0);
+INSERT INTO `sys_role_menu` VALUES (1793843404661964802, 1793843403441422338, 1793843403722440706, 1747917935722872834, 0);
+INSERT INTO `sys_role_menu` VALUES (1793843404687130625, 1793843403441422338, 1793843403722440706, 1748152015395745794, 0);
+INSERT INTO `sys_role_menu` VALUES (1793843404708102146, 1793843403441422338, 1793843403722440706, 1747918077913972738, 0);
+INSERT INTO `sys_role_menu` VALUES (1793843404733267969, 1793843403441422338, 1793843403722440706, 1747918178480799745, 0);
+INSERT INTO `sys_role_menu` VALUES (1793843404758433793, 1793843403441422338, 1793843403722440706, 1747918693755240449, 0);
+INSERT INTO `sys_role_menu` VALUES (1793843404775211009, 1793843403441422338, 1793843403722440706, 1747918883321004034, 0);
+INSERT INTO `sys_role_menu` VALUES (1793843404800376834, 1793843403441422338, 1793843403722440706, 1748152219645767681, 0);
+INSERT INTO `sys_role_menu` VALUES (1793843404829736961, 1793843403441422338, 1793843403722440706, 1747919006339940354, 0);
+INSERT INTO `sys_role_menu` VALUES (1793843404850708481, 1793843403441422338, 1793843403722440706, 1747919428949622785, 0);
+INSERT INTO `sys_role_menu` VALUES (1793843404871680001, 1793843403441422338, 1793843403722440706, 1748154505751162882, 0);
+INSERT INTO `sys_role_menu` VALUES (1793843404892651521, 1793843403441422338, 1793843403722440706, 1747919507039174657, 0);
+INSERT INTO `sys_role_menu` VALUES (1793843404913623041, 1793843403441422338, 1793843403722440706, 5, 0);
+INSERT INTO `sys_role_menu` VALUES (1793843404934594561, 1793843403441422338, 1793843403722440706, 1747921301937045506, 0);
+INSERT INTO `sys_role_menu` VALUES (1793843404959760386, 1793843403441422338, 1793843403722440706, 1747996340529352705, 0);
+INSERT INTO `sys_role_menu` VALUES (1793843405014286338, 1793843403441422338, 1793843403722440706, 1747921723582038017, 0);
+INSERT INTO `sys_role_menu` VALUES (1793843405047840769, 1793843403441422338, 1793843403722440706, 9, 0);
+INSERT INTO `sys_role_menu` VALUES (1793843405077200898, 1793843403441422338, 1793843403722440706, 10, 0);
+INSERT INTO `sys_role_menu` VALUES (1793843405106561025, 1793843403441422338, 1793843403722440706, 1747074132006850561, 0);
+INSERT INTO `sys_role_menu` VALUES (1793843405127532546, 1793843403441422338, 1793843403722440706, 1747148469133094913, 0);
+INSERT INTO `sys_role_menu` VALUES (1793843405152698370, 1793843403441422338, 1793843403722440706, 12, 0);
+INSERT INTO `sys_role_menu` VALUES (1793843405173669890, 1793843403441422338, 1793843403722440706, 1747923834810122241, 0);
+INSERT INTO `sys_role_menu` VALUES (1793843405228195842, 1793843403441422338, 1793843403722440706, 1748155012431474690, 0);
+INSERT INTO `sys_role_menu` VALUES (1793843405253361665, 1793843403441422338, 1793843403722440706, 1747923976258830338, 0);
+INSERT INTO `sys_role_menu` VALUES (1793843405278527489, 1793843403441422338, 1793843403722440706, 1747924189681795073, 0);
+INSERT INTO `sys_role_menu` VALUES (1793843405303693314, 1793843403441422338, 1793843403722440706, 1747924307512377346, 0);
+INSERT INTO `sys_role_menu` VALUES (1793843405324664833, 1793843403441422338, 1793843403722440706, 13, 0);
+INSERT INTO `sys_role_menu` VALUES (1793843405337247746, 1793843403441422338, 1793843403722440706, 14, 0);
+INSERT INTO `sys_role_menu` VALUES (1793843405358219266, 1793843403441422338, 1793843403722440706, 1747996508121157633, 0);
+INSERT INTO `sys_role_menu` VALUES (1793843405387579393, 1793843403441422338, 1793843403722440706, 1748155709478662146, 0);
+INSERT INTO `sys_role_menu` VALUES (1793843405404356609, 1793843403441422338, 1793843403722440706, 1748155618076389377, 0);
+INSERT INTO `sys_role_menu` VALUES (1793843405421133826, 1793843403441422338, 1793843403722440706, 1748155869352947713, 0);
+INSERT INTO `sys_role_menu` VALUES (1793843405433716738, 1793843403441422338, 1793843403722440706, 1784866340659212290, 0);
+INSERT INTO `sys_role_menu` VALUES (1793843405454688257, 1793843403441422338, 1793843403722440706, 1748664655401738242, 0);
+INSERT INTO `sys_role_menu` VALUES (1793843405471465474, 1793843403441422338, 1793843403722440706, 1747177110302846977, 0);
+INSERT INTO `sys_role_menu` VALUES (1793843405488242689, 1793843403441422338, 1793843403722440706, 3, 1);
+INSERT INTO `sys_role_menu` VALUES (1793843405513408514, 1793843403441422338, 1793843403722440706, 6, 1);
+
+-- ----------------------------
+-- Table structure for sys_tenant
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_tenant`;
+CREATE TABLE `sys_tenant`  (
+                               `id` bigint NOT NULL COMMENT 'id',
+                               `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '租户名称',
+                               `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '租户描述',
+                               `group_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '所属集团',
+                               `status` char(2) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '0' COMMENT '状态（0正常 1停用）',
+                               `user_id` bigint NULL DEFAULT NULL COMMENT '超管id',
+                               `role_id` bigint NULL DEFAULT NULL COMMENT '超管角色id',
+                               `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '创建者',
+                               `create_time` datetime NULL DEFAULT NULL COMMENT '创建时间',
+                               `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '更新者',
+                               `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
+                               `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '备注',
+                               `deleted` tinyint(1) NULL DEFAULT 0 COMMENT '删除标志（0存在 1删除）',
+                               PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '租户表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of sys_tenant
+-- ----------------------------
+INSERT INTO `sys_tenant` VALUES (1, '系统租户', '此为最高租户，管理所有租户信息', '系统', '0', NULL, NULL, '1', '2024-05-23 10:55:32', '1', '2024-05-23 10:56:50', NULL, 0);
+INSERT INTO `sys_tenant` VALUES (1793843403441422338, '测试租户', NULL, NULL, '0', 1793843405999947778, 1793843403722440706, '1', '2024-05-24 11:16:10', '1', '2024-05-24 11:16:11', NULL, 0);
 
 -- ----------------------------
 -- Table structure for sys_user
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_user`;
 CREATE TABLE `sys_user`  (
-  `id` bigint NOT NULL COMMENT '用户ID',
-  `dept_id` bigint NULL DEFAULT NULL COMMENT '部门ID',
-  `user_code` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '用户编号',
-  `username` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '用户账号',
-  `nick_name` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '用户昵称',
-  `real_name` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '真实姓名',
-  `post_id` bigint NULL DEFAULT NULL COMMENT '关联岗位',
-  `email` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '用户邮箱',
-  `phone_number` varchar(11) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '手机号码',
-  `sex` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '0' COMMENT '用户性别（0男 1女 2未知）',
-  `age` int NULL DEFAULT NULL COMMENT '年龄',
-  `avatar` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '头像地址',
-  `password` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '密码',
-  `nation` char(2) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '民族',
-  `id_type` char(2) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '身份证类型',
-  `id_card` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '身份证 - 做加密',
-  `culture_type` char(2) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '文化程度',
-  `address` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '住址',
-  `entry_date` datetime NULL DEFAULT NULL COMMENT '入职时间',
-  `political_outlook` char(2) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '政治面貌',
-  `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '0' COMMENT '帐号状态（0正常 1停用）',
-  `login_ip` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '最后登录IP',
-  `login_date` datetime NULL DEFAULT NULL COMMENT '最后登录时间',
-  `quick_nav` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '快捷导航，首页的快捷菜单id',
-  `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '创建者',
-  `create_time` datetime NULL DEFAULT NULL COMMENT '创建时间',
-  `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '更新者',
-  `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
-  `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '备注',
-  `deleted` tinyint(1)  DEFAULT 0 COMMENT '删除标志（0存在 1删除）',
-  PRIMARY KEY (`id`) USING BTREE
+                             `id` bigint NOT NULL COMMENT '用户ID',
+                             `tenant_id` bigint NULL DEFAULT 1 COMMENT '租户id',
+                             `dept_id` bigint NULL DEFAULT NULL COMMENT '部门ID',
+                             `user_code` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '用户编号',
+                             `username` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '用户账号',
+                             `nick_name` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '用户昵称',
+                             `real_name` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '真实姓名',
+                             `post_id` bigint NULL DEFAULT NULL COMMENT '关联岗位',
+                             `email` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '用户邮箱',
+                             `phone_number` varchar(11) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '手机号码',
+                             `sex` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '0' COMMENT '用户性别（0男 1女 2未知）',
+                             `birthday` date NULL DEFAULT NULL COMMENT '生日',
+                             `avatar` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '头像地址',
+                             `password` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '密码',
+                             `nation` char(2) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '民族',
+                             `id_type` char(2) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '身份证类型',
+                             `id_card` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '身份证 - 做加密',
+                             `culture_type` char(2) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '文化程度',
+                             `address` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '住址',
+                             `entry_date` datetime NULL DEFAULT NULL COMMENT '入职时间',
+                             `political_outlook` char(2) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '政治面貌',
+                             `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '0' COMMENT '帐号状态（0正常 1停用）',
+                             `login_ip` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '最后登录IP',
+                             `login_date` datetime NULL DEFAULT NULL COMMENT '最后登录时间',
+                             `quick_nav` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '快捷导航，首页的快捷菜单id',
+                             `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '创建者',
+                             `create_time` datetime NULL DEFAULT NULL COMMENT '创建时间',
+                             `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '更新者',
+                             `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
+                             `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '备注',
+                             `deleted` tinyint(1) NULL DEFAULT 0 COMMENT '删除标志（0存在 1删除）',
+                             PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户信息表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_user
 -- ----------------------------
-INSERT INTO `sys_user` VALUES (1, 2, 'U01', 'admin', '超级管理员', NULL, 11, 'lenmotion@sina.com', '18001010101', '0', 25, 'http://localhost:9000/2024-01-20/65abd255db9add95652a070a.jpeg', 'c7084fa75f5d32685e89f7490f04efb160511c652c72a692135077b1c9092ec1', '1', NULL, NULL, '4', 'ces', NULL, NULL, '0', '127.0.0.1', '2024-01-22 22:17:29', '', '', NULL, '1', '2024-01-22 22:22:19', NULL, 0);
+INSERT INTO `sys_user` VALUES (1, 1, 2, 'U01', 'admin', '超级管理员', NULL, 11, 'lenmotion@sina.com', '18001010101', '0', NULL, 'http://localhost:9000/open/logo.png', 'c7084fa75f5d32685e89f7490f04efb160511c652c72a692135077b1c9092ec1', '1', NULL, NULL, '4', 'ces', NULL, NULL, '0', '127.0.0.1', '2024-01-22 22:17:29', '', '', NULL, '1', '2024-01-22 22:22:19', NULL, 0);
+INSERT INTO `sys_user` VALUES (1793843405999947778, 1793843403441422338, 1793843405932711936, '001', 'admin', '超级管理员', '测试租户', 1793843405542768641, '', '', '1', '2024-05-24', '', '0e40f23191aac5b831f56a07d38a719929f1f8cdd575840c3d185d71bc5f876e', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '0', '127.0.0.1', '2024-05-24 14:54:12', NULL, '1', '2024-05-24 11:16:11', '1793843405999947778', '2024-05-24 14:54:12', NULL, 0);
 
 -- ----------------------------
 -- Table structure for sys_user_dept
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_user_dept`;
 CREATE TABLE `sys_user_dept`  (
-  `id` bigint NOT NULL COMMENT '主键',
-  `user_id` bigint NOT NULL COMMENT '用户ID',
-  `dept_id` bigint NOT NULL COMMENT '部门ID',
-  `post_id` bigint NOT NULL COMMENT '岗位ID',
-  `default_dept` tinyint(1) NULL DEFAULT 0 COMMENT '默认部门',
-  PRIMARY KEY (`id`) USING BTREE
+                                  `id` bigint NOT NULL COMMENT '主键',
+                                  `tenant_id` bigint NULL DEFAULT 1 COMMENT '租户id',
+                                  `user_id` bigint NOT NULL COMMENT '用户ID',
+                                  `dept_id` bigint NOT NULL COMMENT '部门ID',
+                                  `post_id` bigint NOT NULL COMMENT '岗位ID',
+                                  `default_dept` tinyint(1) NULL DEFAULT 0 COMMENT '默认部门',
+                                  PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户额外任职关联表' ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Records of sys_user_dept
+-- ----------------------------
+INSERT INTO `sys_user_dept` VALUES (1793843406075445249, 1793843403441422338, 1793843405999947778, 1793843405932711936, 1793843405542768641, 1);
 
 -- ----------------------------
 -- Table structure for sys_user_role
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_user_role`;
 CREATE TABLE `sys_user_role`  (
-  `id` bigint NOT NULL COMMENT '主键',
-  `user_id` bigint NOT NULL COMMENT '用户ID',
-  `role_id` bigint NOT NULL COMMENT '角色ID',
-  PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE INDEX `user_role_unique_index`(`user_id` ASC, `role_id` ASC) USING BTREE COMMENT '用户与角色的唯一索引'
+                                  `id` bigint NOT NULL COMMENT '主键',
+                                  `tenant_id` bigint NULL DEFAULT 1 COMMENT '租户id',
+                                  `user_id` bigint NOT NULL COMMENT '用户ID',
+                                  `role_id` bigint NOT NULL COMMENT '角色ID',
+                                  PRIMARY KEY (`id`) USING BTREE,
+                                  UNIQUE INDEX `user_role_unique_index`(`user_id` ASC, `role_id` ASC) USING BTREE COMMENT '用户与角色的唯一索引'
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户和角色关联表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_user_role
 -- ----------------------------
-INSERT INTO `sys_user_role` VALUES (1749360733059801089, 1, 1);
+INSERT INTO `sys_user_role` VALUES (1749360733059801089, 1, 1, 1);
+INSERT INTO `sys_user_role` VALUES (1793843406050279426, 1793843403441422338, 1793843405999947778, 1793843403722440706);
 
 SET FOREIGN_KEY_CHECKS = 1;
