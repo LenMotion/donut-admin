@@ -26,10 +26,7 @@ import cn.lenmotion.donut.system.entity.po.SysUser;
 import cn.lenmotion.donut.system.entity.po.SysUserDept;
 import cn.lenmotion.donut.system.entity.query.PostQuery;
 import cn.lenmotion.donut.system.entity.query.UserQuery;
-import cn.lenmotion.donut.system.entity.request.SysUserRequest;
-import cn.lenmotion.donut.system.entity.request.UserAvatarRequest;
-import cn.lenmotion.donut.system.entity.request.UserProfileRequest;
-import cn.lenmotion.donut.system.entity.request.UserPwdRequest;
+import cn.lenmotion.donut.system.entity.request.*;
 import cn.lenmotion.donut.system.entity.vo.UserDeptVO;
 import cn.lenmotion.donut.system.entity.vo.UserResponseVO;
 import cn.lenmotion.donut.system.entity.vo.export.UserExportVO;
@@ -39,6 +36,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.fhs.trans.service.impl.TransService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -51,6 +49,7 @@ import java.util.stream.Collectors;
 /**
  * @author lenmotion
  */
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class SysUserServiceImpl extends DonutServiceImpl<SysUserMapper, SysUser> implements SysUserService {
@@ -242,6 +241,33 @@ public class SysUserServiceImpl extends DonutServiceImpl<SysUserMapper, SysUser>
         updateUser.setId(user.getId());
         updateUser.setPassword(SaSecureUtil.sha256BySalt(newPwd, user.getUsername()));
         return this.updateById(updateUser);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean resetUserPassword(UserResetPwdRequest request) {
+        if (CollUtil.isEmpty(request.getUserIds())) {
+            throw new BusinessException("用户ID不能为空");
+        }
+
+        var defaultPassword = configService.getConfigByKey(ConfigConstants.USER_DEFAULT_PASSWORD);
+        super.listByIds(request.getUserIds()).forEach(user -> {
+            var newPwd = SaSecureUtil.sha256BySalt(defaultPassword, user.getUsername());
+
+            var updateUser = new SysUser();
+            updateUser.setId(user.getId());
+            updateUser.setPassword(newPwd);
+            this.updateById(updateUser);
+            log.info("重置用户 {} 密码为默认密码", user.getUsername());
+            // 踢掉用户,这里异常不抛出，只做打印
+            try {
+                StpUtil.kickout(user.getId());
+            } catch (Exception e) {
+                log.error("踢掉用户失败", e);
+            }
+        });
+
+        return true;
     }
 
     /**

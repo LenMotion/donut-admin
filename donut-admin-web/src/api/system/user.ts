@@ -41,6 +41,10 @@ export const exportTempApi = () => {
   return defHttp.get<string>({ url: Api.ExportTemp });
 };
 
+export const resetPasswordApi = (data) => {
+  return defHttp.put<boolean>({ url: Api.Basic + '/reset-password', data });
+};
+
 const { apiUrl } = useGlobSetting();
 export const importApi = (params) => {
   // return defHttp.post<Recordable>({ url: Api.Import, data });

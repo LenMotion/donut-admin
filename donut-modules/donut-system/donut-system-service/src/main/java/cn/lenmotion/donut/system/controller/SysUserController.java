@@ -12,6 +12,7 @@ import cn.lenmotion.donut.framework.excel.ExcelImportClient;
 import cn.lenmotion.donut.system.entity.converter.UserConverter;
 import cn.lenmotion.donut.system.entity.query.UserQuery;
 import cn.lenmotion.donut.system.entity.request.SysUserRequest;
+import cn.lenmotion.donut.system.entity.request.UserResetPwdRequest;
 import cn.lenmotion.donut.system.entity.vo.UserResponseVO;
 import cn.lenmotion.donut.system.entity.vo.imported.UserImportVO;
 import cn.lenmotion.donut.system.service.SysUserService;
@@ -104,6 +105,14 @@ public class SysUserController {
     @PutMapping("status")
     public ResponseResult<Boolean> updateUserStatus(@Validated @RequestBody BaseUpdateStatus request) {
         return ResponseResult.success(userService.updateStatus(request));
+    }
+
+    @SaCheckPermission("system:user:password")
+    @Operation(summary = "重置用户密码")
+    @OperationLog("重置用户密码")
+    @PutMapping("reset-password")
+    public ResponseResult<Boolean> resetUserPassword(@Validated @RequestBody UserResetPwdRequest request) {
+        return ResponseResult.success(userService.resetUserPassword(request));
     }
 
 }

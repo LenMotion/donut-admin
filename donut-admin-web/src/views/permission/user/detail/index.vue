@@ -61,6 +61,7 @@
   import { useRoute } from 'vue-router';
   import { ref } from 'vue';
   import { BasicTree } from '@/components/Tree';
+  import { useTabs } from '@/hooks/web/useTabs';
 
   defineOptions({ name: 'UserDetail' });
 
@@ -68,6 +69,7 @@
 
   const route = useRoute();
   const userId = route.params.id;
+  const { setTitle } = useTabs();
 
   const spinning = ref(true);
   const detail = ref({});
@@ -82,6 +84,8 @@
     const { items } = await loginLogListApi({ userId });
     loginLogList.value = items;
     spinning.value = false;
+    // @ts-ignore
+    setTitle(`用户详情(${detail.value?.username})`);
   }
 
   getData();

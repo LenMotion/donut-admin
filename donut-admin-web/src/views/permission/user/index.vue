@@ -3,6 +3,13 @@
     <DeptTree class="w-1/5" @select="handleSelectDept" />
     <BasicTable @register="registerTable" class="w-4/5" :searchInfo="searchInfo">
       <template #toolbar>
+        <a-button
+          type="warning"
+          v-auth="'system:user:password'"
+          :disabled="getSelectRowKeys().length === 0"
+          @click="handleResetPwd(getSelectRowKeys())"
+          >重置密码</a-button
+        >
         <a-button type="success" v-auth="'system:user:import'" @click="handleImport"
           >导入用户</a-button
         >
@@ -15,6 +22,9 @@
         <a-button type="primary" v-auth="'system:user:save'" @click="handleCreate"
           >新增用户</a-button
         >
+      </template>
+      <template #username="{ record }">
+        <a-button type="link" @click="handleDetail(record)">{{ record.username }}</a-button>
       </template>
       <template #status="{ record }">
         <BaseStatusSwitch
@@ -29,17 +39,31 @@
         <TableAction
           :actions="[
             {
-              icon: 'ant-design:info-circle-outlined',
-              auth: 'system:user:save',
-              onClick: handleDetail.bind(null, record),
-            },
-            {
               icon: 'clarity:note-edit-line',
               auth: 'system:user:save',
               onClick: handleEdit.bind(null, record),
             },
+          ]"
+          :drop-down-actions="[
+            {
+              icon: 'ant-design:info-circle-outlined',
+              label: '详情',
+              auth: 'system:user:save',
+              onClick: handleDetail.bind(null, record),
+            },
+            {
+              icon: 'ant-design:lock-outlined',
+              label: '重置密码',
+              color: 'error',
+              auth: 'system:user:password',
+              popConfirm: {
+                title: '是否重置密码该用户密码？',
+                confirm: handleResetPwd.bind(null, [record.id]),
+              },
+            },
             {
               icon: 'ant-design:delete-outlined',
+              label: '删除',
               color: 'error',
               auth: 'system:user:remove',
               popConfirm: {
@@ -66,7 +90,6 @@
   import { BasicTable, useTable, TableAction } from '@/components/Table';
   import { useDrawer } from '@/components/Drawer';
   import Export from '@/components/Donut/Export/index.vue';
-
   import {
     listApi,
     deleteApi,
@@ -74,26 +97,28 @@
     exportApi,
     importApi,
     exportTempApi,
+    resetPasswordApi,
   } from '@/api/system/user';
-
   import { columns, searchFormSchema } from './user.data';
   import { reactive } from 'vue';
-
   import UserDrawer from './UserDrawer.vue';
   import { useRouter } from 'vue-router';
   import ImportModal from '@/components/Donut/ImportModal/index.vue';
   import { useModal } from '@/components/Modal';
   import BaseStatusSwitch from '@/components/Donut/BaseStatusSwitch/index.vue';
+  import { useMessage } from '@/hooks/web/useMessage';
+  import type { Key } from 'ant-design-vue/es/_util/type';
 
   defineOptions({ name: 'UserManagement' });
 
+  const { createMessage } = useMessage();
   const router = useRouter();
 
   const searchInfo = reactive<Recordable>({});
 
   const [registerDrawer, { openDrawer }] = useDrawer();
   const [registerImportModal, importAction] = useModal();
-  const [registerTable, { reload, getForm }] = useTable({
+  const [registerTable, { reload, getForm, getSelectRowKeys }] = useTable({
     title: '用户列表',
     api: listApi,
     rowKey: 'id',
@@ -103,11 +128,15 @@
       schemas: searchFormSchema,
       autoSubmitOnEnter: true,
     },
+    rowSelection: {
+      type: 'checkbox',
+    },
+    clickToRowSelect: false,
     useSearchForm: true,
     showTableSetting: true,
     bordered: true,
     actionColumn: {
-      width: 120,
+      width: 80,
       title: '操作',
       dataIndex: 'action',
       slots: { customRender: 'action' },
@@ -148,5 +177,15 @@
 
   function handleImport() {
     importAction.openModal();
+  }
+
+  function handleResetPwd(userIds: Key[]) {
+    if (userIds.length === 0) {
+      return createMessage.error('请选择要重置密码的用户');
+    }
+
+    resetPasswordApi({ userIds }).then(() => {
+      createMessage.success('重置密码成功');
+    });
   }
 </script>

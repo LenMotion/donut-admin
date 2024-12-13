@@ -4,10 +4,7 @@ import cn.lenmotion.donut.core.entity.BaseImportResult;
 import cn.lenmotion.donut.core.service.DonutService;
 import cn.lenmotion.donut.system.entity.po.SysUser;
 import cn.lenmotion.donut.system.entity.query.UserQuery;
-import cn.lenmotion.donut.system.entity.request.SysUserRequest;
-import cn.lenmotion.donut.system.entity.request.UserAvatarRequest;
-import cn.lenmotion.donut.system.entity.request.UserProfileRequest;
-import cn.lenmotion.donut.system.entity.request.UserPwdRequest;
+import cn.lenmotion.donut.system.entity.request.*;
 import cn.lenmotion.donut.system.entity.vo.UserResponseVO;
 import cn.lenmotion.donut.system.entity.vo.export.UserExportVO;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -97,5 +94,13 @@ public interface SysUserService extends DonutService<SysUser> {
      * @return
      */
     Boolean updatePassword(UserPwdRequest request);
+
+    /**
+     * 重置用户密码
+     *
+     * @param request
+     * @return
+     */
+    Boolean resetUserPassword(UserResetPwdRequest request);
 
 }

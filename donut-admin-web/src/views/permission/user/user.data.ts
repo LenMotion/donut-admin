@@ -7,6 +7,7 @@ export const columns: BasicColumn[] = [
     title: '用户名',
     fixed: 'left',
     dataIndex: 'username',
+    slots: { customRender: 'username' },
   },
   {
     title: '用户编号',
