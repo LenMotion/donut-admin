@@ -8,6 +8,18 @@
     v-show="getShow"
     @keypress.enter="handleLogin"
   >
+    <FormItem name="tenantId" class="enter-x">
+      <ASelect
+        v-if="tenantList.length > 1"
+        size="large"
+        :value="appStore.tenantId"
+        placeholder="请选择登录租户"
+        class="fix-auto-fill"
+        :options="tenantList"
+        :fieldNames="{ label: 'name', value: 'id' }"
+        @change="handleTenantEvent"
+      />
+    </FormItem>
     <FormItem name="account" class="enter-x">
       <Input
         size="large"
@@ -64,65 +76,42 @@
       <Button type="primary" size="large" block @click="handleLogin" :loading="loading">
         {{ t('sys.login.loginButton') }}
       </Button>
-      <!-- <Button size="large" class="mt-4 enter-x" block @click="handleRegister">
-        {{ t('sys.login.registerButton') }}
-      </Button> -->
     </FormItem>
-    <!-- <ARow class="enter-x" :gutter="[16, 16]">
-      <ACol :md="8" :xs="24">
-        <Button block @click="setLoginState(LoginStateEnum.MOBILE)">
-          {{ t('sys.login.mobileSignInFormTitle') }}
-        </Button>
-      </ACol>
-      <ACol :md="8" :xs="24">
-        <Button block @click="setLoginState(LoginStateEnum.QR_CODE)">
-          {{ t('sys.login.qrSignInFormTitle') }}
-        </Button>
-      </ACol>
-      <ACol :md="8" :xs="24">
-        <Button block @click="setLoginState(LoginStateEnum.REGISTER)">
-          {{ t('sys.login.registerButton') }}
-        </Button>
-      </ACol>
-    </ARow> -->
-
-    <!-- <Divider class="enter-x">{{ t('sys.login.otherSignIn') }}</Divider>
-
-    <div class="flex justify-evenly enter-x" :class="`${prefixCls}-sign-in-way`">
-      <GithubFilled />
-      <WechatFilled />
-      <AlipayCircleFilled />
-      <GoogleCircleFilled />
-      <TwitterCircleFilled />
-    </div> -->
   </Form>
 </template>
 <script lang="ts" setup>
   import { reactive, ref, unref, computed, watch } from 'vue';
 
-  import { Checkbox, Form, Input, Row, Col, Button, Image as AImage } from 'ant-design-vue';
+  import {
+    Checkbox,
+    Form,
+    Input,
+    Row as ARow,
+    Col as ACol,
+    Button,
+    Image as AImage,
+    Select as ASelect,
+  } from 'ant-design-vue';
   import LoginFormTitle from './LoginFormTitle.vue';
 
   import { useI18n } from '@/hooks/web/useI18n';
   import { useMessage } from '@/hooks/web/useMessage';
-
   import { useUserStore } from '@/store/modules/user';
   import { LoginStateEnum, useLoginState, useFormRules, useFormValid } from './useLogin';
   import { useDesign } from '@/hooks/web/useDesign';
-  import { captchaImageApi } from '@/api/sys/user';
-  import JSEncrypt from 'jsencrypt';
   import { useGlobSetting } from '@/hooks/setting';
   import { useAppStore } from '@/store/modules/app';
+  import { baseInfoApi } from '@/api/system/tenant';
+  import { captchaImageApi } from '@/api/sys/user';
+  import JSEncrypt from 'jsencrypt';
 
-  const ACol = Col;
-  const ARow = Row;
   const FormItem = Form.Item;
   const InputPassword = Input.Password;
   const { t } = useI18n();
-  const { notification, createErrorModal } = useMessage();
+  const { notification, createErrorModal, createMessage } = useMessage();
   const { prefixCls } = useDesign('login');
   const userStore = useUserStore();
-  const { publicKey } = useGlobSetting();
+  const { publicKey, tenantId } = useGlobSetting();
   const appStore = useAppStore();
 
   const { setLoginState, getLoginState } = useLoginState();
@@ -195,4 +184,20 @@
     () => appStore.getTenantId,
     () => getCaptchaImage(),
   );
+
+  const tenantList = ref<any[]>([]);
+  baseInfoApi(tenantId).then((res) => {
+    if (res.length == 0) {
+      createMessage.error('租户信息查询失败');
+    } else {
+      if (!appStore.getTenantId) {
+        appStore.setTenantId(res[0].id);
+      }
+      tenantList.value = res;
+    }
+  });
+
+  const handleTenantEvent = (tenantId: string) => {
+    appStore.setTenantId(tenantId);
+  };
 </script>

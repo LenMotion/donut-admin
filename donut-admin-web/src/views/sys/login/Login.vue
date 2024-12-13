@@ -1,7 +1,7 @@
 <template>
   <div :class="prefixCls" class="relative w-full h-full px-4">
     <div class="flex items-center absolute right-4 top-4">
-      <AppTenantPicker class="enter-x mr-2" />
+      <!-- <AppTenantPicker class="enter-x mr-2" /> -->
       <AppDarkModeToggle class="enter-x mr-2" v-if="!sessionTimeout" />
       <AppLocalePicker
         class="text-white enter-x xl:text-gray-600"
@@ -49,12 +49,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-  import {
-    AppDarkModeToggle,
-    AppLocalePicker,
-    AppLogo,
-    AppTenantPicker,
-  } from '@/components/Application';
+  import { AppDarkModeToggle, AppLocalePicker, AppLogo } from '@/components/Application';
   import { useGlobSetting } from '@/hooks/setting';
   import { useDesign } from '@/hooks/web/useDesign';
   import { useLocaleStore } from '@/store/modules/locale';
