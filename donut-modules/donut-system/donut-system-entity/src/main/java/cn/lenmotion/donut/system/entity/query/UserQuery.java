@@ -22,4 +22,7 @@ public class UserQuery extends BasePageQuery {
     @Schema(description = "用户账号")
     private String username;
 
+    @Schema(description = "用户昵称")
+    private String nickName;
+
 }

@@ -25,12 +25,14 @@
         <if test="query.username != null and query.username != ''">
             and u.username like concat('%', #{query.username}, '%')
         </if>
+        <if test="query.nickName != null and query.nickName != ''">
+            and u.nick_name like concat('%', #{query.nickName}, '%')
+        </if>
         <if test="query.deptId != null">
             and ud.dept_id = #{query.deptId}
         </if>
         <if test="query.status != null and query.status != ''">
             and u.status = #{query.status}
         </if>
-
     </sql>
 </mapper>
