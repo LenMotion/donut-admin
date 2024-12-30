@@ -23,7 +23,7 @@
       const values = await validate();
       setProps({ submitButtonOptions: { loading: true } });
       values.DEFAULT_MENU = values.DEFAULT_MENU ? values.DEFAULT_MENU.join(',') : '';
-      values.SYSTEM_LOGO = values.SYSTEM_LOGO[0];
+      // values.SYSTEM_LOGO = values.SYSTEM_LOGO[0];
       await systemConfigSaveApi(values);
       createMessage.success('保存成功');
     } finally {
