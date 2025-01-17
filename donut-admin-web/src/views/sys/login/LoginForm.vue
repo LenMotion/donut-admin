@@ -197,7 +197,7 @@
     }
   });
 
-  const handleTenantEvent = (tenantId: string) => {
+  const handleTenantEvent = (tenantId) => {
     appStore.setTenantId(tenantId);
   };
 </script>

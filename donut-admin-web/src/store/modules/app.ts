@@ -22,6 +22,7 @@ import { darkMode } from '@/settings/designSetting';
 import { resetRouter } from '@/router';
 import { deepMerge } from '@/utils';
 import { useSiteInfoStore } from '@/store/modules/siteInfo';
+import { SelectValue } from 'ant-design-vue/es/select';
 
 interface AppState {
   darkMode?: ThemeEnum;
@@ -32,7 +33,7 @@ interface AppState {
   // When the window shrinks, remember some states, and restore these states when the window is restored
   beforeMiniInfo: BeforeMiniState;
   // 当前的租户
-  tenantId: string | null;
+  tenantId: SelectValue
 }
 let timeId: TimeoutHandle;
 export const useAppStore = defineStore({
@@ -42,7 +43,7 @@ export const useAppStore = defineStore({
     pageLoading: false,
     projectConfig: Persistent.getLocal(PROJ_CFG_KEY),
     beforeMiniInfo: {},
-    tenantId: Persistent.getLocal(PROJ_CFG_TENANT_ID_KEY),
+    tenantId: Persistent.getLocal(PROJ_CFG_TENANT_ID_KEY) || '',
   }),
   getters: {
     getPageLoading(state): boolean {
