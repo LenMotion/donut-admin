@@ -19,17 +19,17 @@
 
     <properties>
         <java.version>17</java.version>
-        <spring-boot.version>3.3.0</spring-boot.version>
+        <spring-boot.version>3.4.0</spring-boot.version>
         <druid.version>1.2.22</druid.version>
         <mysql.version>8.4.0</mysql.version>
         <p6spy.version>3.9.1</p6spy.version>
         <mybatis-plus.version>3.5.7</mybatis-plus.version>
-        <hutool.version>5.8.29</hutool.version>
+        <hutool.version>5.8.35</hutool.version>
         <easy-trans.version>3.0.5</easy-trans.version>
-        <mapstruct.version>1.5.5.Final</mapstruct.version>
-        <sa-token.version>1.38.0</sa-token.version>
+        <mapstruct.version>1.6.3</mapstruct.version>
+        <sa-token.version>1.39.0</sa-token.version>
         <knif4j.version>4.5.0</knif4j.version>
-        <redisson.version>3.32.0</redisson.version>
+        <redisson.version>3.43.0</redisson.version>
         <oshi.version>6.6.1</oshi.version>
         <easyexcel.version>4.0.1</easyexcel.version>
         <x-file-storage.version>2.2.0</x-file-storage.version>
