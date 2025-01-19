@@ -23,10 +23,10 @@ import com.alibaba.excel.write.handler.WriteHandler;
 import com.alibaba.excel.write.metadata.style.WriteCellStyle;
 import com.alibaba.excel.write.metadata.style.WriteFont;
 import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
-import com.fhs.core.trans.vo.VO;
-import com.fhs.trans.service.impl.TransService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.IndexedColors;
+import org.dromara.core.trans.vo.VO;
+import org.dromara.trans.service.impl.TransService;
 import org.dromara.x.file.storage.core.FileStorageService;
 import org.springframework.core.task.TaskExecutor;
 

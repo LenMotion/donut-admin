@@ -4,12 +4,12 @@ import cn.lenmotion.donut.core.constants.BaseConstants;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.fhs.core.trans.anno.Trans;
-import com.fhs.core.trans.constant.TransType;
-import com.fhs.core.trans.vo.TransPojo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.dromara.core.trans.anno.Trans;
+import org.dromara.core.trans.constant.TransType;
+import org.dromara.core.trans.vo.TransPojo;
 
 import java.io.Serial;
 import java.io.Serializable;

@@ -5,10 +5,10 @@ import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.annotation.write.style.ColumnWidth;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.fhs.core.trans.anno.Trans;
-import com.fhs.core.trans.constant.TransType;
-import com.fhs.core.trans.vo.VO;
 import lombok.Data;
+import org.dromara.core.trans.anno.Trans;
+import org.dromara.core.trans.constant.TransType;
+import org.dromara.core.trans.vo.VO;
 
 import java.time.LocalDateTime;
 

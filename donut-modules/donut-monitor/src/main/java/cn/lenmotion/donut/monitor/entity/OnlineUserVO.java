@@ -1,8 +1,5 @@
 package cn.lenmotion.donut.monitor.entity;
 
-import cn.lenmotion.donut.core.constants.DictKeyConstants;
-import com.fhs.core.trans.anno.Trans;
-import com.fhs.core.trans.constant.TransType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 

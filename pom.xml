@@ -25,7 +25,7 @@
         <p6spy.version>3.9.1</p6spy.version>
         <mybatis-plus.version>3.5.7</mybatis-plus.version>
         <hutool.version>5.8.35</hutool.version>
-        <easy-trans.version>3.0.5</easy-trans.version>
+        <easy-trans.version>3.1.1</easy-trans.version>
         <mapstruct.version>1.6.3</mapstruct.version>
         <sa-token.version>1.39.0</sa-token.version>
         <knif4j.version>4.5.0</knif4j.version>
@@ -128,19 +128,19 @@
             </dependency>
 
             <dependency>
-                <groupId>com.fhs-opensource</groupId>
+                <groupId>org.dromara</groupId>
                 <artifactId>easy-trans-spring-boot-starter</artifactId>
                 <version>${easy-trans.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>com.fhs-opensource</groupId>
+                <groupId>org.dromara</groupId>
                 <artifactId>easy-trans-mybatis-plus-extend</artifactId>
                 <version>${easy-trans.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>com.fhs-opensource</groupId>
+                <groupId>org.dromara</groupId>
                 <artifactId>easy-trans-untrans-driver</artifactId>
                 <version>${easy-trans.version}</version>
             </dependency>

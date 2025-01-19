@@ -2,12 +2,11 @@ package cn.lenmotion.donut.system.entity.vo;
 
 import cn.lenmotion.donut.core.constants.BaseConstants;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fhs.core.trans.anno.Trans;
-import com.fhs.core.trans.constant.TransType;
-import com.fhs.core.trans.vo.VO;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import org.dromara.core.trans.anno.Trans;
+import org.dromara.core.trans.constant.TransType;
+import org.dromara.core.trans.vo.VO;
 
 /**
  * @author lenmotion

@@ -15,8 +15,8 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
-import com.fhs.trans.service.impl.DictionaryTransService;
 import lombok.RequiredArgsConstructor;
+import org.dromara.trans.service.impl.DictionaryTransService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

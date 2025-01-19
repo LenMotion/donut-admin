@@ -13,11 +13,11 @@ import cn.lenmotion.donut.system.service.SysDictTypeService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.fhs.trans.service.impl.DictionaryTransService;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.dromara.trans.service.impl.DictionaryTransService;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Service;
 

@@ -31,10 +31,10 @@ import cn.lenmotion.donut.system.service.SysConfigService;
 import cn.lenmotion.donut.system.service.SysMenuService;
 import cn.lenmotion.donut.system.service.SysRoleMenuService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.fhs.trans.service.impl.TransService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.dromara.trans.service.impl.TransService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

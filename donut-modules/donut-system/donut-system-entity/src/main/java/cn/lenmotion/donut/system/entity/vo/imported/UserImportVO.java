@@ -4,11 +4,11 @@ import cn.lenmotion.donut.core.constants.DictKeyConstants;
 import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.annotation.write.style.ColumnWidth;
-import com.fhs.core.trans.anno.UnTrans;
-import com.fhs.core.trans.constant.TransType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import org.dromara.core.trans.anno.UnTrans;
+import org.dromara.core.trans.constant.TransType;
 import org.springframework.validation.annotation.Validated;
 
 import java.time.LocalDate;

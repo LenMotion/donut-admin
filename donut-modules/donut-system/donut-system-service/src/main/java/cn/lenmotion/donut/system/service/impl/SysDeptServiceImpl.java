@@ -26,8 +26,8 @@ import cn.lenmotion.donut.system.service.SysDeptService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.fhs.trans.service.impl.TransService;
 import lombok.RequiredArgsConstructor;
+import org.dromara.trans.service.impl.TransService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

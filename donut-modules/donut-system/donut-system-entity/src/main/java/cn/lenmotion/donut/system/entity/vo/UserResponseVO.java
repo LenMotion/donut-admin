@@ -6,11 +6,11 @@ import cn.lenmotion.donut.core.entity.BaseCreatePo;
 import cn.lenmotion.donut.system.entity.po.SysRole;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.annotation.write.style.ColumnWidth;
-import com.fhs.core.trans.anno.Trans;
-import com.fhs.core.trans.constant.TransType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.dromara.core.trans.anno.Trans;
+import org.dromara.core.trans.constant.TransType;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

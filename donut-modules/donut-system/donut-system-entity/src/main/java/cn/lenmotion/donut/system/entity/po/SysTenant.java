@@ -3,11 +3,11 @@ package cn.lenmotion.donut.system.entity.po;
 import cn.lenmotion.donut.core.entity.BaseCreatePo;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.fhs.core.trans.anno.Trans;
-import com.fhs.core.trans.constant.TransType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.dromara.core.trans.anno.Trans;
+import org.dromara.core.trans.constant.TransType;
 
 /**
  * @author lenmotion

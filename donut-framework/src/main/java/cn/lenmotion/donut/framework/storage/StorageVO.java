@@ -1,7 +1,7 @@
 package cn.lenmotion.donut.framework.storage;
 
-import com.fhs.core.trans.vo.VO;
 import lombok.Data;
+import org.dromara.core.trans.vo.VO;
 
 /**
  * @author lenmotion

@@ -4,13 +4,13 @@ import cn.lenmotion.donut.core.constants.DictKeyConstants;
 import cn.lenmotion.donut.core.entity.BaseCreatePo;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.fhs.core.trans.anno.Trans;
-import com.fhs.core.trans.constant.TransType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.dromara.core.trans.anno.Trans;
+import org.dromara.core.trans.constant.TransType;
 
 /**
  * @author LenMotion
