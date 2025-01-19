@@ -45,6 +45,11 @@ public class ProjectProperties {
     private String templatePath;
 
     /**
+     * 是否演示环境
+     */
+    private Boolean demo;
+
+    /**
      * 文件扩展名
      */
     private List<String> fileExt;

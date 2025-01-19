@@ -6,6 +6,8 @@ project:
   captchaExpire: 180
   # 临时目录，用于存放临时文件，之后会被删除，以/结尾
   templatePath: D:/data/templatesFile/
+  # 是否演示环境
+  demo: false
   tenant-ignore-tables:
     - gen_table
     - gen_table_column

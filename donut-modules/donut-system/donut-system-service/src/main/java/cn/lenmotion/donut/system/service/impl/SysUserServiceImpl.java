@@ -18,6 +18,7 @@ import cn.lenmotion.donut.core.exception.BusinessException;
 import cn.lenmotion.donut.core.service.impl.DonutServiceImpl;
 import cn.lenmotion.donut.core.utils.AopUtils;
 import cn.lenmotion.donut.core.utils.AssertUtils;
+import cn.lenmotion.donut.framework.config.ProjectProperties;
 import cn.lenmotion.donut.framework.excel.ExcelExportClient;
 import cn.lenmotion.donut.system.entity.converter.UserConverter;
 import cn.lenmotion.donut.system.entity.po.SysDept;
@@ -61,9 +62,7 @@ public class SysUserServiceImpl extends DonutServiceImpl<SysUserMapper, SysUser>
     private final SysDeptService deptService;
     private final TransService transService;
     private final RSA loginRsa;
-
-    @Value("${spring.profiles.active}")
-    private String profile;
+    private final ProjectProperties projectProperties;
 
     @Override
     @DataScope(type = DataScopeTypeEnum.DEPT, deptAlias = "ud", deptField = "dept_id")
@@ -185,7 +184,7 @@ public class SysUserServiceImpl extends DonutServiceImpl<SysUserMapper, SysUser>
     @Override
     public boolean updateStatus(BaseUpdateStatus request) {
         var user = this.getById(request.getId());
-        if (!BaseConstants.PROD.equals(profile) && BaseConstants.SUPER_USER.equals(user.getUsername())) {
+        if (projectProperties.getDemo() && BaseConstants.SUPER_USER.equals(user.getUsername())) {
             throw new BusinessException("超级管理员不允许修改状态");
         }
 
@@ -231,7 +230,7 @@ public class SysUserServiceImpl extends DonutServiceImpl<SysUserMapper, SysUser>
             throw new BusinessException("密码解密失败");
         }
         var user = this.getById(StpUtil.getLoginIdAsLong());
-        if (!BaseConstants.PROD.equals(profile) && BaseConstants.SUPER_USER.equals(user.getUsername())) {
+        if (!projectProperties.getDemo() && BaseConstants.SUPER_USER.equals(user.getUsername())) {
             throw new BusinessException("超级管理员不允许修改密码");
         }
         // 密码校验
@@ -252,6 +251,9 @@ public class SysUserServiceImpl extends DonutServiceImpl<SysUserMapper, SysUser>
 
         var defaultPassword = configService.getConfigByKey(ConfigConstants.USER_DEFAULT_PASSWORD);
         super.listByIds(request.getUserIds()).forEach(user -> {
+            if (!projectProperties.getDemo() && BaseConstants.SUPER_USER.equals(user.getUsername())) {
+                throw new BusinessException("超级管理员不允许重置密码");
+            }
             var newPwd = SaSecureUtil.sha256BySalt(defaultPassword, user.getUsername());
 
             var updateUser = new SysUser();
