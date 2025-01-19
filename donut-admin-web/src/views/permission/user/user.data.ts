@@ -97,7 +97,7 @@ export const formSchema: FormSchema[] = [
     field: 'avatar',
     label: '头像',
     colProps: { lg: 24, md: 24 },
-    slot: 'avatar',
+    component: 'ImageUpload',
   },
   {
     field: 'username',

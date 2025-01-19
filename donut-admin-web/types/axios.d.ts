@@ -1,3 +1,5 @@
+import { RcFile } from "ant-design-vue/es/vc-upload/interface";
+
 export type ErrorMessageMode = 'none' | 'modal' | 'message' | undefined;
 export type SuccessMessageMode = ErrorMessageMode;
 
@@ -49,7 +51,7 @@ export interface UploadFileParams {
   // File parameter interface field name
   name?: string;
   // file name
-  file: File | Blob;
+  file: File | Blob | RcFile;
   // file name
   filename?: string;
   [key: string]: any;

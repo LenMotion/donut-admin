@@ -4,7 +4,7 @@
     <parent>
         <groupId>cn.lenmotion</groupId>
         <artifactId>donut-system</artifactId>
-        <version>2.3.0</version>
+        <version>2.3.1</version>
     </parent>
     <artifactId>donut-system-entity</artifactId>
     <name>donut-system-entity</name>

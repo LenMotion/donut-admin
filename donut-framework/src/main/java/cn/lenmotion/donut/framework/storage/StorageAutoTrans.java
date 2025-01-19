@@ -36,7 +36,7 @@ public class StorageAutoTrans implements AutoTransable<StorageVO> {
 
     @Override
     public List<StorageVO> selectByIds(List<?> ids) {
-        var fileMap = fileStorageRemoteService.getMapByUrlList(ids.stream().map(Object::toString).toList());
+        var fileMap = fileStorageRemoteService.getMapByIds(ids.stream().map(Object::toString).toList());
 
         List<StorageVO> voList = new ArrayList<>(fileMap.size());
         for (Object id : ids) {
@@ -48,7 +48,7 @@ public class StorageAutoTrans implements AutoTransable<StorageVO> {
 
     @Override
     public StorageVO selectById(Object primaryValue) {
-        FileInfo fileInfo = fileStorageService.getFileInfoByUrl(primaryValue.toString());
+        FileInfo fileInfo = fileStorageRemoteService.getById(primaryValue.toString());
         if (Objects.isNull(fileInfo)) {
             return new StorageVO();
         }
@@ -66,7 +66,7 @@ public class StorageAutoTrans implements AutoTransable<StorageVO> {
                 return storageVO;
             }
 
-            storageVO.setId(fileInfo.getUrl());
+            storageVO.setId(fileInfo.getId());
             if (fileStorage.isSupportPresignedUrl()) {
                 storageVO.setUrl(fileStorageService.generatePresignedUrl(fileInfo, DateUtil.offsetMinute(new Date(), 30)));
             } else if (StpUtil.isLogin()) {

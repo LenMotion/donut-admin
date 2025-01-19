@@ -30,19 +30,24 @@
   import { Modal, Upload } from 'ant-design-vue';
   import { UploadRequestOption } from 'ant-design-vue/lib/vc-upload/interface';
   import { useMessage } from '@/hooks/web/useMessage';
-  import { isArray, isFunction, isObject, isString } from '@/utils/is';
-  import { warn } from '@/utils/log';
+  import { isFunction, isString } from '@/utils/is';
   import { useI18n } from '@/hooks/web/useI18n';
   import { useUploadType } from '../hooks/useUpload';
   import { uploadContainerProps } from '../props';
   import { isImgTypeByName } from '../helper';
   import { UploadResultStatus } from '@/components/Upload/src/types/typing';
+  import { uploadApi, fileInfoApi } from '@/api/system/upload';
+  import { UploadFileParams } from '#/axios';
 
   defineOptions({ name: 'ImageUpload' });
 
   const emit = defineEmits(['change', 'update:value', 'delete']);
+
   const props = defineProps({
     ...uploadContainerProps,
+    accept: {
+      default: ['image/*'],
+    },
   });
   const { t } = useI18n();
   const { createMessage } = useMessage();
@@ -69,27 +74,18 @@
         isInnerOperate.value = false;
         return;
       }
-      if (v) {
-        let value: string[] = [];
-        if (isArray(v)) {
-          value = v;
-        } else {
-          value.push(v);
-        }
-        fileList.value = value.map((item, i) => {
-          if (item && isString(item)) {
+      fileList.value = [];
+      if (v && v.length > 0) {
+        fileInfoApi(v).then((res) => {
+          fileList.value = res.map((item, i) => {
             return {
-              uid: -i + '',
-              name: item.substring(item.lastIndexOf('/') + 1),
+              uid: item.uid,
+              name: item.name,
               status: 'done',
-              url: item,
+              url: item.url,
             };
-          } else if (item && isObject(item)) {
-            return item;
-          } else {
-            return;
-          }
-        }) as UploadProps['fileList'];
+          }) as UploadProps['fileList'];
+        });
       }
     },
   );
@@ -153,18 +149,21 @@
 
   async function customRequest(info: UploadRequestOption<any>) {
     const { api } = props;
-    if (!api || !isFunction(api)) {
-      return warn('upload api must exist and be a function');
-    }
     try {
-      const res = await props.api?.({
+      const request: UploadFileParams = {
         data: {
           ...(props.uploadParams || {}),
         },
-        file: info.file,
+        file: info.file as File,
         name: props.name,
         filename: props.filename,
-      });
+      };
+      let res;
+      if (!api || !isFunction(api)) {
+        res = await uploadApi(request);
+      } else {
+        res = await props.api?.(request);
+      }
       info.onSuccess!(res.data);
       const value = getValue();
       isInnerOperate.value = true;
@@ -179,8 +178,11 @@
     const list = (fileList.value || [])
       .filter((item) => item?.status === UploadResultStatus.DONE)
       .map((item: any) => {
-        return item?.url || item?.response?.url;
+        return item?.response?.result?.uid || item?.uid;
       });
+    if (isString(props.value)) {
+      return list.join(',');
+    }
     return props.multiple ? list : list.length > 0 ? list[0] : '';
   }
 </script>

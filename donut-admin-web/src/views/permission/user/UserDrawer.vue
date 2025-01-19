@@ -13,11 +13,7 @@
       <TabPane tab="其他信息" key="other" />
     </Tabs>
     <div v-show="activeKey == 'basic'">
-      <BasicForm @register="registerForm">
-        <template #avatar="{ model }">
-          <CropperAvatar :uploadApi="uploadApi as any" :value="model.transMap?.avatarUrl" />
-        </template>
-      </BasicForm>
+      <BasicForm @register="registerForm" />
       <BasicTable @register="registerTable">
         <template #toolbar>
           <a-button type="primary" @click="handleAddUserDept">添加任职</a-button>
@@ -71,8 +67,6 @@
   import { enableTreeApi } from '@/api/system/dept';
   import { useMessage } from '@/hooks/web/useMessage';
   import { TreeSelect, Select as ASelect, Tabs, TabPane } from 'ant-design-vue';
-  import { CropperAvatar } from '@/components/Cropper';
-  import { uploadApi } from '@/api/sys/upload';
 
   defineOptions({ name: 'UserDrawer' });
 

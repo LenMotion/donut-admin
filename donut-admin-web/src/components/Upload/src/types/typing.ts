@@ -1,5 +1,5 @@
 import { BasicColumn } from '@/components/Table';
-import { UploadApiResult } from '@/api/sys/model/uploadModel';
+import { UploadApiResult } from '@/api/system/model/uploadModel';
 
 export enum UploadResultStatus {
   DONE = 'done',
@@ -10,14 +10,26 @@ export enum UploadResultStatus {
 
 export interface FileItem {
   thumbUrl?: string;
+  url?: string;
   name: string;
   size: string | number;
-  type?: string;
-  percent: number;
-  file: File;
+  ext?: string;
+  percent?: number;
+  file?: File;
   status?: UploadResultStatus;
   response?: UploadApiResult;
-  uuid: string;
+  uid: string;
+}
+
+export interface PreviewFileInfo {
+  ext?: string;
+  name?: string;
+  uid?: string;
+  url?: string;
+  size?: number;
+  thumbUrl?: string;
+  status?: UploadResultStatus;
+  percent?: number;
 }
 
 export interface PreviewFileItem {

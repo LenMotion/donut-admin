@@ -4,6 +4,7 @@ import { FileBasicColumn } from './types/typing';
 import type { Options } from 'sortablejs';
 
 import { Merge } from '@/utils/types';
+import { FileInfo } from '@/api/system/model/uploadModel';
 
 type SortableOptions = Merge<
   Omit<Options, 'onEnd'>,
@@ -73,7 +74,7 @@ export const basicProps = {
 
 export const uploadContainerProps = {
   value: {
-    type: Array as PropType<string[]>,
+    type: Array as PropType<string[]> || String as PropType<string>,
     default: () => [],
   },
   ...basicProps,
@@ -89,7 +90,7 @@ export const uploadContainerProps = {
 
 export const previewProps = {
   value: {
-    type: Array as PropType<string[]>,
+    type: Array as PropType<FileInfo[]>,
     default: () => [],
   },
 };

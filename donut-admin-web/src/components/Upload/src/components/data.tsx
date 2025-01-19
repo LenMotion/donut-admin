@@ -1,5 +1,5 @@
 import type { BasicColumn, ActionItem } from '@/components/Table';
-import { FileBasicColumn, FileItem, PreviewFileItem, UploadResultStatus } from '../types/typing';
+import { FileBasicColumn, PreviewFileInfo, UploadResultStatus } from '../types/typing';
 import { isImgTypeByName } from '../helper';
 import { Progress, Tag } from 'ant-design-vue';
 import TableAction from '@/components/Table/src/components/TableAction.vue';
@@ -12,12 +12,12 @@ const { t } = useI18n();
 export function createTableColumns(): FileBasicColumn[] {
   return [
     {
-      dataIndex: 'thumbUrl',
+      dataIndex: 'url',
       title: t('component.upload.legend'),
       width: 100,
       customRender: ({ record }) => {
-        const { thumbUrl } = (record as FileItem) || {};
-        return thumbUrl && <ThumbUrl fileUrl={thumbUrl} />;
+        const { thumbUrl, name } = (record as PreviewFileInfo) || {};
+        return isImgTypeByName(name!) && <ThumbUrl fileUrl={thumbUrl} />;
       },
     },
     {
@@ -25,7 +25,7 @@ export function createTableColumns(): FileBasicColumn[] {
       title: t('component.upload.fileName'),
       align: 'left',
       customRender: ({ text, record }) => {
-        const { percent, status: uploadStatus } = (record as FileItem) || {};
+        const { percent, status: uploadStatus } = (record as PreviewFileInfo) || {};
         let status: 'normal' | 'exception' | 'active' | 'success' = 'normal';
         if (uploadStatus === UploadResultStatus.ERROR) {
           status = 'exception';
@@ -96,8 +96,8 @@ export function createPreviewColumns(): BasicColumn[] {
       title: t('component.upload.legend'),
       width: 100,
       customRender: ({ record }) => {
-        const { url } = (record as PreviewFileItem) || {};
-        return isImgTypeByName(url) && <ThumbUrl fileUrl={url} />;
+        const { thumbUrl, name } = (record as PreviewFileInfo) || {};
+        return isImgTypeByName(name!) && <ThumbUrl fileUrl={thumbUrl} />;
       },
     },
     {

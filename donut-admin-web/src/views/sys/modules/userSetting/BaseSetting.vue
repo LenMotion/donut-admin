@@ -36,7 +36,7 @@
   import { getUserInfo, updateUserInfo, updateUserAvatar } from '@/api/sys/user';
   import { baseSetschemas } from './data';
   import { useUserStore } from '@/store/modules/user';
-  import { uploadApi } from '@/api/sys/upload';
+  import { uploadApi } from '@/api/system/upload';
 
   const { createMessage } = useMessage();
   const userStore = useUserStore();

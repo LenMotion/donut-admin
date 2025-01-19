@@ -12,8 +12,8 @@
       <div :class="`${prefixCls}-left`">
         <div :class="`${prefixCls}-cropper`">
           <CropperImage
-            v-if="src"
-            :src="src"
+            v-if="previewSource"
+            :src="previewSource"
             height="300px"
             :circled="circled"
             @cropend="handleCropend"
@@ -113,15 +113,17 @@
 <script lang="ts" setup>
   import type { CropendResult, Cropper } from './typing';
 
-  import { ref, PropType } from 'vue';
+  import { ref, PropType, watch } from 'vue';
   import CropperImage from './Cropper.vue';
   import { Space, Upload, Avatar, Tooltip } from 'ant-design-vue';
   import { useDesign } from '@/hooks/web/useDesign';
   import { BasicModal, useModalInner } from '@/components/Modal';
-  import { dataURLtoBlob } from '@/utils/file/base64Conver';
+  import { dataURLtoBlob, urlToBase64 } from '@/utils/file/base64Conver';
   import { isFunction } from '@/utils/is';
   import { useI18n } from '@/hooks/web/useI18n';
   import { useMessage } from '@/hooks/web/useMessage';
+  import { uploadApi, fileInfoApi } from '@/api/system/upload';
+  import { FileInfo } from '@/api/system/model/uploadModel';
 
   const { createMessage } = useMessage();
 
@@ -133,12 +135,14 @@
     circled: { type: Boolean, default: true },
     uploadApi: {
       type: Function as PropType<(params: apiFunParams) => Promise<any>>,
+      default: uploadApi,
     },
     src: { type: String },
     size: { type: Number },
   });
+  const realFileInfo = ref<FileInfo>({});
 
-  const emit = defineEmits(['uploadSuccess', 'uploadError', 'register']);
+  const emit = defineEmits(['uploadSuccess', 'uploadError', 'register', 'fileInfo']);
 
   let filename = '';
   const src = ref(props.src || '');
@@ -146,6 +150,26 @@
   const cropper = ref<Cropper>();
   let scaleX = 1;
   let scaleY = 1;
+
+  watch(
+    () => props.src,
+    (src) => {
+      realFileInfo.value = {};
+      if (src) {
+        fileInfoApi(src).then((res) => {
+          realFileInfo.value = res.length > 0 ? res[0] : {};
+          if (!realFileInfo.value.uid) {
+            return;
+          }
+          emit('fileInfo', realFileInfo.value)
+          filename = realFileInfo.value.name!;
+          urlToBase64(realFileInfo.value.url!).then((res) => {
+            previewSource.value = res;
+          });
+        });
+      }
+    },
+  );
 
   const { prefixCls } = useDesign('cropper-am');
   const [register, { closeModal, setModalProps }] = useModalInner();
@@ -197,7 +221,8 @@
         if (result.data.code != 200) {
           createMessage.error(result.data.msg);
         } else {
-          emit('uploadSuccess', { source: previewSource.value, data: result.data.result.url });
+          realFileInfo.value = result.data.result;
+          emit('uploadSuccess', { source: previewSource.value, data: result.data.result });
           closeModal();
         }
       } finally {
@@ -243,9 +268,7 @@
           transparent 75%,
           rgb(0 0 0 / 25%) 0
         );
-      background-position:
-        0 0,
-        12px 12px;
+      background-position: 0 0, 12px 12px;
       background-size: 24px 24px;
     }
 

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -24,16 +25,18 @@ public class SysFileStorageRemoteServiceImpl implements SysFileStorageRemoteServ
     private final SysFileStorageService fileStorageService;
 
     @Override
-    public Map<String, FileInfo> getMapByUrlList(List<String> urlList) {
-        if (CollUtil.isEmpty(urlList)) {
+    public Map<String, FileInfo> getMapByIds(List<String> ids) {
+        if (CollUtil.isEmpty(ids)) {
             return Map.of();
         }
 
-        LambdaQueryWrapper<SysFileStorage> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.in(SysFileStorage::getUrl, urlList);
+        var list = FileStorageConverter.INSTANCE.toFileInfoList(fileStorageService.listByIds(ids));
+        return list.stream().collect(Collectors.toMap(FileInfo::getId, Function.identity(), (k1, k2) -> k1));
+    }
 
-        var list = FileStorageConverter.INSTANCE.toFileInfoList(fileStorageService.list(queryWrapper));
-        return list.stream().collect(Collectors.toMap(FileInfo::getUrl, e -> e, (k1, k2) -> k1));
+    @Override
+    public FileInfo getById(String id) {
+        return FileStorageConverter.INSTANCE.toFileInfo(fileStorageService.getById(id));
     }
 
 }

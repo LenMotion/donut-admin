@@ -49,6 +49,8 @@
   import { isArray } from '@/utils/is';
   import UploadModal from './components/UploadModal.vue';
   import UploadPreviewModal from './components/UploadPreviewModal.vue';
+  import { fileInfoApi } from '@/api/system/upload';
+  import { FileInfo } from '@/api/system/model/uploadModel';
 
   defineOptions({ name: 'BasicUpload' });
 
@@ -64,7 +66,7 @@
   //   预览modal
   const [registerPreviewModal, { openModal: openPreviewModal }] = useModal();
 
-  const fileList = ref<string[]>([]);
+  const fileList = ref<FileInfo[]>([]);
 
   const showPreview = computed(() => {
     const { emptyHidePreview } = props;
@@ -80,30 +82,43 @@
   watch(
     () => props.value,
     (value = []) => {
-      fileList.value = isArray(value) ? value : [];
+      fileList.value = [];
+      if (value && value.length > 0) {
+        fileInfoApi(value).then((res) => {
+          console.log(res);
+          fileList.value = res;
+        });
+      }
     },
     { immediate: true },
   );
 
   // 上传modal保存操作
-  function handleChange(urls: string[]) {
-    fileList.value = [...unref(fileList), ...(urls || [])];
-    emit('update:value', fileList.value);
-    emit('change', fileList.value);
+  function handleChange(files: FileInfo[]) {
+    console.log(files);
+    fileList.value = [...unref(fileList), ...(files || [])];
+    emitUpdate();
   }
 
   // 预览modal保存操作
-  function handlePreviewChange(urls: string[]) {
-    fileList.value = [...(urls || [])];
-    emit('update:value', fileList.value);
-    emit('change', fileList.value);
+  function handlePreviewChange(files: FileInfo[]) {
+    fileList.value = [...(files || [])];
+    emitUpdate();
   }
+
+  const emitUpdate = () => {
+    console.log(fileList.value);
+    const ids = fileList.value.map((item) => item.uid);
+    const value = isArray(props.value) ? ids : ids.join(',');
+    emit('update:value', value);
+    emit('change', value);
+  };
 
   function handleDelete(record: Recordable<any>) {
     emit('delete', record);
   }
 
-  function handlePreviewDelete(url: string) {
-    emit('preview-delete', url);
+  function handlePreviewDelete(uid: string) {
+    emit('preview-delete', uid);
   }
 </script>

@@ -63,14 +63,17 @@
   import { checkImgType, getBase64WithFile } from '../helper';
   import { buildUUID } from '@/utils/uuid';
   import { isFunction } from '@/utils/is';
-  import { warn } from '@/utils/log';
   import FileList from './FileList.vue';
   import { useI18n } from '@/hooks/web/useI18n';
+  import { uploadApi } from '@/api/system/upload';
+  import { UploadFileParams } from '#/axios';
+  import { AxiosProgressEvent } from 'axios';
+  import { FileInfo } from '@/api/system/model/uploadModel';
 
   const props = defineProps({
     ...basicProps,
     previewFileList: {
-      type: Array as PropType<string[]>,
+      type: Array as PropType<FileInfo[]>,
       default: () => [],
     },
   });
@@ -133,7 +136,7 @@
     }
 
     const commonItem = {
-      uuid: buildUUID(),
+      uid: buildUUID(),
       file,
       size,
       name,
@@ -161,33 +164,44 @@
 
   // 删除
   function handleRemove(record: FileItem) {
-    const index = fileListRef.value.findIndex((item) => item.uuid === record.uuid);
+    const index = fileListRef.value.findIndex((item) => item.uid === record.uid);
     index !== -1 && fileListRef.value.splice(index, 1);
     emit('delete', record);
   }
 
   async function uploadApiByItem(item: FileItem) {
     const { api } = props;
-    if (!api || !isFunction(api)) {
-      return warn('upload api must exist and be a function');
-    }
     try {
+      const request: UploadFileParams = {
+        data: {
+          ...(props.uploadParams || {}),
+        },
+        file: item.file as File,
+        name: props.name,
+        filename: props.filename,
+      };
+
+      function onUploadProgress(progressEvent: AxiosProgressEvent) {
+        const complete = ((progressEvent.loaded / progressEvent.total!) * 100) | 0;
+        item.percent = complete;
+      }
+
       item.status = UploadResultStatus.UPLOADING;
-      const ret = await props.api?.(
-        {
-          data: {
-            ...(props.uploadParams || {}),
-          },
-          file: item.file,
-          name: props.name,
-          filename: props.filename,
-        },
-        function onUploadProgress(progressEvent: ProgressEvent) {
-          const complete = ((progressEvent.loaded / progressEvent.total) * 100) | 0;
-          item.percent = complete;
-        },
-      );
+      let ret;
+      if (!api || !isFunction(api)) {
+        ret = await uploadApi(request, onUploadProgress);
+      } else {
+        ret = await props.api?.(request, onUploadProgress);
+      }
       const { data } = ret;
+      if (data.code !== 200) {
+        item.status = UploadResultStatus.ERROR;
+        createMessage.error(data.msg);
+        return {
+          success: false,
+          error: data.msg,
+        };
+      }
       item.status = UploadResultStatus.SUCCESS;
       item.response = data;
       return {
@@ -195,7 +209,6 @@
         error: null,
       };
     } catch (e) {
-      console.log(e);
       item.status = UploadResultStatus.ERROR;
       return {
         success: false,
@@ -207,7 +220,8 @@
   // 点击开始上传
   async function handleStartUpload() {
     const { maxNumber } = props;
-    if ((fileListRef.value.length + props.previewFileList?.length ?? 0) > maxNumber) {
+    const preCount = props.previewFileList?.length || 0;
+    if (fileListRef.value.length + preCount > maxNumber) {
       return createMessage.warning(t('component.upload.maxNumber', [maxNumber]));
     }
     try {
@@ -240,12 +254,13 @@
     if (isUploadingRef.value) {
       return createMessage.warning(t('component.upload.saveWarn'));
     }
-    const fileList: string[] = [];
+    const fileList: FileInfo[] = [];
 
     for (const item of fileListRef.value) {
       const { status, response } = item;
+      console.log(response)
       if (status === UploadResultStatus.SUCCESS && response) {
-        fileList.push(response.url);
+        fileList.push(response.result!);
       }
     }
     // 存在一个上传成功的即可保存

@@ -6,6 +6,7 @@
     v-bind="$attrs"
     @register="register"
     :showOkBtn="false"
+    cancelText="关闭"
   >
     <FileList :dataSource="fileListRef" :columns="columns" :actionColumn="actionColumn" />
   </BasicModal>
@@ -15,11 +16,11 @@
   import FileList from './FileList.vue';
   import { BasicModal, useModalInner } from '@/components/Modal';
   import { previewProps } from '../props';
-  import { PreviewFileItem } from '../types/typing';
   import { downloadByUrl } from '@/utils/file/download';
   import { createPreviewColumns, createPreviewActionColumn } from './data';
   import { useI18n } from '@/hooks/web/useI18n';
   import { isArray } from '@/utils/is';
+  import { PreviewFileInfo, UploadResultStatus } from '../types/typing';
 
   const props = defineProps(previewProps);
 
@@ -31,39 +32,47 @@
   const [register] = useModalInner();
   const { t } = useI18n();
 
-  const fileListRef = ref<PreviewFileItem[]>([]);
+  const fileListRef = ref<PreviewFileInfo[]>([]);
   watch(
     () => props.value,
     (value) => {
       if (!isArray(value)) value = [];
-      fileListRef.value = value
-        .filter((item) => !!item)
-        .map((item) => {
-          return {
-            url: item,
-            type: item.split('.').pop() || '',
-            name: item.split('/').pop() || '',
-          };
-        });
+      fileListRef.value = value.map((item) => {
+        return {
+          ...item,
+          thumbUrl: item.url,
+          status: UploadResultStatus.SUCCESS,
+          percent: 100,
+        };
+      });
     },
     { immediate: true },
   );
 
   // 删除
-  function handleRemove(record: PreviewFileItem) {
-    const index = fileListRef.value.findIndex((item) => item.url === record.url);
+  function handleRemove(record: PreviewFileInfo) {
+    console.log(record);
+    const index = fileListRef.value.findIndex((item) => item.uid === record.uid);
     if (index !== -1) {
       const removed = fileListRef.value.splice(index, 1);
-      emit('delete', removed[0].url);
+      emit('delete', removed[0].uid);
       emit(
         'list-change',
-        fileListRef.value.map((item) => item.url),
+        fileListRef.value.map((item) => {
+          return {
+            ext: item.ext,
+            name: item.name,
+            uid: item.uid,
+            url: item.url,
+            size: item.size,
+          };
+        }),
       );
     }
   }
 
   // 下载
-  function handleDownload(record: PreviewFileItem) {
+  function handleDownload(record: PreviewFileInfo) {
     const { url = '' } = record;
     downloadByUrl({ url });
   }

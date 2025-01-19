@@ -11,10 +11,17 @@ import java.util.Map;
 public interface SysFileStorageRemoteService {
 
     /**
-     * 根据url查询对应的文件信息
-     * @param urlList
+     * 根据ids查询对应的文件信息
+     * @param ids
      * @return
      */
-    Map<String, FileInfo> getMapByUrlList(List<String> urlList);
+    Map<String, FileInfo> getMapByIds(List<String> ids);
+
+    /**
+     * 单个 id 查询
+     * @param id
+     * @return
+     */
+    FileInfo getById(String id);
 
 }

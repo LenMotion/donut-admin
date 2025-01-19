@@ -17,15 +17,22 @@ import lombok.Data;
 public class FileUploadVO implements VO {
 
     @TableId
-    @Schema(hidden = true)
-    @JsonIgnore
-    private Long id;
+    @Trans(type = TransType.AUTO_TRANS, key = BaseConstants.STORAGE_NAMESPACE, ref = "url")
+    private String uid;
 
     @Schema(description = "文件访问地址，用于后台保存")
-    @Trans(type = TransType.AUTO_TRANS, key = BaseConstants.STORAGE_NAMESPACE,ref  = "previewUrl")
     private String url;
 
-    @Schema(description = "实际获取地址，有访问限制")
-    private String previewUrl;
+    @Schema(description = "文件实际名称")
+    private String name;
+
+    @Schema(description = "文件扩展名")
+    private String ext;
+
+    @Schema(description = "文件大小")
+    private Long size;
+
+    @Schema(description = "文件类型")
+    private String contentType;
 
 }

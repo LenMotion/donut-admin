@@ -39,7 +39,14 @@ public interface FileStorageConverter {
 
     List<FileInfo> toFileInfoList(List<SysFileStorage> storageList);
 
+    @Mappings({
+            @Mapping(target = "url", ignore = true),
+            @Mapping(target = "name", source = "originalFilename"),
+            @Mapping(target = "uid", source = "id")
+    })
     FileUploadVO toUploadVO(FileInfo fileInfo);
+
+    List<FileUploadVO> toUploadVO(List<SysFileStorage> files);
 
     /**
      * 将指定值转换成 json 字符串

@@ -868,7 +868,7 @@ CREATE TABLE `sys_user`  (
 -- ----------------------------
 -- Records of sys_user
 -- ----------------------------
-INSERT INTO `sys_user` VALUES (1, 1, 2, 'U01', 'admin', '超级管理员', NULL, 11, 'lenmotion@sina.com', '18001010101', '0', NULL, 'http://localhost:9000/open/logo.png', 'c7084fa75f5d32685e89f7490f04efb160511c652c72a692135077b1c9092ec1', '1', NULL, NULL, '4', 'ces', NULL, NULL, '0', '127.0.0.1', '2024-01-22 22:17:29', '', '', NULL, '1', '2024-01-22 22:22:19', NULL, 0);
+INSERT INTO `sys_user` VALUES (1, 1, 2, 'U01', 'admin', '超级管理员', NULL, 11, 'lenmotion@sina.com', '18001010101', '0', NULL, 'bd402cdfad364e78b18f68c056dbeece', 'c7084fa75f5d32685e89f7490f04efb160511c652c72a692135077b1c9092ec1', '1', NULL, NULL, '4', 'ces', NULL, NULL, '0', '127.0.0.1', '2024-01-22 22:17:29', '', '', NULL, '1', '2024-01-22 22:22:19', NULL, 0);
 INSERT INTO `sys_user` VALUES (1793843405999947778, 1793843403441422338, 1793843405932711936, '001', 'admin', '超级管理员', '测试租户', 1793843405542768641, '', '', '1', '2024-05-24', '', '0e40f23191aac5b831f56a07d38a719929f1f8cdd575840c3d185d71bc5f876e', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '0', '127.0.0.1', '2024-05-24 14:54:12', NULL, '1', '2024-05-24 11:16:11', '1793843405999947778', '2024-05-24 14:54:12', NULL, 0);
 
 -- ----------------------------

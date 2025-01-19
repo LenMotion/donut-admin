@@ -17,6 +17,8 @@ import org.dromara.x.file.storage.core.recorder.FileRecorder;
 import org.dromara.x.file.storage.core.upload.FilePartInfo;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * @author lenmotion
  */
@@ -33,8 +35,8 @@ public class SysFileStorageServiceImpl extends ServiceImpl<SysFileStorageMapper,
 
     @Override
     public boolean save(FileInfo fileInfo) {
+        fileInfo.setId(IdUtil.getSnowflakeNextIdStr());
         var fileStorage = FileStorageConverter.INSTANCE.toModel(fileInfo);
-        fileStorage.setId(IdUtil.simpleUUID());
         return this.save(fileStorage);
     }
 

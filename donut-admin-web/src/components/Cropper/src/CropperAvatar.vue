@@ -9,7 +9,7 @@
           color="#d6d6d6"
         />
       </div>
-      <img :src="sourceValue" v-if="sourceValue" alt="avatar" />
+      <img :src="fileInfo.url" v-if="fileInfo.url" alt="avatar" />
     </div>
     <a-button
       :class="`${prefixCls}-upload-btn`"
@@ -23,6 +23,7 @@
     <CropperModal
       @register="register"
       @upload-success="handleUploadSuccess"
+      @file-info="handleFileInfo"
       :uploadApi="uploadApi"
       :src="sourceValue"
       :size="size"
@@ -38,6 +39,8 @@
   import { useI18n } from '@/hooks/web/useI18n';
   import type { ButtonProps } from '@/components/Button';
   import Icon from '@/components/Icon/Icon.vue';
+  import { uploadApi, fileInfoApi } from '@/api/system/upload';
+  import { FileInfo } from '@/api/system/model/uploadModel';
 
   defineOptions({ name: 'CropperAvatar' });
 
@@ -49,8 +52,8 @@
     btnText: { type: String, default: '' },
     uploadApi: {
       type: Function as PropType<({ file, name }: { file: Blob; name: string }) => Promise<void>>,
+      default: uploadApi,
     },
-
     size: { type: Number, default: 5 },
   });
 
@@ -62,6 +65,11 @@
   const { createMessage } = useMessage();
   const { t } = useI18n();
 
+  // watch(
+  //   () => props.value,
+  //   (val) => {},
+  // );
+
   const getClass = computed(() => [prefixCls]);
 
   const getWidth = computed(() => `${props.width}`.replace(/px/, '') + 'px');
@@ -69,6 +77,8 @@
   const getIconWidth = computed(() => parseInt(`${props.width}`.replace(/px/, '')) / 2 + 'px');
 
   const getStyle = computed((): CSSProperties => ({ width: unref(getWidth) }));
+
+  const fileInfo = ref<FileInfo>({});
 
   const getImageWrapperStyle = computed(
     (): CSSProperties => ({ width: unref(getWidth), height: unref(getWidth) }),
@@ -86,9 +96,14 @@
   );
 
   function handleUploadSuccess({ source, data }) {
-    sourceValue.value = source;
+    fileInfo.value = data;
+    sourceValue.value = data.id;
     emit('change', { source, data });
     createMessage.success(t('component.cropper.uploadSuccess'));
+  }
+
+  function handleFileInfo(file: FileInfo) {
+    fileInfo.value = file;
   }
 
   defineExpose({ openModal: openModal.bind(null, true), closeModal });
