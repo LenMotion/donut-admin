@@ -62,7 +62,6 @@ public class UserInfoVO extends BaseCreatePo {
     private LocalDate birthday;
 
     @Schema(description = "用户头像", hidden = true)
-    @JsonIgnore
     @Trans(type = TransType.AUTO_TRANS, key = BaseConstants.STORAGE_NAMESPACE, ref = "avatarUrl")
     private String avatar;
 

@@ -69,26 +69,33 @@
 
   watch(
     () => props.value,
-    (v) => {
-      if (isInnerOperate.value) {
-        isInnerOperate.value = false;
-        return;
-      }
-      fileList.value = [];
-      if (v && v.length > 0) {
-        fileInfoApi(v).then((res) => {
-          fileList.value = res.map((item, i) => {
-            return {
-              uid: item.uid,
-              name: item.name,
-              status: 'done',
-              url: item.url,
-            };
-          }) as UploadProps['fileList'];
-        });
-      }
+    () => {
+      initFileList();
     },
   );
+
+  const initFileList = () => {
+    const v = props.value;
+    console.log(v);
+    if (isInnerOperate.value) {
+      isInnerOperate.value = false;
+      return;
+    }
+    fileList.value = [];
+    if (v && v.length > 0) {
+      fileInfoApi(v).then((res) => {
+        fileList.value = res.map((item, i) => {
+          return {
+            uid: item.uid,
+            name: item.name,
+            status: 'done',
+            url: item.url,
+          };
+        }) as UploadProps['fileList'];
+      });
+    }
+  };
+  initFileList();
 
   function getBase64<T extends string | ArrayBuffer | null>(file: File) {
     return new Promise<T>((resolve, reject) => {

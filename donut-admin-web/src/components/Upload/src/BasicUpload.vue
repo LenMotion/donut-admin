@@ -81,17 +81,23 @@
 
   watch(
     () => props.value,
-    (value = []) => {
-      fileList.value = [];
-      if (value && value.length > 0) {
-        fileInfoApi(value).then((res) => {
-          console.log(res);
-          fileList.value = res;
-        });
-      }
+    () => {
+      initFileList();
     },
     { immediate: true },
   );
+
+  const initFileList = () => {
+    const value = props.value;
+    fileList.value = [];
+    if (value && value.length > 0) {
+      fileInfoApi(value).then((res) => {
+        console.log(res);
+        fileList.value = res;
+      });
+    }
+  };
+  initFileList();
 
   // 上传modal保存操作
   function handleChange(files: FileInfo[]) {

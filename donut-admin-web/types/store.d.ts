@@ -41,6 +41,8 @@ export interface UserInfo {
   // 用户名
   username: string;
   // 头像
+  avatar: string;
+  // 头像实际访问地址
   avatarUrl: string;
   // 介绍
   desc?: string;

@@ -10,14 +10,7 @@
       <Col :offset="4" :span="8">
         <div class="change-avatar">
           <div class="mb-2">头像</div>
-          <CropperAvatar
-            :uploadApi="basicUploadApi"
-            :value="avatar"
-            btnText="更换头像"
-            :btnProps="{ preIcon: 'ant-design:cloud-upload-outlined' }"
-            @change="updateAvatar"
-            width="150"
-          />
+          <ImageUpload :value="avatar" @change="updateAvatar" />
         </div>
       </Col>
     </Row>
@@ -28,24 +21,20 @@
   import { computed, onMounted } from 'vue';
   import { BasicForm, useForm } from '@/components/Form';
   import { CollapseContainer } from '@/components/Container';
-  import { CropperAvatar } from '@/components/Cropper';
+  import { ImageUpload } from '@/components/Upload';
 
   import { useMessage } from '@/hooks/web/useMessage';
 
-  import headerImg from '@/assets/images/header.jpg';
   import { getUserInfo, updateUserInfo, updateUserAvatar } from '@/api/sys/user';
-  import { baseSetschemas } from './data';
+  import { baseSetSchemas } from './data';
   import { useUserStore } from '@/store/modules/user';
-  import { uploadApi } from '@/api/system/upload';
 
   const { createMessage } = useMessage();
   const userStore = useUserStore();
 
-  const basicUploadApi = uploadApi as any;
-
   const [register, { setFieldsValue, validate }] = useForm({
     labelWidth: 80,
-    schemas: baseSetschemas,
+    schemas: baseSetSchemas,
     showActionButtonGroup: false,
   });
 
@@ -55,13 +44,13 @@
   });
 
   const avatar = computed(() => {
-    const { avatarUrl } = userStore.getUserInfo;
-    return avatarUrl || headerImg;
+    const { avatar } = userStore.getUserInfo;
+    return avatar;
   });
 
-  function updateAvatar({ data }) {
-    if (data) {
-      updateUserAvatar({ avatar: data }).then(() => {
+  function updateAvatar(avatar) {
+    if (avatar) {
+      updateUserAvatar({ avatar }).then(() => {
         createMessage.success('更新成功！');
         userStore.getUserInfoAction();
       });

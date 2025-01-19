@@ -34,7 +34,7 @@ export const settingList = [
 ];
 
 // 基础设置 form
-export const baseSetschemas: FormSchema[] = [
+export const baseSetSchemas: FormSchema[] = [
   {
     field: 'nickName',
     component: 'Input',
