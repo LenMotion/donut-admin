@@ -16,7 +16,11 @@
     </a>
 </p>
 
-在线文档地址：[https://donut-doc.lenmotion.cn](https://donut-doc.lenmotion.cn/)
+在线预览地址：[https://donut.lenmotion.cn](https://donut.lenmotion.cn/)
+
+账号：admin
+
+密码：123qwe
 
 微服务版本：[donut-admin-cloud](https://github.com/LenMotion/donut-admin-cloud)
 
@@ -65,14 +69,6 @@
 * Vue3
 * Vite
 * [Ant-Design4](https://www.antdv.com/docs/vue/getting-started)
-
-### 项目预览：
-
-https://donut.lenmotion.cn/
-
-账号：admin
-
-密码：123qwe
 
 ### 项目启动：
 如果您熟悉docker可能部署较为简单，可以直接使用docker-compose启动项目（mysql、redis）服务
