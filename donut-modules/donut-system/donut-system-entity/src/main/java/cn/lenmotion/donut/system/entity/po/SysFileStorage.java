@@ -30,10 +30,10 @@ public class SysFileStorage implements TransPojo, Serializable {
 
     /** 文件id */
     @TableId(type = IdType.INPUT)
+    @Trans(type = TransType.AUTO_TRANS, key = BaseConstants.STORAGE_NAMESPACE, alias = "preview")
     private String id;
 
     /** 文件访问地址 */
-    @Trans(type = TransType.AUTO_TRANS, key = BaseConstants.STORAGE_NAMESPACE, alias = "preview")
     private String url;
 
     /** 文件大小，单位字节 */
