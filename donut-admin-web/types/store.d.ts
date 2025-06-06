@@ -76,6 +76,7 @@ export interface TableSetting {
 export interface SiteInfo {
   name: String;
   logo: Sting;
+  logoUrl: Sting;
   title: String;
   description: String;
 }

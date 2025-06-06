@@ -4,7 +4,7 @@
 -->
 <template>
   <div class="anticon" :class="getAppLogoClass" @click="goHome">
-    <img :src="systemInfo.logo" />
+    <img :src="systemInfo.logoUrl" />
     <div class="ml-2 truncate md:opacity-100" :class="getTitleClass" v-show="showTitle">
       {{ systemInfo.name }}
     </div>
@@ -60,7 +60,7 @@
 
   const systemInfo = ref<any>({
     name: 'Donut-Admin',
-    logo,
+    logoUrl: logo,
   });
 
   watch(

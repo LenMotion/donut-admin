@@ -11,6 +11,7 @@ export const useSiteInfoStore = defineStore({
     name: 'Donut-Admin',
     title: '甜甜圈通用管理系统',
     logo,
+    logoUrl: '',
     description: '一款基于SpringBoot3、JDK17、SaToken、MybatisPlus的开源管理系统。',
   }),
   getters: {
@@ -31,6 +32,7 @@ export const useSiteInfoStore = defineStore({
         name: state.name,
         title: state.title,
         logo: state.logo,
+        logoUrl: state.logoUrl || logo,
         description: state.description,
       };
     },

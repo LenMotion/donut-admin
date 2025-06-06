@@ -76,7 +76,6 @@
 
   const initFileList = () => {
     const v = props.value;
-    console.log(v);
     if (isInnerOperate.value) {
       isInnerOperate.value = false;
       return;

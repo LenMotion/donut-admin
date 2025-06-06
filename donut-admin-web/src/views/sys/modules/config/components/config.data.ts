@@ -1,6 +1,5 @@
 import { BasicColumn, FormSchema } from '@/components/Table';
 import { menuTreeApi } from '@/api/system/menu';
-import { getBase64WithFile } from '@/components/Upload/src/helper';
 
 export const settingList = [
   {
@@ -22,20 +21,6 @@ export const formSchema: FormSchema[] = [
     required: true,
     component: 'ImageUpload',
     colProps: { span: 24 },
-    componentProps: ({ formModel }) => {
-      return {
-        api: (file) => {
-          return new Promise((resolve) => {
-            getBase64WithFile(file.file).then((res) => {
-              formModel.SYSTEM_LOGO = res.result;
-              resolve({});
-            });
-          });
-        },
-      };
-    },
-    // @ts-ignore
-    // slot: 'logo',
   },
   {
     field: 'SYSTEM_NAME',
