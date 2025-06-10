@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.lenmotion.donut.system.mapper.SysUserRoleMapper">
+    <select id="getRoleIdsByUserId" resultType="cn.lenmotion.donut.system.entity.po.SysRole">
+        select r.*
+        from sys_user_role ur
+                 inner join sys_role r on ur.role_id = r.id
+        where ur.user_id = #{userId}
+          and r.status = '0'
+          and r.deleted = 0
+    </select>
+
+    <select id="selectUserList" resultType="cn.lenmotion.donut.system.entity.vo.RoleUserVO">
+        select sur.user_id, u.username, u.nick_name, u.dept_id, sur.id from sys_user_role sur
+        inner join sys_user u on sur.user_id = u.id
+        where sur.role_id = #{query.roleId}
+        <if test="query.keyword != null and query.keyword != ''">
+            and (u.nick_name like concat('%', #{query.keyword}, '%') or u.username like concat('%', #{query.keyword}, '%'))
+        </if>
+    </select>
+
+    <select id="unbindUserList" resultType="cn.lenmotion.donut.system.entity.vo.RoleUserVO">
+        select id, u.id userId, u.username, u.nick_name, u.dept_id from  sys_user u
+        where u.id not in (select user_id from sys_user_role where role_id = #{query.roleId})
+        <if test="query.keyword != null and query.keyword != ''">
+            and (u.nick_name like concat('%', #{query.keyword}, '%') or u.username like concat('%', #{query.keyword}, '%'))
+        </if>
+    </select>
+
+</mapper>

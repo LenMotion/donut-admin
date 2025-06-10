@@ -15,6 +15,22 @@ export const listApi = (params) => {
   return defHttp.get<Recordable[]>({ url: Api.List, params });
 };
 
+export const roleUserListApi = (params) => {
+  return defHttp.get<Recordable[]>({ url: Api.Detail + 'userList', params });
+};
+
+export const unbindUserListApi = (params) => {
+  return defHttp.get<Recordable[]>({ url: Api.Detail + 'unbindUserList', params });
+};
+
+export const roleUserUnbindApi = (id: string) => {
+  return defHttp.post<boolean>({ url: Api.Detail + 'unbind/' + id });
+}; 
+
+export const roleUserBindApi = (data: Recordable) => {
+  return defHttp.post<boolean>({ url: Api.Detail + 'bind', data });
+};
+
 export const optionsApi = () => {
   return defHttp.get<Recordable[]>({ url: Api.Options });
 };

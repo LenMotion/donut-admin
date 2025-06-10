@@ -5,14 +5,17 @@ export const columns: BasicColumn[] = [
   {
     title: '角色名称',
     dataIndex: 'roleName',
+    width: 260,
   },
   {
     title: '角色编码',
     dataIndex: 'roleKey',
+    width: 150,
   },
   {
     title: '序号',
     dataIndex: 'roleSort',
+    width: 120,
   },
   {
     title: '数据范围',

@@ -19,6 +19,12 @@
         <TableAction
           :actions="[
             {
+              icon: 'clarity:user-line',
+              auth: 'system:role:user:list',
+              tooltip: '用户列表',
+              onClick: handleUserList.bind(null, record),
+            },
+            {
               icon: 'clarity:note-edit-line',
               auth: 'system:role:save',
               onClick: handleEdit.bind(null, record),
@@ -38,6 +44,7 @@
     </BasicTable>
 
     <RoleDrawer @register="registerDrawer" @success="reload()" />
+    <RoleUserModal @register="registerModal" />
   </div>
 </template>
 
@@ -48,10 +55,13 @@
   import { useDrawer } from '@/components/Drawer';
   import RoleDrawer from './RoleDrawer.vue';
   import BaseStatusSwitch from '@/components/Donut/BaseStatusSwitch/index.vue';
+  import RoleUserModal from './RoleUserModal.vue';
+  import { useModal } from '@/components/Modal';
 
   defineOptions({ name: 'RoleManagement' });
 
   const [registerDrawer, { openDrawer }] = useDrawer();
+  const [registerModal, { openModal }] = useModal();
   const [registerTable, { reload }] = useTable({
     title: '角色列表',
     api: listApi,
@@ -59,16 +69,15 @@
     formConfig: {
       labelWidth: 90,
       schemas: searchFormSchema,
-      baseColProps: { xl: 8, xxl: 6 },
+      baseColProps: { xl: 6, xxl: 4 },
     },
     useSearchForm: true,
     showTableSetting: true,
     bordered: true,
     showIndexColumn: true,
     actionColumn: {
-      width: 80,
+      width: 130,
       title: '操作',
-      dataIndex: 'action',
       slots: { customRender: 'action' },
       fixed: 'right',
     },
@@ -90,6 +99,12 @@
   function handleDelete(record: Recordable) {
     deleteApi(record.id).then(() => {
       reload();
+    });
+  }
+
+  function handleUserList(record: Recordable) {
+    openModal(true, {
+      record,
     });
   }
 </script>
