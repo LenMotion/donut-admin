@@ -13,6 +13,7 @@ import cn.lenmotion.donut.core.constants.BaseConstants;
 import cn.lenmotion.donut.core.constants.ConfigConstants;
 import cn.lenmotion.donut.core.enums.BaseStatusEnum;
 import cn.lenmotion.donut.core.enums.DataScopeTypeEnum;
+import cn.lenmotion.donut.core.exception.BusinessException;
 import cn.lenmotion.donut.core.utils.AopUtils;
 import cn.lenmotion.donut.core.utils.AssertUtils;
 import cn.lenmotion.donut.core.utils.EnumUtils;
@@ -247,7 +248,7 @@ public class SysDeptServiceImpl extends DonutServiceImpl<SysDeptMapper, SysDept>
             // 将对象中的transMap属性存储到beanMap中
             beanMap.put("transMap", sysDept.getTransMap());
             // 判断是否是上级的标识，用于前端标识是否可以修改操作
-            beanMap.put("parentDeptTag", deptIdSet.contains(sysDept.getId()));
+            beanMap.put("disabled", deptIdSet.contains(sysDept.getId()));
             treeNode.setExtra(beanMap);
             treeNodeList.add(treeNode);
         }

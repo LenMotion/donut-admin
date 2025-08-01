@@ -75,6 +75,9 @@ export const formSchema: FormSchema[] = [
     label: '角色编码',
     required: true,
     component: 'Input',
+    dynamicDisabled({ model }) {
+      return model.id > 0;
+    },
   },
   {
     field: 'dataScope',

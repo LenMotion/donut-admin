@@ -3,13 +3,15 @@
     <DeptTree class="w-1/5" @select="handleSelectDept" />
     <BasicTable @register="registerTable" class="w-4/5" :searchInfo="searchInfo">
       <template #toolbar>
-        <a-button
-          type="warning"
-          v-auth="'system:user:password'"
-          :disabled="getSelectRowKeys().length === 0"
-          @click="handleResetPwd(getSelectRowKeys())"
-          >重置密码</a-button
-        >
+        <Popconfirm title="是否确认重置密码？" @confirm="handleResetPwd(getSelectRowKeys())">
+          <a-button
+            type="error"
+            v-auth="'system:user:password'"
+            :disabled="getSelectRowKeys().length === 0"
+            >重置密码</a-button
+          >
+        </Popconfirm>
+
         <a-button type="success" v-auth="'system:user:import'" @click="handleImport"
           >导入用户</a-button
         >
@@ -108,6 +110,7 @@
   import BaseStatusSwitch from '@/components/Donut/BaseStatusSwitch/index.vue';
   import { useMessage } from '@/hooks/web/useMessage';
   import type { Key } from 'ant-design-vue/es/_util/type';
+  import { Popconfirm } from 'ant-design-vue';
 
   defineOptions({ name: 'UserManagement' });
 

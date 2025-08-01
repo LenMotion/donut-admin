@@ -40,7 +40,6 @@ public class SysRoleServiceImpl extends DonutServiceImpl<SysRoleMapper, SysRole>
     private final SysRoleMenuService roleMenuService;
 
     @Override
-//    @DataScope(type = DataScopeTypeEnum.ROLE, roleField = "id", tenantAdminIgnore = true)
     public IPage<SysRole> selectRolePage(RoleQuery query) {
         // 将query转成lambdaQuery的查询条件
         LambdaQueryWrapper<SysRole> queryWrapper = Wrappers.lambdaQuery(SysRole.class)
